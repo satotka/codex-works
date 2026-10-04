@@ -3,7 +3,7 @@ const root=new URL('../',import.meta.url),dist=new URL('dist/',root);
 await rm(dist,{recursive:true,force:true});await mkdir(dist,{recursive:true});
 for(const name of ['index.html','style.css','src'])await cp(new URL(name,root),new URL(name,dist),{recursive:true});
 console.log('Build complete: dist/');
-const order=['card','deck','pay-table','joker-rule','hand-evaluator','double-down','game-state','sound','storage','ui'];
+const order=['card','deck','pay-table','joker-rule','hand-evaluator','double-down','game-state','sound','storage','session','ui'];
 const sources=await Promise.all(order.map(name=>readFile(new URL(`src/${name}.js`,root),'utf8')));
 const bundled=sources.map(source=>source.replace(/^import .*;\r?\n/gm,'').replace(/\bexport (?=(const|class|function)\b)/g,'')).join('\n');
 const html=await readFile(new URL('index.html',root),'utf8');

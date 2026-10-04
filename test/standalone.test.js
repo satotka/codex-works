@@ -11,7 +11,9 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   const nodes=new Map();
   const node=id=>{if(!nodes.has(id))nodes.set(id,{innerHTML:'',textContent:'',disabled:false,hidden:false,setAttribute(){}});return nodes.get(id);};
   const listeners={};
-  const context={crypto:webcrypto,document:{getElementById:node,querySelectorAll:()=>[],addEventListener:(type,fn)=>listeners[type]=fn}};
+  let testNow=1000;
+  const testDate={now:()=>testNow+=1000};
+  const context={Date:testDate,crypto:webcrypto,document:{getElementById:node,querySelectorAll:()=>[],addEventListener:(type,fn)=>listeners[type]=fn}};
   vm.runInNewContext(script,context);
   for(const suit of ['S','H','D','C'])for(let rank=2;rank<=10;rank++){
     const center=vm.runInContext(`cardCenter({rank:${rank},suit:'${suit}',joker:false});`,context);
@@ -100,14 +102,14 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   const previousCards=node('cards').innerHTML;
   const reopenedNodes=new Map();
   const reopenedNode=id=>{if(!reopenedNodes.has(id))reopenedNodes.set(id,{innerHTML:'',textContent:'',disabled:false,hidden:false,setAttribute(){}});return reopenedNodes.get(id);};
-  const reopened={crypto:webcrypto,localStorage:storage,document:{getElementById:reopenedNode,querySelectorAll:()=>[],addEventListener(){}}};
+  const reopened={Date:testDate,crypto:webcrypto,localStorage:storage,document:{getElementById:reopenedNode,querySelectorAll:()=>[],addEventListener(){}}};
   vm.runInNewContext(script,reopened);
   assert.equal(reopenedNode('credit').textContent,'320');
   assert.equal(reopenedNode('cards').innerHTML,previousCards);
   assert.match(reopenedNode('deal').innerHTML,/DRAW/);
   assert.equal(reopenedNode('sound').textContent,'SOUND OFF');
   assert.match(reopenedNode('save-status').textContent,/自動保存 ON/);
-  reopenedNode('deal').onclick();node('deal').onclick();
+  reopenedNode('deal').onclick();vm.runInContext('storage=undefined;session.storage=undefined;',context);node('deal').onclick();
   assert.equal(reopenedNode('cards').innerHTML,node('cards').innerHTML);
   assert.equal(reopenedNode('win').textContent,node('win').textContent);
   vm.runInContext("game.phase='won';game.win=25;game.doubleDown=new DoubleDown(()=>{const deck=new Deck({includeJoker:false,random:()=>0.5});deck.cards=deck.cards.filter(c=>!(c.rank===8&&['S','H'].includes(c.suit)));deck.cards.push(card(8,'H'),card(8,'S'));return deck;});render();",reopened);
@@ -117,7 +119,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   assert.equal(reopenedNode('win').textContent,'0');
   assert.match(reopenedNode('message').innerHTML,/引き分け.*獲得しました/);
   assert.match(reopenedNode('cards').innerHTML,/基準カード/);
-  vm.runInNewContext(script,{crypto:webcrypto,localStorage:storage,document:{getElementById:reopenedNode,querySelectorAll:()=>[],addEventListener(){}}});
+  vm.runInNewContext(script,{Date:testDate,crypto:webcrypto,localStorage:storage,document:{getElementById:reopenedNode,querySelectorAll:()=>[],addEventListener(){}}});
   assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25);
   assert.match(reopenedNode('message').innerHTML,/引き分け.*獲得しました/);
   assert.match(reopenedNode('cards').innerHTML,/基準カード/);

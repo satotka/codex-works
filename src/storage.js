@@ -21,8 +21,9 @@ export function saveGame(game,soundEnabled,storage){
   }catch{return false;}
 }
 export function restoreGame(game,storage){
+  let raw;
   try{
-    const raw=storage.getItem(SAVE_KEY);if(raw===null)return {status:'empty'};
+    raw=storage.getItem(SAVE_KEY);if(raw===null)return {status:'empty'};
     const s=JSON.parse(raw);
     if(s.version!==1||!['ready','hold','won','double','lost'].includes(s.phase)||![s.credit,s.win].every(n=>Number.isSafeInteger(n)&&n>=0)||!Number.isSafeInteger(s.credit+s.win)||!Number.isInteger(s.bet)||s.bet<1||s.bet>40||typeof s.soundEnabled!=='boolean')throw new Error('Invalid state');
     if(s.collectedWin!==undefined&&(!Number.isSafeInteger(s.collectedWin)||s.collectedWin<0))throw new Error('Invalid collected win');
@@ -59,5 +60,8 @@ export function restoreGame(game,storage){
     const result=hand.length&&s.phase!=='hold'?evaluateHand(hand):null;
     Object.assign(game,{collectedWin:s.collectedWin||0,credit:s.credit,bet:s.bet,win:s.win,phase:s.phase,hand,held:s.held.slice(),deck:restoredDeck(deck),doubleDown,doubleResult,result});
     return {status:'restored',soundEnabled:s.soundEnabled};
-  }catch{return {status:'unavailable'};}
+  }catch{
+    if(raw!=null){try{storage.setItem(SAVE_KEY+'.backup.'+Date.now(),raw);return {status:'invalid',backedUp:true};}catch{return {status:'invalid',backedUp:false};}}
+    return {status:'unavailable'};
+  }
 }

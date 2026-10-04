@@ -1,14 +1,31 @@
 import {GameState} from './game-state.js';
 import {PAY_TABLE} from './pay-table.js';
 import {Sound} from './sound.js';
+import {PlaySession} from './session.js';
 import {saveGame,restoreGame} from './storage.js';
 const game=new GameState(),sound=new Sound(),$=id=>document.getElementById(id);
 const symbols={S:'♠',H:'♥',D:'♦',C:'♣'},ranks={11:'J',12:'Q',13:'K',14:'A'};
 let storage;
 try{storage=globalThis.localStorage;}catch{}
-const restored=restoreGame(game,storage);
+const session=new PlaySession(storage);
+let lockPending=!!globalThis.navigator?.locks,primaryUntil=0;
+let restored=restoreGame(game,storage);
+let recoveryBlocked=restored.status==='invalid'&&!restored.backedUp;
 if(restored.status==='restored')sound.enabled=restored.soundEnabled;
-function persist(){const saved=saveGame(game,sound.enabled,storage);$('save-status').textContent=saved?'自動保存 ON · リロード後も続きから再開':'保存できません · この画面でプレイを続けられます';}
+function allowed(){return !lockPending&&!recoveryBlocked&&session.check();}
+function persist(){
+  if(!allowed()){$('save-status').textContent=lockPending?'プレイを準備中':recoveryBlocked?'保存を復元できません。元データを保護しています':'別タブでプレイ中、または保存が更新されました';return;}
+  const saved=saveGame(game,sound.enabled,storage);if(saved)session.saved();
+  $('save-status').textContent=restored.status==='invalid'?'保存を復元できませんでした。元データを退避し、初期状態で再開しました':saved?'自動保存 ON · リロード後も続きから再開':'保存できません · この画面でプレイを続けられます';
+}
+function refreshAccess(){const active=allowed();$('play-area').inert=!active;$('session-warning').hidden=active;$('session-text').textContent=recoveryBlocked?'保存を復元できません。元データを保護したため操作を停止しています。':lockPending?'プレイを準備しています。':'別タブでプレイ中、または保存が更新されました。プレイ中のタブを閉じて、最新状態を読み込んでください。';}
+function holdCard(index){if(!allowed()){refreshAccess();return;}game.toggleHold(index);sound.play('hold');persist();
+  const button=$('cards').querySelector?.(`[data-index="${index}"]`);
+  if(!button){render();return;}
+  button.classList.toggle('held',game.held[index]);button.setAttribute('aria-pressed',String(game.held[index]));
+  button.parentElement.querySelector('.hold-label').textContent=game.held[index]?'HOLD':'HOLD / RELEASE';
+}
+
 const pipLayouts={
   2:[[50,12],[50,88]],
   3:[[50,12],[50,50],[50,88]],
@@ -33,7 +50,7 @@ function cardHtml(c,i,interactive) {
   return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${interactive?' HOLD切替':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
 function render(){
-  persist();
+  persist();refreshAccess();
   const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
   ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
   const showingDouble=game.doubleResult&&(['double','won','lost'].includes(game.phase)||game.doubleResult.outcome==='draw');
@@ -64,13 +81,13 @@ function render(){
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
 }
-function act(fn,tone){const result=fn();if(result!==false&&tone)sound.play(tone);render();}
+function act(fn,tone){if(!allowed()){refreshAccess();return;}const result=fn();if(result!==false&&tone)sound.play(tone);render();}
 $('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(40),'bet');
-$('deal').onclick=()=>{if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){act(()=>game.draw(),'draw');if(game.win)sound.play('win');}else act(()=>game.deal(),'deal');};
-$('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')act(()=>game.toggleHold(Number(b.dataset.index)),'hold');};
+$('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){primaryUntil=Date.now()+650;act(()=>game.draw(),'draw');if(game.win)sound.play('win');}else act(()=>game.deal(),'deal');};
+$('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};
 $('collect').onclick=()=>act(()=>game.collect(),'collect');
-for(const choice of ['low','high'])$(choice).onclick=()=>{const r=game.guess(choice);if(!r)return;sound.play(r.outcome==='win'?'doubleWin':r.outcome==='draw'?'collect':'doubleLose');render();};
-$('sound').onclick=()=>{sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));persist();};
+for(const choice of ['low','high'])$(choice).onclick=()=>{if(!allowed()){refreshAccess();return;}const r=game.guess(choice);if(!r)return;sound.play(r.outcome==='win'?'doubleWin':r.outcome==='draw'?'collect':'doubleLose');render();};
+$('sound').onclick=()=>{if(!allowed()){refreshAccess();return;}sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));persist();};
 $('reset').onclick=()=>act(()=>game.reset(),'collect');
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.altKey||e.metaKey||e.isComposing||e.target.closest('input,select,textarea,[contenteditable="true"]'))return;
@@ -85,16 +102,31 @@ document.addEventListener('keydown',e=>{
   if(index===null&&!action)return;
   // Main keys override native button activation and never skip HIGH/LOW.
   e.preventDefault();
-  if(e.repeat)return;
-  if(game.phase==='hold'&&index!==null)act(()=>game.toggleHold(index),'hold');
+  if(e.repeat||!allowed())return;
+  if(game.phase==='hold'&&index!==null)holdCard(index);
   else if(action){
     const enabled=(action==='high'||action==='low')?game.phase==='double':action==='reset'?!$('reset').hidden:!$(action).disabled;
     if(enabled)$(action).click();
   }
-  else if(game.phase==='hold')act(()=>game.toggleHold(index),'hold');
+  else if(game.phase==='hold')holdCard(index);
 });
 $('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;
 $('sound').setAttribute('aria-pressed',String(sound.enabled));
 render();
 
 
+
+$('reload-state').onclick=()=>globalThis.location.reload();
+globalThis.addEventListener?.('storage',e=>{if(e.key==='amber-poker.state.v1'){session.check();refreshAccess();}});
+if(globalThis.navigator?.locks){
+  navigator.locks.request('amber-poker.play',{ifAvailable:true},async lock=>{
+    lockPending=false;
+    if(!lock){session.blocked=true;render();return;}
+    // Reconcile updates made while the lock request was pending.
+    const latest=restoreGame(game,storage);restored=latest;recoveryBlocked=latest.status==='invalid'&&!latest.backedUp;if(latest.status==='restored')sound.enabled=latest.soundEnabled;
+    session.saved();$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));render();
+    await new Promise(resolve=>globalThis.addEventListener('pagehide',resolve,{once:true}));
+  }).catch(()=>{lockPending=false;render();});
+}
+
+globalThis.addEventListener?.('pageshow',e=>{if(e.persisted)globalThis.location.reload();});

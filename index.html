@@ -1,5 +1,5 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AMBER POKER — Joker Double</title><link rel="stylesheet" href="./style.css"></head><body>
-<main class="cabinet"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><button id="sound" class="small" aria-pressed="true">SOUND ON</button></header>
+<main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">最新状態を読み込む</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><button id="sound" class="small" aria-pressed="true">SOUND ON</button></header>
 <section class="screen"><div class="screen-top"><span>1 JOKER · WILD CARD</span><span class="edition">ARCADE EDITION / 01</span></div>
 <section class="paytable" aria-label="配当表"><div class="table-head"><span>WINNING HAND</span><span>NATURAL</span><span>JOKER ×2</span></div><div id="payrows"></div></section>
 <div class="message" id="message" role="status" aria-live="polite">BETを決めて DEAL を押してください</div>
@@ -14,7 +14,7 @@
 <section><h2>BET時</h2><p><b>W / 8 / ＋</b> BETを1増やす<br><b>S / 2 / −</b> BETを1減らす<br><b>＊</b> MAX BET（40）<br><b>主操作キー</b> DEAL：カードを配る</p></section>
 <section><h2>通常ゲーム時</h2><p><b>1–5 / カードをタップ</b> HOLD / RELEASE<br><b>主操作キー</b> DRAW：残さないカードを交換<br>当たり後：<b>主操作キー</b>でDOUBLE、<b>A / 4</b>でCOLLECT<br>負けた後：BETを選び、主操作キーで次のDEAL</p></section>
 <section><h2>ダブル中</h2><p><b>W / 8</b> HIGH：基準より高い<br><b>S / 2</b> LOW：基準より低い<br>同じ数字は引き分け。WINをそのまま自動COLLECTします。勝った後は主操作キーで再DOUBLE、A / 4でCOLLECT。</p></section>
-</div><p>カード・ボタンはクリック／タップでも操作できます。テンキーはNum LockのON/OFFに対応。<b>／</b>でSOUND ON/OFF、残高0の時は<b>．</b>でNEW CREDIT。0キーは使用しません。</p></details></main>
+</div><p>カード・ボタンはクリック／タップでも操作できます。テンキーはNum LockのON/OFFに対応。<b>／</b>でSOUND ON/OFF、残高0の時は<b>．</b>でNEW CREDIT。0キーは使用しません。</p></details></div></main>
 <script type="module" src="./src/ui.js"></script></body></html>
 
 

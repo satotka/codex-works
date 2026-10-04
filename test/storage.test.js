@@ -4,7 +4,7 @@ import {GameState} from '../src/game-state.js';
 import {Deck} from '../src/deck.js';
 import {DoubleDown} from '../src/double-down.js';
 import {saveGame,restoreGame,SAVE_KEY} from '../src/storage.js';
-const memory=()=>({value:null,getItem(){return this.value;},setItem(key,value){assert.equal(key,SAVE_KEY);this.value=value;}});
+const memory=()=>({value:null,getItem(){return this.value;},setItem(key,value){if(key===SAVE_KEY)this.value=value;}});
 const reload=(game,storage)=>{assert.equal(saveGame(game,false,storage),true);const next=new GameState();assert.deepEqual(restoreGame(next,storage),{status:'restored',soundEnabled:false});return next;};
 test('reload preserves bet, deducted credit, holds, and exact next draw',()=>{
   const storage=memory(),game=new GameState({deckFactory:()=>new Deck({random:()=>0.5})});
@@ -30,12 +30,12 @@ test('reload during double keeps reference, next card and uncollected win; colle
 test('bad data or unavailable storage leaves a fresh game usable',()=>{
   const storage=memory();
   for(const value of ['{','null',JSON.stringify({version:99})]){
-    storage.value=value;const game=new GameState();assert.equal(restoreGame(game,storage).status,'unavailable');assert.equal(game.credit,1000);assert.equal(game.phase,'ready');
+    storage.value=value;const game=new GameState();assert.equal(restoreGame(game,storage).status,'invalid');assert.equal(game.credit,1000);assert.equal(game.phase,'ready');
   }
   const game=new GameState({deckFactory:()=>new Deck({random:()=>0.5})});game.deal();saveGame(game,true,storage);
   const valid=storage.value;
   for(const change of [s=>s.credit=-1,s=>s.deck[0]=s.hand[0],s=>s.deck=[],s=>s.held=[true],s=>s.win=1]){
-    const s=JSON.parse(valid);change(s);storage.value=JSON.stringify(s);const fresh=new GameState();assert.equal(restoreGame(fresh,storage).status,'unavailable');assert.equal(fresh.phase,'ready');
+    const s=JSON.parse(valid);change(s);storage.value=JSON.stringify(s);const fresh=new GameState();assert.equal(restoreGame(fresh,storage).status,'invalid');assert.equal(fresh.phase,'ready');
   }
   const denied={getItem(){throw Error('blocked');},setItem(){throw Error('quota');}};
   assert.equal(saveGame(game,true,denied),false);assert.equal(restoreGame(new GameState(),denied).status,'unavailable');

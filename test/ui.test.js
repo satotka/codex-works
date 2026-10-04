@@ -27,6 +27,7 @@ test('UI wiring: bet, deal, hold/release, draw, sound and next game',async()=>{
   if(!node('collect').disabled)node('collect').onclick();
   assert.equal(node('deal').disabled,false);assert.equal(node('plus').disabled,true); // MAX remains selected.
   assert.equal(node('minus').disabled,false);
+  await new Promise(resolve=>setTimeout(resolve,660));
   node('deal').onclick();assert.match(node('deal').innerHTML,/DRAW/);
   delete globalThis.document;
 });
