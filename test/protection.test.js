@@ -6,7 +6,7 @@ import {webcrypto} from 'node:crypto';
 const script=()=>readFileSync(new URL('../PLAY.html',import.meta.url),'utf8').match(/<script>([\s\S]*?)<\/script>/)[1];
 function setup(storage,navigator){
   const nodes=new Map(),listeners={};let now=1000;
-  const node=id=>{if(!nodes.has(id))nodes.set(id,{innerHTML:'',textContent:'',disabled:false,hidden:false,setAttribute(){}});return nodes.get(id);};
+  const node=id=>{if(!nodes.has(id))nodes.set(id,{innerHTML:'',textContent:'',disabled:false,hidden:false,attrs:{},setAttribute(key,value){this.attrs[key]=value;}});return nodes.get(id);};
   const context=vm.createContext({crypto:webcrypto,localStorage:storage,navigator,Date:{now:()=>now},document:{getElementById:node,querySelectorAll:()=>[],addEventListener:(type,fn)=>listeners[type]=fn}});
   vm.runInContext(script(),context);return {node,context,listeners,advance:ms=>now+=ms};
 }
@@ -54,7 +54,9 @@ test('only D and 6 are main shortcuts; guide preference survives reload',()=>{
     tab.listeners.keydown({key,code,target:{closest:()=>null},preventDefault(){}});
     assert.equal(vm.runInContext('game.phase',tab.context),'ready');
   }
-  tab.node('guide').onclick();assert.equal(storage.getItem('amber-poker.guide'),'off');
+  assert.equal(tab.node('deal').attrs['data-key-hint'],'D / 6');
+  assert.equal(tab.node('high').attrs['data-key-hint'],'W / 8');
+  tab.node('guide').onclick();assert.equal(tab.node('deal').attrs['data-key-hint'],'');assert.equal(storage.getItem('amber-poker.guide'),'off');
   const reopened=setup(storage);assert.equal(reopened.node('guide').textContent,'ガイド OFF');
   assert.doesNotMatch(reopened.node('message').innerHTML,/主操作キー/);
   reopened.node('deal').click=()=>reopened.node('deal').onclick();

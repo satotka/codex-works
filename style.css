@@ -112,3 +112,7 @@ summary::-webkit-details-marker{display:none}
  .console{min-height:108px}.bet-controls>span{font-size:10px}
  .paytable-details>summary,.controls-help>summary{font-size:11px;padding:8px 14px}
 }
+
+@media(min-width:761px){
+ button[data-key-hint]:not([data-key-hint=""])::after{content:attr(data-key-hint);display:block;font-size:10px;font-weight:normal;line-height:1.3;letter-spacing:.4px;margin-top:4px;opacity:.8}
+}

@@ -112,6 +112,10 @@ summary::-webkit-details-marker{display:none}
  .console{min-height:108px}.bet-controls>span{font-size:10px}
  .paytable-details>summary,.controls-help>summary{font-size:11px;padding:8px 14px}
 }
+
+@media(min-width:761px){
+ button[data-key-hint]:not([data-key-hint=""])::after{content:attr(data-key-hint);display:block;font-size:10px;font-weight:normal;line-height:1.3;letter-spacing:.4px;margin-top:4px;opacity:.8}
+}
 </style></head><body>
 <main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">最新状態を読み込む</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><div class="utility-bar"><button id="guide" class="small" aria-pressed="true">ガイド ON</button><button id="sound" class="small" aria-pressed="true">SOUND ON</button></div></header>
 <section class="screen"><div class="screen-top"><span>1 JOKER · WILD CARD</span><span class="edition">ARCADE EDITION / 01</span></div>
@@ -409,6 +413,11 @@ function render(){
     if(game.phase==='won')title=`WIN ${game.win.toLocaleString()}`;
     if(game.phase==='double')title='HIGH / LOW';
     detail='';next=editable&&game.credit<game.bet?(game.credit===0?'NEW CREDITで再開':'BETを減らしてください'):game.phase==='won'&&!game.canDouble?'COLLECTしてください':'';
+  }
+    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8 / +',minus:'S / 2 / −',max:'＊',sound:'／',reset:'．'};
+  for(const [id,keys] of Object.entries(keyHints)){
+    const button=$(id);
+    button.setAttribute('data-key-hint',guideEnabled?keys:'');
   }
   $('guide').textContent=guideEnabled?'ガイド ON':'ガイド OFF';$('guide').setAttribute('aria-pressed',String(guideEnabled));
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));

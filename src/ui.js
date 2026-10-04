@@ -89,6 +89,11 @@ function render(){
     if(game.phase==='double')title='HIGH / LOW';
     detail='';next=editable&&game.credit<game.bet?(game.credit===0?'NEW CREDITで再開':'BETを減らしてください'):game.phase==='won'&&!game.canDouble?'COLLECTしてください':'';
   }
+    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8 / +',minus:'S / 2 / −',max:'＊',sound:'／',reset:'．'};
+  for(const [id,keys] of Object.entries(keyHints)){
+    const button=$(id);
+    button.setAttribute('data-key-hint',guideEnabled?keys:'');
+  }
   $('guide').textContent=guideEnabled?'ガイド ON':'ガイド OFF';$('guide').setAttribute('aria-pressed',String(guideEnabled));
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
