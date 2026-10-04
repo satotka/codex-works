@@ -198,9 +198,11 @@ details[open]>summary .disclosure-arrow{transform:rotate(180deg)}
 .paytable-details>summary:hover,.controls-help>summary:hover{background:#342d22;border-color:#ad864b}
 summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.disclosure-arrow{transition:none}}
+
+.screen-top{justify-content:flex-end}
 </style></head><body>
 <main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">RELOAD</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><div class="utility-bar"><button id="guide" class="small icon-toggle" aria-label="Guide ON" title="Guide ON" aria-pressed="true"></button><button id="sound" class="small icon-toggle" aria-label="Sound ON" title="Sound ON" aria-pressed="true"></button></div></header>
-<section class="screen"><div class="screen-top"><span>1 JOKER · WILD CARD</span><span class="edition">ARCADE EDITION / 01</span></div>
+<section class="screen"><div class="screen-top"><span class="edition">ARCADE EDITION / 01</span></div>
 <details id="paytable-details" class="paytable-details" open><summary><span>PAYTABLE</span><svg class="disclosure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><section class="paytable" aria-label="配当表"><div class="table-head"><span>WINNING HAND</span><span>NATURAL</span><span>JOKER ×2</span></div><div id="payrows"></div></section></details>
 <div class="message" id="message" role="status" aria-live="polite">BET</div>
 <section id="cards" class="cards" aria-label="手札"></section>
@@ -209,7 +211,7 @@ summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
 <div class="bet-row"><button id="min">MIN</button><button id="minus-ten">−10</button><button id="minus">−1</button><div class="bet-amount"><span>BET <span id="bet-lock" hidden>LOCKED</span></span><output id="bet">0</output></div><button id="plus">＋1</button><button id="plus-ten">＋10</button><button id="max">MAX</button></div><section class="console"><div id="normal-controls" class="normal-controls"><button id="deal" class="primary">DEAL</button><button id="collect" class="green">COLLECT</button></div><div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section></section>
 <footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT</button><span id="save-status" role="status">自動保存</span><span>FOR AMUSEMENT ONLY</span></footer>
 <details id="controls-help" class="controls-help"><summary><span>遊び方</span><svg class="disclosure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
-<p>カードとボタンをタップして操作できます。</p>
+<p>カードとボタンをタップして操作できます。ジョーカー1枚を含む53枚でプレイします。ジョーカーは好きな数字・マークの代わりになるワイルドカードです。</p>
 <div class="controls-list">
 <section><h2>BETを選ぶ</h2><p>−10／−1／＋1／＋10でBETを調整。MINで1、MAXで全額を選択。BETを増やすとCREDITから移し、減らすと戻します。DEAL時の追加控除はありません。全額選択中は増減できず、DEALまたは解除を選びます。解除するとBETを0に戻します。BET 0ではDEALできません。ゲーム中のBETは固定です。ゲーム終了後も同じBET額を次のゲームに引き継ぎます。残高が足りない場合は残高までに調整します。<br>DEALをタップしてカードを配ります。</p></section>
 <section><h2>カードを交換する</h2><p>残すカードをタップしてHOLD。もう一度タップすると解除。<br>DRAWでHOLDしていないカードを1回交換します。<br>当たり後はCOLLECTで獲得、DOUBLEでWIN全額を賭けて挑戦します。</p></section>

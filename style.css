@@ -198,3 +198,5 @@ details[open]>summary .disclosure-arrow{transform:rotate(180deg)}
 .paytable-details>summary:hover,.controls-help>summary:hover{background:#342d22;border-color:#ad864b}
 summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.disclosure-arrow{transition:none}}
+
+.screen-top{justify-content:flex-end}
