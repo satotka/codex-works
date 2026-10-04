@@ -116,6 +116,13 @@ summary::-webkit-details-marker{display:none}
 @media(min-width:761px){
  button[data-key-hint]:not([data-key-hint=""])::after{content:attr(data-key-hint);display:block;font-size:10px;font-weight:normal;line-height:1.3;letter-spacing:.4px;margin-top:4px;opacity:.8}
 }
+
+/* Cyan marks cards forming a hand; amber aura marks the player's HOLD. */
+.card.in-role{border-color:#57b9c5;box-shadow:inset 0 0 0 2px #57b9c588,0 0 9px #57b9c533}
+.card.in-role::before{content:'';position:absolute;inset:4px;border:1px solid #57b9c577;border-radius:3px;pointer-events:none}
+.card.held{border-color:#ffd078;box-shadow:0 0 8px 2px #f8bd5999,0 0 22px 5px #f0a63566,0 0 36px 8px #e8982926}
+.card.held::after{content:'';position:absolute;inset:-7px;border:1px solid #ffd07877;border-radius:12px;box-shadow:0 0 10px #ffce6b66;pointer-events:none}
+.card.held.in-role::before{border-color:#39aaba;border-width:2px}
 </style></head><body>
 <main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">最新状態を読み込む</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><div class="utility-bar"><button id="guide" class="small" aria-pressed="true">ガイド ON</button><button id="sound" class="small" aria-pressed="true">SOUND ON</button></div></header>
 <section class="screen"><div class="screen-top"><span>1 JOKER · WILD CARD</span><span class="edition">ARCADE EDITION / 01</span></div>
@@ -205,6 +212,15 @@ function classify(hand,natural=true) {
 }
 function evaluateHand(hand) {validateHand(hand); return hand.some(c=>c.joker)?bestJokerInterpretation(hand,classify):classify(hand);}
 function payout(bet,result) {if(!Number.isInteger(bet)||bet<1||bet>40) throw new Error('Invalid bet'); return bet*result.multiplier;}
+
+function roleCardIndices(hand,result=evaluateHand(hand)){
+  if(result.id==='highCard')return [];
+  if(['naturalRoyal','straightFlush','straight','flush','fullHouse','fiveKind'].includes(result.id))return hand.map((_,i)=>i);
+  const interpreted=hand.map(c=>c.joker?result.substitution:c);
+  const counts=new Map();for(const c of interpreted)counts.set(c.rank,(counts.get(c.rank)||0)+1);
+  const size={onePair:2,twoPair:2,threeKind:3,fourKind:4}[result.id];
+  return interpreted.flatMap((c,i)=>counts.get(c.rank)===size?[i]:[]);
+}
 
 class DoubleDown {
   constructor(deckFactory=()=>new Deck({includeJoker:false})) {this.deckFactory=deckFactory;}
@@ -330,6 +346,7 @@ class PlaySession {
 
 const game=new GameState(),sound=new Sound(),$=id=>document.getElementById(id);
 const symbols={S:'♠',H:'♥',D:'♦',C:'♣'},ranks={11:'J',12:'Q',13:'K',14:'A'};
+let roleIndices=[],currentRole='';
 let storage;
 try{storage=globalThis.localStorage;}catch{}
 let guideEnabled=true;try{guideEnabled=storage.getItem('amber-poker.guide')!=='off';}catch{}
@@ -372,8 +389,9 @@ $('payrows').innerHTML=PAY_TABLE.filter(p=>p.multiplier).map(p=>`<div class="pay
 function cardHtml(c,i,interactive) {
   const held=interactive&&game.held[i];
   const face=!c?'<span>♠</span>':c.joker?'<div class="joker-center"><b>★</b>JOKER<br><small>WILD CARD</small></div>':`<span class="corner">${ranks[c.rank]||c.rank}<br>${symbols[c.suit]}</span>${cardCenter(c)}<span class="corner bottom">${ranks[c.rank]||c.rank}<br>${symbols[c.suit]}</span>`;
+  const inRole=c&&roleIndices.includes(i);
   const label=!c?'伏せたカード':c.joker?'JOKER':`${ranks[c.rank]||c.rank} ${symbols[c.suit]}`;
-  return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${interactive?' HOLD切替':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
+  return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''} ${inRole?'in-role':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${inRole?' · '+currentRole+'のカード':''}${interactive?' HOLD切替':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
 function render(){
   persist();refreshAccess();
@@ -383,6 +401,8 @@ function render(){
   $('win-label').textContent=collected?'獲得額':'WIN';
   if(collected)$('win').textContent=collected.toLocaleString();
   const showingDouble=game.doubleResult&&(['double','won','lost'].includes(game.phase)||game.doubleResult.outcome==='draw');
+  roleIndices=[];currentRole='';
+  if(!showingDouble&&game.hand.length===5){const evaluated=evaluateHand(game.hand);roleIndices=roleCardIndices(game.hand,evaluated);currentRole=evaluated.name;}
   $('cards').innerHTML=Array.from({length:5},(_,i)=>{
     const c=showingDouble?(i===1?game.doubleResult.referenceCard:i===3?game.doubleResult.card:null):game.hand[i];
     const html=cardHtml(c,i,holding);

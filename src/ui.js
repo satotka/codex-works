@@ -1,3 +1,4 @@
+import {evaluateHand,roleCardIndices} from './hand-evaluator.js';
 import {GameState} from './game-state.js';
 import {PAY_TABLE} from './pay-table.js';
 import {Sound} from './sound.js';
@@ -5,6 +6,7 @@ import {PlaySession} from './session.js';
 import {saveGame,restoreGame} from './storage.js';
 const game=new GameState(),sound=new Sound(),$=id=>document.getElementById(id);
 const symbols={S:'♠',H:'♥',D:'♦',C:'♣'},ranks={11:'J',12:'Q',13:'K',14:'A'};
+let roleIndices=[],currentRole='';
 let storage;
 try{storage=globalThis.localStorage;}catch{}
 let guideEnabled=true;try{guideEnabled=storage.getItem('amber-poker.guide')!=='off';}catch{}
@@ -47,8 +49,9 @@ $('payrows').innerHTML=PAY_TABLE.filter(p=>p.multiplier).map(p=>`<div class="pay
 function cardHtml(c,i,interactive) {
   const held=interactive&&game.held[i];
   const face=!c?'<span>♠</span>':c.joker?'<div class="joker-center"><b>★</b>JOKER<br><small>WILD CARD</small></div>':`<span class="corner">${ranks[c.rank]||c.rank}<br>${symbols[c.suit]}</span>${cardCenter(c)}<span class="corner bottom">${ranks[c.rank]||c.rank}<br>${symbols[c.suit]}</span>`;
+  const inRole=c&&roleIndices.includes(i);
   const label=!c?'伏せたカード':c.joker?'JOKER':`${ranks[c.rank]||c.rank} ${symbols[c.suit]}`;
-  return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${interactive?' HOLD切替':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
+  return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''} ${inRole?'in-role':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${inRole?' · '+currentRole+'のカード':''}${interactive?' HOLD切替':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
 function render(){
   persist();refreshAccess();
@@ -58,6 +61,8 @@ function render(){
   $('win-label').textContent=collected?'獲得額':'WIN';
   if(collected)$('win').textContent=collected.toLocaleString();
   const showingDouble=game.doubleResult&&(['double','won','lost'].includes(game.phase)||game.doubleResult.outcome==='draw');
+  roleIndices=[];currentRole='';
+  if(!showingDouble&&game.hand.length===5){const evaluated=evaluateHand(game.hand);roleIndices=roleCardIndices(game.hand,evaluated);currentRole=evaluated.name;}
   $('cards').innerHTML=Array.from({length:5},(_,i)=>{
     const c=showingDouble?(i===1?game.doubleResult.referenceCard:i===3?game.doubleResult.card:null):game.hand[i];
     const html=cardHtml(c,i,holding);

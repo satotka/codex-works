@@ -22,3 +22,12 @@ function classify(hand,natural=true) {
 }
 export function evaluateHand(hand) {validateHand(hand); return hand.some(c=>c.joker)?bestJokerInterpretation(hand,classify):classify(hand);}
 export function payout(bet,result) {if(!Number.isInteger(bet)||bet<1||bet>40) throw new Error('Invalid bet'); return bet*result.multiplier;}
+
+export function roleCardIndices(hand,result=evaluateHand(hand)){
+  if(result.id==='highCard')return [];
+  if(['naturalRoyal','straightFlush','straight','flush','fullHouse','fiveKind'].includes(result.id))return hand.map((_,i)=>i);
+  const interpreted=hand.map(c=>c.joker?result.substitution:c);
+  const counts=new Map();for(const c of interpreted)counts.set(c.rank,(counts.get(c.rank)||0)+1);
+  const size={onePair:2,twoPair:2,threeKind:3,fourKind:4}[result.id];
+  return interpreted.flatMap((c,i)=>counts.get(c.rank)===size?[i]:[]);
+}
