@@ -1,0 +1,19 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AMBER POKER — Joker Double</title><link rel="stylesheet" href="./style.css"></head><body>
+<main class="cabinet"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><button id="sound" class="small" aria-pressed="true">SOUND ON</button></header>
+<section class="screen"><div class="screen-top"><span>1 JOKER · WILD CARD</span><span class="edition">ARCADE EDITION / 01</span></div>
+<section class="paytable" aria-label="配当表"><div class="table-head"><span>WINNING HAND</span><span>NATURAL</span><span>JOKER ×2</span></div><div id="payrows"></div></section>
+<div class="message" id="message" role="status" aria-live="polite">BETを決めて DEAL を押してください</div>
+<section id="cards" class="cards" aria-label="手札"></section>
+<div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 負け</span><div><button id="low">LOW <small>低い · S / 2</small></button><button id="high">HIGH <small>高い · W / 8</small></button></div></div>
+<div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div><span>BET</span><output id="bet">1</output></div><div class="win-meter"><span>WIN</span><output id="win">0</output></div></div>
+</section><section class="console"><div class="bet-controls"><span>BET SELECT · W＋ / S−</span><div><button id="minus" aria-label="BETを1減らす">−</button><button id="plus" aria-label="BETを1増やす">+</button><button id="max">MAX <small>40</small></button></div></div><button id="deal" class="primary">DEAL <small>配る</small></button><button id="double" class="purple">DOUBLE <small>D / Space / 6</small></button><button id="collect" class="green">COLLECT <small>A / 4</small></button></section>
+<footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT <small> . キー</small></button><span>FOR AMUSEMENT ONLY</span></footer>
+<details class="controls-help" open><summary>操作一覧 — テンキー・通常キーボード・タッチ対応</summary><div class="controls-list"><span><b>1–5</b> HOLD / RELEASE</span><span><b>D / Space / 0 / テンキーEnter</b> DEAL / DRAW</span><span><b>6 / D / Space</b> DOUBLE</span><span><b>4 / A</b> COLLECT</span><span><b>8 / W</b> HIGH</span><span><b>2 / S</b> LOW</span><span><b>+ / −</b> BET増減（開始前はW＋／S−も可）</span><span><b>＊</b> MAX BET</span><span><b>／</b> SOUND ON/OFF</span><span><b>．</b> NEW CREDIT（残高0のみ）</span></div><p>1〜5は通常ゲームでHOLD。ダブル中は上の8=HIGH／下の2=LOW、当たり後は左の4=COLLECT／右の6=DOUBLEです。テンキーはNum LockのON/OFFどちらにも対応。通常キーボードは上のW=HIGH／下のS=LOW、左のA=COLLECT／右のD=DOUBLE。数字列も使えます。スマホ・タブレットはカードとボタンをタップしてください。</p></details></main>
+<script type="module" src="./src/ui.js"></script></body></html>
+
+
+
+
+
+
+
