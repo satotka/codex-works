@@ -84,18 +84,18 @@ function render(){
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';
   $('reset').hidden=!(game.credit===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
-  let title='BETを選んでください',detail='',next='主操作キーでDEAL';
-  if(holding){title='残すカードを選んでください';detail='カードをタップ、または1〜5でHOLD / RELEASE';next='主操作キーでDRAW（交換は1回）';}
+  let title='BETを選んでください',detail='',next='DEALをタップ';
+  if(holding){title='残すカードを選んでください';detail='カードをタップしてHOLD／解除';next='DRAWをタップして交換（1回のみ）';}
   if(game.phase==='won'){title=`未獲得WIN：${game.win.toLocaleString()}`;detail=`${game.result?.name||''}${game.result?.jokerUsed?' · JOKER ×2':''}`;next=game.canDouble?'DOUBLEでWIN全額を賭けて2倍に挑戦 ／ COLLECTで獲得':'上限に達しました。COLLECTで獲得してください';}
-  if(game.phase==='lost'){title='獲得なし';next='BETを選び、主操作キーで次のDEAL';}
-  if(game.phase==='double'){title='HIGH / LOWを選んでください';detail='基準より高い：W / 8　低い：S / 2';next='同じ数字は引き分け・WINを自動回収';}
+  if(game.phase==='lost'){title='獲得なし';next='BETを選び、DEALをタップ';}
+  if(game.phase==='double'){title='HIGH / LOWを選んでください';detail='高いと思ったらHIGH、低いと思ったらLOWをタップ';next='同じ数字は引き分け・WINを自動回収';}
   const r=game.doubleResult;
   if(r?.card&&['ready','won','lost'].includes(game.phase)){
     detail=`${r.choice.toUpperCase()}を選択：基準${ranks[r.referenceCard.rank]||r.referenceCard.rank} → 次${ranks[r.card.rank]||r.card.rank}`;
     if(r.outcome==='win')title=`ダブル成功 — 未獲得WIN：${game.win.toLocaleString()}`;
     if(r.outcome==='lose')title='ダブル失敗 — 獲得なし';
-    if(r.outcome==='draw'){title=`引き分け — ${r.win.toLocaleString()}を獲得しました`;next='BETを選び、主操作キーで次のDEAL';}
-  }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、主操作キーで次のDEAL';}
+    if(r.outcome==='draw'){title=`引き分け — ${r.win.toLocaleString()}を獲得しました`;next='BETを選び、DEALをタップ';}
+  }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、DEALをタップ';}
   if(editable&&game.credit<game.bet){next=game.credit===0?'NEW CREDITで再開できます':'CREDIT不足：BETを減らしてください';}
   if(!guideEnabled){
     if(game.phase==='hold')title='HOLDするカードを選択';

@@ -168,12 +168,13 @@ summary::-webkit-details-marker{display:none}
 <section class="console"><div id="normal-controls" class="normal-controls"><div class="bet-controls"><span>BET</span><div><button id="minus" aria-label="BETを1減らす">−</button><button id="plus" aria-label="BETを1増やす">+</button><button id="max">MAX</button></div></div><button id="deal" class="primary">DEAL</button><button id="collect" class="green">COLLECT</button></div><div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section></section>
 <footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT</button><span id="save-status" role="status">自動保存</span><span>FOR AMUSEMENT ONLY</span></footer>
 <details class="controls-help"><summary>遊び方</summary>
-<p><b>共通の主操作：D / 6（テンキー・数字列）</b><br>BET時はDEAL、手札を選ぶ時はDRAW、当たり後はDOUBLE。ダブル中は無効です。</p>
+<p>カードとボタンをタップして操作できます。</p>
 <div class="controls-list">
-<section><h2>BET時</h2><p><b>W / 8 / ＋</b> BETを1増やす<br><b>S / 2 / −</b> BETを1減らす<br><b>＊</b> MAX BET（40）<br><b>主操作キー</b> DEAL：カードを配る</p></section>
-<section><h2>通常ゲーム時</h2><p><b>1–5 / カードをタップ</b> HOLD / RELEASE<br><b>主操作キー</b> DRAW：残さないカードを交換<br>当たり後：<b>主操作キー</b>でDOUBLE、<b>A / 4</b>でCOLLECT<br>負けた後：BETを選び、主操作キーで次のDEAL</p></section>
-<section><h2>ダブル中</h2><p><b>W / 8</b> HIGH：基準より高い<br><b>S / 2</b> LOW：基準より低い<br>同じ数字は引き分け。WINをそのまま自動COLLECTします。勝った後は主操作キーで再DOUBLE、A / 4でCOLLECT。</p></section>
-</div><p>カード・ボタンはクリック／タップでも操作できます。テンキーはNum LockのON/OFFに対応。<b>／</b>でSOUND ON/OFF、残高0の時は<b>．</b>でNEW CREDIT。0キーは使用しません。</p></details></div></main>
+<section><h2>BETを選ぶ</h2><p>＋／−でBETを調整。MAXで最大BET。<br>DEALをタップしてカードを配ります。</p></section>
+<section><h2>カードを交換する</h2><p>残すカードをタップしてHOLD。もう一度タップすると解除。<br>DRAWでHOLDしていないカードを1回交換します。<br>当たり後はCOLLECTで獲得、DOUBLEでWIN全額を賭けて挑戦します。</p></section>
+<section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後はDOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
+</div>
+<section class="pc-controls"><h2>PCでの操作</h2><p>PCではキーボードだけ、またはテンキーだけでも操作できます。マウスでのクリックにも対応しています。</p><p><b>D／6</b> DEAL・DRAW・DOUBLE（状態に応じて切り替え）<br><b>1〜5</b> カードのHOLD／解除<br><b>W／8</b> BET＋、ダブル中はHIGH<br><b>S／2</b> BET−、ダブル中はLOW<br><b>A／4</b> COLLECT（手札選択中の4はHOLD）<br><b>＋／−</b> BET調整　<b>＊</b> MAX　<b>／</b> サウンド　<b>．</b> NEW CREDIT（残高0の時）<br>テンキーはNum LockのON／OFFに対応しています。</p></section></details></div></main>
 <script>
 const SUITS = ['S','H','D','C'];
 const card = (rank, suit) => ({rank, suit, joker:false});
@@ -508,18 +509,18 @@ function render(){
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';
   $('reset').hidden=!(game.credit===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
-  let title='BETを選んでください',detail='',next='主操作キーでDEAL';
-  if(holding){title='残すカードを選んでください';detail='カードをタップ、または1〜5でHOLD / RELEASE';next='主操作キーでDRAW（交換は1回）';}
+  let title='BETを選んでください',detail='',next='DEALをタップ';
+  if(holding){title='残すカードを選んでください';detail='カードをタップしてHOLD／解除';next='DRAWをタップして交換（1回のみ）';}
   if(game.phase==='won'){title=`未獲得WIN：${game.win.toLocaleString()}`;detail=`${game.result?.name||''}${game.result?.jokerUsed?' · JOKER ×2':''}`;next=game.canDouble?'DOUBLEでWIN全額を賭けて2倍に挑戦 ／ COLLECTで獲得':'上限に達しました。COLLECTで獲得してください';}
-  if(game.phase==='lost'){title='獲得なし';next='BETを選び、主操作キーで次のDEAL';}
-  if(game.phase==='double'){title='HIGH / LOWを選んでください';detail='基準より高い：W / 8　低い：S / 2';next='同じ数字は引き分け・WINを自動回収';}
+  if(game.phase==='lost'){title='獲得なし';next='BETを選び、DEALをタップ';}
+  if(game.phase==='double'){title='HIGH / LOWを選んでください';detail='高いと思ったらHIGH、低いと思ったらLOWをタップ';next='同じ数字は引き分け・WINを自動回収';}
   const r=game.doubleResult;
   if(r?.card&&['ready','won','lost'].includes(game.phase)){
     detail=`${r.choice.toUpperCase()}を選択：基準${ranks[r.referenceCard.rank]||r.referenceCard.rank} → 次${ranks[r.card.rank]||r.card.rank}`;
     if(r.outcome==='win')title=`ダブル成功 — 未獲得WIN：${game.win.toLocaleString()}`;
     if(r.outcome==='lose')title='ダブル失敗 — 獲得なし';
-    if(r.outcome==='draw'){title=`引き分け — ${r.win.toLocaleString()}を獲得しました`;next='BETを選び、主操作キーで次のDEAL';}
-  }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、主操作キーで次のDEAL';}
+    if(r.outcome==='draw'){title=`引き分け — ${r.win.toLocaleString()}を獲得しました`;next='BETを選び、DEALをタップ';}
+  }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、DEALをタップ';}
   if(editable&&game.credit<game.bet){next=game.credit===0?'NEW CREDITで再開できます':'CREDIT不足：BETを減らしてください';}
   if(!guideEnabled){
     if(game.phase==='hold')title='HOLDするカードを選択';
