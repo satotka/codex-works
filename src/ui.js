@@ -1,9 +1,15 @@
 import {GameState} from './game-state.js';
 import {PAY_TABLE} from './pay-table.js';
 import {Sound} from './sound.js';
+import {saveGame,restoreGame} from './storage.js';
 const game=new GameState(),sound=new Sound(),$=id=>document.getElementById(id);
 const symbols={S:'♠',H:'♥',D:'♦',C:'♣'},ranks={11:'J',12:'Q',13:'K',14:'A'};
 let notice='';
+let storage;
+try{storage=globalThis.localStorage;}catch{}
+const restored=restoreGame(game,storage);
+if(restored.status==='restored')sound.enabled=restored.soundEnabled;
+function persist(){const saved=saveGame(game,sound.enabled,storage);$('save-status').textContent=saved?'自動保存 ON · リロード後も続きから再開':'保存できません · この画面でプレイを続けられます';}
 const pipLayouts={
   2:[[50,12],[50,88]],
   3:[[50,12],[50,50],[50,88]],
@@ -28,6 +34,7 @@ function cardHtml(c,i,interactive) {
   return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${interactive?' HOLD切替':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
 function render(){
+  persist();
   const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
   ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
   const showingDouble=game.doubleResult&&['double','won','lost'].includes(game.phase);
@@ -53,7 +60,7 @@ $('deal').onclick=()=>{if(game.phase==='hold'){act(()=>game.draw(),'draw');if(ga
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')act(()=>game.toggleHold(Number(b.dataset.index)),'hold');};
 $('double').onclick=()=>act(()=>game.startDouble(),'deal');$('collect').onclick=()=>act(()=>game.collect(),'collect');
 for(const choice of ['low','high'])$(choice).onclick=()=>{const r=game.guess(choice);if(!r)return;notice=`選択: ${choice.toUpperCase()} · 基準 ${ranks[r.referenceCard.rank]||r.referenceCard.rank} → 次 ${ranks[r.card.rank]||r.card.rank} — ${r.outcome==='win'?'DOUBLE WIN! 再挑戦またはCOLLECT':r.card.rank===r.referenceCard.rank?'同じ数字 · DOUBLE LOST · 次はDEAL':'DOUBLE LOST · 次はDEAL'}`;sound.play(r.outcome==='win'?'doubleWin':'doubleLose');render();};
-$('sound').onclick=()=>{sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));};
+$('sound').onclick=()=>{sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));persist();};
 $('reset').onclick=()=>act(()=>game.reset(),'collect');
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.altKey||e.metaKey||e.isComposing||e.target.closest('input,select,textarea,[contenteditable="true"]'))return;
@@ -76,6 +83,8 @@ document.addEventListener('keydown',e=>{
   }
   else if(game.phase==='hold')act(()=>game.toggleHold(index),'hold');
 });
+$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;
+$('sound').setAttribute('aria-pressed',String(sound.enabled));
 render();
 
 

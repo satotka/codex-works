@@ -27,7 +27,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 <div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 負け</span><div><button id="low">LOW <small>低い · S / 2</small></button><button id="high">HIGH <small>高い · W / 8</small></button></div></div>
 <div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div><span>BET</span><output id="bet">1</output></div><div class="win-meter"><span>WIN</span><output id="win">0</output></div></div>
 </section><section class="console"><div class="bet-controls"><span>BET SELECT · W＋ / S−</span><div><button id="minus" aria-label="BETを1減らす">−</button><button id="plus" aria-label="BETを1増やす">+</button><button id="max">MAX <small>40</small></button></div></div><button id="deal" class="primary">DEAL <small>配る</small></button><button id="double" class="purple">DOUBLE <small>Space / Enter / D / 6</small></button><button id="collect" class="green">COLLECT <small>A / 4</small></button></section>
-<footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT <small> . キー</small></button><span>FOR AMUSEMENT ONLY</span></footer>
+<footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT <small> . キー</small></button><span id="save-status" role="status">自動保存</span><span>FOR AMUSEMENT ONLY</span></footer>
 <details class="controls-help" open><summary>操作説明 — 状態別</summary>
 <p><b>共通の主操作：Space / Enter / D / 6（テンキー・数字列）</b><br>BET時はDEAL、手札を選ぶ時はDRAW、当たり後はDOUBLE。ダブル中は無効です。</p>
 <div class="controls-list">
@@ -156,9 +156,71 @@ class Sound {
   }
 }
 
+const SAVE_KEY='amber-poker.state.v1';
+function checkedCards(cards,allowJoker=true){
+  if(!Array.isArray(cards)||cards.length>53)throw new Error('Invalid deck');
+  const ids=new Set();
+  return cards.map(c=>{
+    if(!c||typeof c.joker!=='boolean'||(c.joker? !allowJoker||c.rank!==0||c.suit!==null : !Number.isInteger(c.rank)||c.rank<2||c.rank>14||!SUITS.includes(c.suit)))throw new Error('Invalid card');
+    const id=c.joker?'joker':`${c.rank}${c.suit}`;
+    if(ids.has(id))throw new Error('Duplicate card');
+    ids.add(id);return {rank:c.rank,suit:c.suit,joker:c.joker};
+  });
+}
+function restoredDeck(cards){const deck=Object.create(Deck.prototype);deck.cards=cards;return deck;}
+function saveGame(game,soundEnabled,storage){
+  try{
+    storage.setItem(SAVE_KEY,JSON.stringify({version:1,credit:game.credit,bet:game.bet,win:game.win,phase:game.phase,hand:game.hand,held:game.held,deck:game.phase==='hold'?game.deck.cards:[],doubleResult:game.doubleResult,doubleDeck:game.phase==='double'?game.doubleDown.deck.cards:[],soundEnabled}));
+    return true;
+  }catch{return false;}
+}
+function restoreGame(game,storage){
+  try{
+    const raw=storage.getItem(SAVE_KEY);if(raw===null)return {status:'empty'};
+    const s=JSON.parse(raw);
+    if(s.version!==1||!['ready','hold','won','double','lost'].includes(s.phase)||![s.credit,s.win].every(n=>Number.isSafeInteger(n)&&n>=0)||!Number.isSafeInteger(s.credit+s.win)||!Number.isInteger(s.bet)||s.bet<1||s.bet>40||typeof s.soundEnabled!=='boolean')throw new Error('Invalid state');
+    const hand=checkedCards(s.hand);
+    if(hand.length)validateHand(hand);else if(s.phase!=='ready')throw new Error('Missing hand');
+    if(!Array.isArray(s.held)||s.held.length!==5||s.held.some(v=>typeof v!=='boolean'))throw new Error('Invalid holds');
+    if(['won','double'].includes(s.phase)?s.win<=0:s.win!==0)throw new Error('Invalid win');
+    const deck=checkedCards(s.deck);
+    if(s.phase==='hold'){if(deck.length!==48)throw new Error('Missing deck');checkedCards([...hand,...deck]);}
+    else if(deck.length)throw new Error('Unexpected deck');
+    const doubleDeck=checkedCards(s.doubleDeck,false);
+    let doubleResult=null;
+    if(s.doubleResult!==null){
+      const d=s.doubleResult;const referenceCard=checkedCards([d.referenceCard],false)[0];
+      if(d.card===null){
+        if(s.phase!=='double')throw new Error('Unexpected active double');
+        doubleResult={referenceCard,card:null};
+      }else{
+        const card=checkedCards([referenceCard,d.card],false)[1];
+        if(!['high','low'].includes(d.choice)||!['win','lose'].includes(d.outcome)||!Number.isSafeInteger(d.win)||d.win<0)throw new Error('Invalid double result');
+        const won=d.choice==='high'?card.rank>referenceCard.rank:card.rank<referenceCard.rank;
+        if(d.outcome!==(won?'win':'lose')||(won?d.win<=0:d.win!==0))throw new Error('Invalid outcome');
+        doubleResult={referenceCard,card,choice:d.choice,outcome:d.outcome,win:d.win};
+      }
+    }
+    const doubleDown=new DoubleDown();
+    if(s.phase==='double'){
+      if(!doubleResult||doubleResult.card!==null||doubleDeck.length!==51||s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2))throw new Error('Missing double deck');
+      checkedCards([doubleResult.referenceCard,...doubleDeck],false);
+      doubleDown.deck=restoredDeck(doubleDeck);doubleDown.referenceCard=doubleResult.referenceCard;doubleDown.active=true;
+    }else if(doubleDeck.length)throw new Error('Unexpected double deck');
+    const result=hand.length&&s.phase!=='hold'?evaluateHand(hand):null;
+    Object.assign(game,{credit:s.credit,bet:s.bet,win:s.win,phase:s.phase,hand,held:s.held.slice(),deck:restoredDeck(deck),doubleDown,doubleResult,result});
+    return {status:'restored',soundEnabled:s.soundEnabled};
+  }catch{return {status:'unavailable'};}
+}
+
 const game=new GameState(),sound=new Sound(),$=id=>document.getElementById(id);
 const symbols={S:'♠',H:'♥',D:'♦',C:'♣'},ranks={11:'J',12:'Q',13:'K',14:'A'};
 let notice='';
+let storage;
+try{storage=globalThis.localStorage;}catch{}
+const restored=restoreGame(game,storage);
+if(restored.status==='restored')sound.enabled=restored.soundEnabled;
+function persist(){const saved=saveGame(game,sound.enabled,storage);$('save-status').textContent=saved?'自動保存 ON · リロード後も続きから再開':'保存できません · この画面でプレイを続けられます';}
 const pipLayouts={
   2:[[50,12],[50,88]],
   3:[[50,12],[50,50],[50,88]],
@@ -183,6 +245,7 @@ function cardHtml(c,i,interactive) {
   return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${interactive?' HOLD切替':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
 function render(){
+  persist();
   const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
   ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
   const showingDouble=game.doubleResult&&['double','won','lost'].includes(game.phase);
@@ -208,7 +271,7 @@ $('deal').onclick=()=>{if(game.phase==='hold'){act(()=>game.draw(),'draw');if(ga
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')act(()=>game.toggleHold(Number(b.dataset.index)),'hold');};
 $('double').onclick=()=>act(()=>game.startDouble(),'deal');$('collect').onclick=()=>act(()=>game.collect(),'collect');
 for(const choice of ['low','high'])$(choice).onclick=()=>{const r=game.guess(choice);if(!r)return;notice=`選択: ${choice.toUpperCase()} · 基準 ${ranks[r.referenceCard.rank]||r.referenceCard.rank} → 次 ${ranks[r.card.rank]||r.card.rank} — ${r.outcome==='win'?'DOUBLE WIN! 再挑戦またはCOLLECT':r.card.rank===r.referenceCard.rank?'同じ数字 · DOUBLE LOST · 次はDEAL':'DOUBLE LOST · 次はDEAL'}`;sound.play(r.outcome==='win'?'doubleWin':'doubleLose');render();};
-$('sound').onclick=()=>{sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));};
+$('sound').onclick=()=>{sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));persist();};
 $('reset').onclick=()=>act(()=>game.reset(),'collect');
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.altKey||e.metaKey||e.isComposing||e.target.closest('input,select,textarea,[contenteditable="true"]'))return;
@@ -231,6 +294,8 @@ document.addEventListener('keydown',e=>{
   }
   else if(game.phase==='hold')act(()=>game.toggleHold(index),'hold');
 });
+$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;
+$('sound').setAttribute('aria-pressed',String(sound.enabled));
 render();
 
 

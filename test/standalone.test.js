@@ -80,7 +80,23 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
     main();assert.equal(node('double-panel').hidden,false); // Cannot skip HIGH/LOW.
     main(true);assert.equal(node('double-panel').hidden,false);
   }
+  const storage={value:null,getItem(){return this.value;},setItem(key,value){this.value=value;}};
+  context.localStorage=storage;
+  vm.runInContext("storage=globalThis.localStorage;game.phase='ready';game.credit=321;game.win=0;game.doubleResult=null;render();",context);
+  node('deal').onclick();keypad('Numpad3');
+  const previousCards=node('cards').innerHTML;
+  const reopenedNodes=new Map();
+  const reopenedNode=id=>{if(!reopenedNodes.has(id))reopenedNodes.set(id,{innerHTML:'',textContent:'',disabled:false,hidden:false,setAttribute(){}});return reopenedNodes.get(id);};
+  const reopened={crypto:webcrypto,localStorage:storage,document:{getElementById:reopenedNode,querySelectorAll:()=>[],addEventListener(){}}};
+  vm.runInNewContext(script,reopened);
+  assert.equal(reopenedNode('credit').textContent,'320');
+  assert.equal(reopenedNode('cards').innerHTML,previousCards);
+  assert.match(reopenedNode('deal').innerHTML,/DRAW/);
+  assert.equal(reopenedNode('sound').textContent,'SOUND OFF');
+  assert.match(reopenedNode('save-status').textContent,/自動保存 ON/);
+  reopenedNode('deal').onclick();node('deal').onclick();
+  assert.equal(reopenedNode('cards').innerHTML,node('cards').innerHTML);
+  assert.equal(reopenedNode('win').textContent,node('win').textContent);
 });
-
 
 
