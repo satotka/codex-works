@@ -64,3 +64,12 @@ test('only D and 6 are main shortcuts; guide preference survives reload',()=>{
   assert.equal(vm.runInContext('game.phase',reopened.context),'hold');
   assert.equal(reopened.node('deal').innerHTML,'DRAW');
 });
+test('full restart requires confirmation and persists clean initial state',()=>{
+ const storage=memory(),tab=setup(storage);
+ vm.runInContext("game.credit=300;game.bet=20;game.win=80;game.phase='won';sound.enabled=false;guideEnabled=false;render();globalThis.confirm=()=>false;",tab.context);
+ tab.node('restart-game').onclick();assert.equal(vm.runInContext('game.credit',tab.context),300);
+ vm.runInContext('globalThis.confirm=()=>true;',tab.context);tab.node('restart-game').onclick();
+ const saved=JSON.parse(storage.getItem('amber-poker.state.v1'));
+ assert.equal(saved.credit,1000);assert.equal(saved.bet,1);assert.equal(saved.win,0);assert.equal(saved.phase,'ready');assert.deepEqual(saved.hand,[]);assert.deepEqual(saved.held,[false,false,false,false,false]);assert.equal(saved.doubleResult,null);assert.equal(saved.soundEnabled,true);assert.equal(storage.getItem('amber-poker.guide'),'on');
+ const restored=setup(storage);assert.equal(restored.node('credit').textContent,'1,000');assert.equal(restored.node('bet').textContent,'1');
+});

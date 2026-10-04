@@ -171,6 +171,8 @@ summary::-webkit-details-marker{display:none}
 .screen .meters{align-items:start}.meters>div{flex-direction:column;gap:4px}
 @media(max-width:760px){.bet-stepper{gap:2px}.bet-stepper button{min-width:30px;width:30px;padding:0}.bet-stepper output{font-size:20px}.bet-presets{margin-top:6px}.bet-presets button{flex:1;min-width:0;padding:6px}.console{min-height:62px}.double-panel{min-height:54px}}
 @media(max-width:760px){.meters{grid-template-columns:1fr 1fr}.bet-meter{grid-column:1/-1;grid-row:2}.bet-stepper{gap:10px}.bet-stepper button{min-width:44px;width:44px}.bet-stepper output{min-width:44px}}
+
+.restart-section{margin-top:20px;padding-top:16px;border-top:1px solid #64513c}.restart-section h2{font-size:15px;color:#e4c18b}.restart-section button{min-height:44px;padding:10px 18px;margin-top:12px;border:1px solid #967052;border-radius:6px;background:#302521;color:#f2d0b5}
 </style></head><body>
 <main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">最新状態を読み込む</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><div class="utility-bar"><button id="guide" class="small" aria-pressed="true">ガイド ON</button><button id="sound" class="small" aria-pressed="true">SOUND ON</button></div></header>
 <section class="screen"><div class="screen-top"><span>1 JOKER · WILD CARD</span><span class="edition">ARCADE EDITION / 01</span></div>
@@ -188,7 +190,7 @@ summary::-webkit-details-marker{display:none}
 <section><h2>カードを交換する</h2><p>残すカードをタップしてHOLD。もう一度タップすると解除。<br>DRAWでHOLDしていないカードを1回交換します。<br>当たり後はCOLLECTで獲得、DOUBLEでWIN全額を賭けて挑戦します。</p></section>
 <section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後はDOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
 </div>
-<section class="pc-controls"><h2>PCでの操作</h2><p>PCではキーボードだけ、またはテンキーだけでも操作できます。マウスでのクリックにも対応しています。</p><p><b>D／6</b> DEAL・DRAW・DOUBLE（状態に応じて切り替え）<br><b>1〜5</b> カードのHOLD／解除<br><b>W／8</b> BET＋、ダブル中はHIGH<br><b>S／2</b> BET−、ダブル中はLOW<br><b>A／4</b> COLLECT（手札選択中の4はHOLD）<br><b>＋／−</b> BET調整　<b>＊</b> MAX　<b>／</b> サウンド　<b>．</b> NEW CREDIT（残高0の時）<br>テンキーはNum LockのON／OFFに対応しています。</p></section></details></div></main>
+<section class="pc-controls"><h2>PCでの操作</h2><p>PCではキーボードだけ、またはテンキーだけでも操作できます。マウスでのクリックにも対応しています。</p><p><b>D／6</b> DEAL・DRAW・DOUBLE（状態に応じて切り替え）<br><b>1〜5</b> カードのHOLD／解除<br><b>W／8</b> BET＋、ダブル中はHIGH<br><b>S／2</b> BET−、ダブル中はLOW<br><b>A／4</b> COLLECT（手札選択中の4はHOLD）<br><b>＋／−</b> BET調整　<b>＊</b> MAX　<b>／</b> サウンド　<b>．</b> NEW CREDIT（残高0の時）<br>テンキーはNum LockのON／OFFに対応しています。</p></section><section class="restart-section"><h2>最初からやり直す</h2><p>CREDITを1,000、BETを1に戻し、手札・WIN・進行状態をリセットします。</p><button id="restart-game">最初からやり直す</button></section></details></div></main>
 <script>
 const SUITS = ['S','H','D','C'];
 const card = (rank, suit) => ({rank, suit, joker:false});
@@ -619,6 +621,17 @@ if(compactViewport){
 }
 
 $('guide').onclick=()=>{guideEnabled=!guideEnabled;try{storage.setItem('amber-poker.guide',guideEnabled?'on':'off');}catch{}render();};
+
+$('restart-game').onclick=()=>{
+  if(!allowed()){refreshAccess();return;}
+  if(!globalThis.confirm('CREDITを1,000に戻して最初からやり直しますか？現在の手札と未獲得WINは失われます。'))return;
+  Object.assign(game,new GameState());game.deck=null;game.collectedWin=0;
+  sound.enabled=true;guideEnabled=true;primaryUntil=0;
+  try{storage.setItem('amber-poker.guide','on');}catch{}
+  $('sound').textContent='SOUND ON';$('sound').setAttribute('aria-pressed','true');
+  $('cards').classList?.remove('win-burst','double-burst');
+  render();
+};
 
 </script></body></html>
 

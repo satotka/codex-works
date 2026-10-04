@@ -171,3 +171,5 @@ summary::-webkit-details-marker{display:none}
 .screen .meters{align-items:start}.meters>div{flex-direction:column;gap:4px}
 @media(max-width:760px){.bet-stepper{gap:2px}.bet-stepper button{min-width:30px;width:30px;padding:0}.bet-stepper output{font-size:20px}.bet-presets{margin-top:6px}.bet-presets button{flex:1;min-width:0;padding:6px}.console{min-height:62px}.double-panel{min-height:54px}}
 @media(max-width:760px){.meters{grid-template-columns:1fr 1fr}.bet-meter{grid-column:1/-1;grid-row:2}.bet-stepper{gap:10px}.bet-stepper button{min-width:44px;width:44px}.bet-stepper output{min-width:44px}}
+
+.restart-section{margin-top:20px;padding-top:16px;border-top:1px solid #64513c}.restart-section h2{font-size:15px;color:#e4c18b}.restart-section button{min-height:44px;padding:10px 18px;margin-top:12px;border:1px solid #967052;border-radius:6px;background:#302521;color:#f2d0b5}

@@ -180,3 +180,14 @@ if(compactViewport){
 }
 
 $('guide').onclick=()=>{guideEnabled=!guideEnabled;try{storage.setItem('amber-poker.guide',guideEnabled?'on':'off');}catch{}render();};
+
+$('restart-game').onclick=()=>{
+  if(!allowed()){refreshAccess();return;}
+  if(!globalThis.confirm('CREDITを1,000に戻して最初からやり直しますか？現在の手札と未獲得WINは失われます。'))return;
+  Object.assign(game,new GameState());game.deck=null;game.collectedWin=0;
+  sound.enabled=true;guideEnabled=true;primaryUntil=0;
+  try{storage.setItem('amber-poker.guide','on');}catch{}
+  $('sound').textContent='SOUND ON';$('sound').setAttribute('aria-pressed','true');
+  $('cards').classList?.remove('win-burst','double-burst');
+  render();
+};
