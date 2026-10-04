@@ -6,9 +6,9 @@ export class GameState {
   constructor({deckFactory=()=>new Deck(),doubleDown=new DoubleDown()}={}) {
     this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=1; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
   }
-  setBet(value) {if(!['ready','lost'].includes(this.phase)||!Number.isFinite(value)) return; this.bet=Math.max(1,Math.min(Math.max(1,this.credit),Math.trunc(value)));}
+  setBet(value) {if(!['ready','lost'].includes(this.phase)||!Number.isFinite(value)) return; this.bet=Math.max(0,Math.min(this.credit,Math.trunc(value)));}
   deal() {
-    if(!['ready','lost'].includes(this.phase)||this.credit<this.bet||this.bet>Math.floor((Number.MAX_SAFE_INTEGER-this.credit)/499)) return false;
+    if(!['ready','lost'].includes(this.phase)||this.bet===0||this.credit<this.bet||this.bet>Math.floor((Number.MAX_SAFE_INTEGER-this.credit)/499)) return false;
     this.collectedWin=0; this.credit-=this.bet; this.win=0; this.deck=this.deckFactory(); this.hand=Array.from({length:5},()=>this.deck.draw()); this.held.fill(false); for(const i of expectedHold(this.hand))this.held[i]=true; this.phase='hold'; this.result=null; this.doubleResult=null; return true;
   }
   toggleHold(i) {if(this.phase==='hold'&&Number.isInteger(i)&&i>=0&&i<5) this.held[i]=!this.held[i];}

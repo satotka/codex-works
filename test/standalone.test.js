@@ -40,7 +40,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   }
   press('w');assert.equal(node('bet').textContent,'6');
   press('s');assert.equal(node('bet').textContent,'1');
-  press('S');assert.equal(node('bet').textContent,'1');
+  press('S');assert.equal(node('bet').textContent,'0');vm.runInContext('game.setBet(1);render();',context);
   press('d');assert.equal(node('bet').textContent,'1');assert.match(node('deal').innerHTML,/DRAW/);
   vm.runInContext("game.phase='ready';game.credit=1000;render();",context);
   vm.runInContext('game.setBet(40);render();',context);

@@ -79,12 +79,12 @@ function render(){
     return showingDouble?html.replace('<span class="hold-label"> </span>',`<span class="hold-label">${i===1?'基準カード':i===3?'次のカード':' '}</span>`):html;
   }).join('');
   $('deal').innerHTML=game.phase==='won'?'DOUBLE':holding?'DRAW':'DEAL';
-  $('deal').disabled=!(holding||game.canDouble||(editable&&game.credit>=game.bet&&game.bet<=Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/499)));
+  $('deal').disabled=!(holding||game.canDouble||(editable&&game.bet>0&&game.credit>=game.bet&&game.bet<=Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/499)));
   for(const id of ['minus','minus-ten','plus','plus-ten','max']){
     $(id).hidden=!editable;
-    $(id).disabled=!editable||(id.startsWith('minus')?game.bet<=1:game.credit===0||game.bet>=game.credit);
+    $(id).disabled=!editable||(id.startsWith('minus')?game.bet<=0:game.credit===0||(id!=='max'&&game.bet>=game.credit));
   }
-  $('bet-lock').hidden=editable;
+  $('bet-lock').hidden=editable;$('max').setAttribute('aria-pressed',String(game.bet>0&&game.bet===game.credit));
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';
   $('reset').hidden=!(game.credit===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
@@ -115,6 +115,7 @@ function render(){
     button.setAttribute('data-key-hint',guideEnabled?keys:'');
   }
   $('guide').textContent=guideEnabled?'ガイド ON':'ガイド OFF';$('guide').setAttribute('aria-pressed',String(guideEnabled));
+  if(editable&&game.bet===0)next='BETを増やすか、All inをタップしてください';
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
 }
@@ -125,7 +126,7 @@ function celebrate(doubled=false){
   stage.classList?.add(doubled?'double-burst':'win-burst');
 }
 function act(fn,tone){if(!allowed()){refreshAccess();return;}const result=fn();if(result!==false&&tone)sound.play(tone);render();}
-$('minus').onclick=()=>act(()=>game.setBet(game.bet-5),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+5),'bet');$('max').onclick=()=>act(()=>game.setBet(game.credit),'bet');
+$('minus').onclick=()=>act(()=>game.setBet(game.bet-5),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+5),'bet');$('max').onclick=()=>act(()=>game.setBet(game.bet===game.credit?0:game.credit),'bet');
 $('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){primaryUntil=Date.now()+100;act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
 $('minus-ten').onclick=()=>act(()=>game.setBet(game.bet-10),'bet');$('plus-ten').onclick=()=>act(()=>game.setBet(game.bet+10),'bet');
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};

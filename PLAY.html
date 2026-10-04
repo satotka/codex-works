@@ -194,7 +194,7 @@ summary::-webkit-details-marker{display:none}
 <details class="controls-help"><summary>遊び方</summary>
 <p>カードとボタンをタップして操作できます。</p>
 <div class="controls-list">
-<section><h2>BETを選ぶ</h2><p>−10／−5／＋5／＋10でBETを調整。All inでCREDIT全額を賭けます。BETは1以上、残高の範囲で選べます。ゲーム中のBETは固定です。<br>DEALをタップしてカードを配ります。</p></section>
+<section><h2>BETを選ぶ</h2><p>−10／−5／＋5／＋10でBETを調整。All inでCREDIT全額を選び、もう一度タップするとBETを0に戻します。BET 0ではDEALできません。ゲーム中のBETは固定です。<br>DEALをタップしてカードを配ります。</p></section>
 <section><h2>カードを交換する</h2><p>残すカードをタップしてHOLD。もう一度タップすると解除。<br>DRAWでHOLDしていないカードを1回交換します。<br>当たり後はCOLLECTで獲得、DOUBLEでWIN全額を賭けて挑戦します。</p></section>
 <section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後はDOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
 </div>
@@ -355,9 +355,9 @@ class GameState {
   constructor({deckFactory=()=>new Deck(),doubleDown=new DoubleDown()}={}) {
     this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=1; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
   }
-  setBet(value) {if(!['ready','lost'].includes(this.phase)||!Number.isFinite(value)) return; this.bet=Math.max(1,Math.min(Math.max(1,this.credit),Math.trunc(value)));}
+  setBet(value) {if(!['ready','lost'].includes(this.phase)||!Number.isFinite(value)) return; this.bet=Math.max(0,Math.min(this.credit,Math.trunc(value)));}
   deal() {
-    if(!['ready','lost'].includes(this.phase)||this.credit<this.bet||this.bet>Math.floor((Number.MAX_SAFE_INTEGER-this.credit)/499)) return false;
+    if(!['ready','lost'].includes(this.phase)||this.bet===0||this.credit<this.bet||this.bet>Math.floor((Number.MAX_SAFE_INTEGER-this.credit)/499)) return false;
     this.collectedWin=0; this.credit-=this.bet; this.win=0; this.deck=this.deckFactory(); this.hand=Array.from({length:5},()=>this.deck.draw()); this.held.fill(false); for(const i of expectedHold(this.hand))this.held[i]=true; this.phase='hold'; this.result=null; this.doubleResult=null; return true;
   }
   toggleHold(i) {if(this.phase==='hold'&&Number.isInteger(i)&&i>=0&&i<5) this.held[i]=!this.held[i];}
@@ -402,7 +402,7 @@ function restoreGame(game,storage){
   try{
     raw=storage.getItem(SAVE_KEY);if(raw===null)return {status:'empty'};
     const s=JSON.parse(raw);
-    if(s.version!==1||!['ready','hold','won','double','lost'].includes(s.phase)||![s.credit,s.win].every(n=>Number.isSafeInteger(n)&&n>=0)||!Number.isSafeInteger(s.credit+s.win)||!Number.isSafeInteger(s.bet)||s.bet<1||typeof s.soundEnabled!=='boolean')throw new Error('Invalid state');
+    if(s.version!==1||!['ready','hold','won','double','lost'].includes(s.phase)||![s.credit,s.win].every(n=>Number.isSafeInteger(n)&&n>=0)||!Number.isSafeInteger(s.credit+s.win)||!Number.isSafeInteger(s.bet)||s.bet<0||typeof s.soundEnabled!=='boolean')throw new Error('Invalid state');
     if(s.collectedWin!==undefined&&(!Number.isSafeInteger(s.collectedWin)||s.collectedWin<0))throw new Error('Invalid collected win');
     const hand=checkedCards(s.hand);
     if(hand.length)validateHand(hand);else if(s.phase!=='ready')throw new Error('Missing hand');
@@ -528,12 +528,12 @@ function render(){
     return showingDouble?html.replace('<span class="hold-label"> </span>',`<span class="hold-label">${i===1?'基準カード':i===3?'次のカード':' '}</span>`):html;
   }).join('');
   $('deal').innerHTML=game.phase==='won'?'DOUBLE':holding?'DRAW':'DEAL';
-  $('deal').disabled=!(holding||game.canDouble||(editable&&game.credit>=game.bet&&game.bet<=Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/499)));
+  $('deal').disabled=!(holding||game.canDouble||(editable&&game.bet>0&&game.credit>=game.bet&&game.bet<=Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/499)));
   for(const id of ['minus','minus-ten','plus','plus-ten','max']){
     $(id).hidden=!editable;
-    $(id).disabled=!editable||(id.startsWith('minus')?game.bet<=1:game.credit===0||game.bet>=game.credit);
+    $(id).disabled=!editable||(id.startsWith('minus')?game.bet<=0:game.credit===0||(id!=='max'&&game.bet>=game.credit));
   }
-  $('bet-lock').hidden=editable;
+  $('bet-lock').hidden=editable;$('max').setAttribute('aria-pressed',String(game.bet>0&&game.bet===game.credit));
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';
   $('reset').hidden=!(game.credit===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
@@ -564,6 +564,7 @@ function render(){
     button.setAttribute('data-key-hint',guideEnabled?keys:'');
   }
   $('guide').textContent=guideEnabled?'ガイド ON':'ガイド OFF';$('guide').setAttribute('aria-pressed',String(guideEnabled));
+  if(editable&&game.bet===0)next='BETを増やすか、All inをタップしてください';
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
 }
@@ -574,7 +575,7 @@ function celebrate(doubled=false){
   stage.classList?.add(doubled?'double-burst':'win-burst');
 }
 function act(fn,tone){if(!allowed()){refreshAccess();return;}const result=fn();if(result!==false&&tone)sound.play(tone);render();}
-$('minus').onclick=()=>act(()=>game.setBet(game.bet-5),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+5),'bet');$('max').onclick=()=>act(()=>game.setBet(game.credit),'bet');
+$('minus').onclick=()=>act(()=>game.setBet(game.bet-5),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+5),'bet');$('max').onclick=()=>act(()=>game.setBet(game.bet===game.credit?0:game.credit),'bet');
 $('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){primaryUntil=Date.now()+100;act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
 $('minus-ten').onclick=()=>act(()=>game.setBet(game.bet-10),'bet');$('plus-ten').onclick=()=>act(()=>game.setBet(game.bet+10),'bet');
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};
