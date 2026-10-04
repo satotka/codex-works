@@ -80,9 +80,11 @@ function render(){
   }).join('');
   $('deal').innerHTML=game.phase==='won'?'DOUBLE':holding?'DRAW':'DEAL';
   $('deal').disabled=!(holding||game.canDouble||(editable&&game.bet>0&&game.credit>=game.bet&&game.bet<=Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/499)));
+  const allIn=editable&&game.credit>0&&game.bet===game.credit;
+  $('max').textContent=allIn?'解除':'ALL IN';
   for(const id of ['minus','minus-ten','plus','plus-ten','max']){
     $(id).hidden=!editable;
-    $(id).disabled=!editable||(id.startsWith('minus')?game.bet<=0:game.credit===0||(id!=='max'&&game.bet>=game.credit));
+    $(id).disabled=!editable||(allIn&&id!=='max')||(id.startsWith('minus')?game.bet<=0:game.credit===0||(id!=='max'&&game.bet>=game.credit));
   }
   $('bet-lock').hidden=editable;$('max').setAttribute('aria-pressed',String(game.bet>0&&game.bet===game.credit));
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';

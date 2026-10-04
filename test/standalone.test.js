@@ -29,6 +29,12 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   const keypad=code=>listeners.keydown({key:'Unidentified',code,target:{closest:()=>null},preventDefault(){}});
   keypad('NumpadAdd');assert.equal(node('bet').textContent,'5');keypad('NumpadSubtract');assert.equal(node('bet').textContent,'0');
   keypad('NumpadMultiply');assert.equal(node('bet').textContent,'1,000');
+  assert.equal(node('max').textContent,'解除');
+  for(const id of ['plus','minus','plus-ten','minus-ten'])assert.equal(node(id).disabled,true);
+  keypad('NumpadAdd');assert.equal(node('bet').textContent,'1,000');
+  keypad('NumpadSubtract');assert.equal(node('bet').textContent,'1,000');
+  keypad('NumpadMultiply');assert.equal(node('bet').textContent,'0');
+  assert.equal(node('max').textContent,'ALL IN');
   vm.runInContext('game.setBet(1);render();',context);
   const press=(key,repeat=false)=>listeners.keydown({key,repeat,target:{closest:()=>null},preventDefault(){}});
   for(const phase of ['ready','lost']){

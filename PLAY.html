@@ -189,12 +189,12 @@ summary::-webkit-details-marker{display:none}
 <section id="cards" class="cards" aria-label="手札"></section>
 
 <div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div class="win-meter"><span id="win-label">WIN</span><output id="win">0</output></div></div>
-<div class="bet-row"><button id="minus-ten">−10</button><button id="minus">−5</button><div class="bet-amount"><span>BET <span id="bet-lock" hidden>固定</span></span><output id="bet">0</output></div><button id="plus">＋5</button><button id="plus-ten">＋10</button><button id="max">All in</button></div><section class="console"><div id="normal-controls" class="normal-controls"><button id="deal" class="primary">DEAL</button><button id="collect" class="green">COLLECT</button></div><div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section></section>
+<div class="bet-row"><button id="minus-ten">−10</button><button id="minus">−5</button><div class="bet-amount"><span>BET <span id="bet-lock" hidden>固定</span></span><output id="bet">0</output></div><button id="plus">＋5</button><button id="plus-ten">＋10</button><button id="max">ALL IN</button></div><section class="console"><div id="normal-controls" class="normal-controls"><button id="deal" class="primary">DEAL</button><button id="collect" class="green">COLLECT</button></div><div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section></section>
 <footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT</button><span id="save-status" role="status">自動保存</span><span>FOR AMUSEMENT ONLY</span></footer>
 <details class="controls-help"><summary>遊び方</summary>
 <p>カードとボタンをタップして操作できます。</p>
 <div class="controls-list">
-<section><h2>BETを選ぶ</h2><p>−10／−5／＋5／＋10でBETを調整。All inでCREDIT全額を選び、もう一度タップするとBETを0に戻します。BET 0ではDEALできません。ゲーム中のBETは固定です。<br>DEALをタップしてカードを配ります。</p></section>
+<section><h2>BETを選ぶ</h2><p>−10／−5／＋5／＋10でBETを調整。ALL INでCREDIT全額を選択。全額選択中は増減できず、DEALまたは解除を選びます。解除するとBETを0に戻します。BET 0ではDEALできません。ゲーム中のBETは固定です。<br>DEALをタップしてカードを配ります。</p></section>
 <section><h2>カードを交換する</h2><p>残すカードをタップしてHOLD。もう一度タップすると解除。<br>DRAWでHOLDしていないカードを1回交換します。<br>当たり後はCOLLECTで獲得、DOUBLEでWIN全額を賭けて挑戦します。</p></section>
 <section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後はDOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
 </div>
@@ -355,7 +355,7 @@ class GameState {
   constructor({deckFactory=()=>new Deck(),doubleDown=new DoubleDown()}={}) {
     this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=0; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
   }
-  setBet(value) {if(!['ready','lost'].includes(this.phase)||!Number.isFinite(value)) return; this.bet=Math.max(0,Math.min(this.credit,Math.trunc(value)));}
+  setBet(value) {if(!['ready','lost'].includes(this.phase)||!Number.isFinite(value)||(this.credit>0&&this.bet===this.credit&&value!==0)) return; this.bet=Math.max(0,Math.min(this.credit,Math.trunc(value)));}
   deal() {
     if(!['ready','lost'].includes(this.phase)||this.bet===0||this.credit<this.bet||this.bet>Math.floor((Number.MAX_SAFE_INTEGER-this.credit)/499)) return false;
     this.collectedWin=0; this.credit-=this.bet; this.win=0; this.deck=this.deckFactory(); this.hand=Array.from({length:5},()=>this.deck.draw()); this.held.fill(false); for(const i of expectedHold(this.hand))this.held[i]=true; this.phase='hold'; this.result=null; this.doubleResult=null; return true;
@@ -529,9 +529,11 @@ function render(){
   }).join('');
   $('deal').innerHTML=game.phase==='won'?'DOUBLE':holding?'DRAW':'DEAL';
   $('deal').disabled=!(holding||game.canDouble||(editable&&game.bet>0&&game.credit>=game.bet&&game.bet<=Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/499)));
+  const allIn=editable&&game.credit>0&&game.bet===game.credit;
+  $('max').textContent=allIn?'解除':'ALL IN';
   for(const id of ['minus','minus-ten','plus','plus-ten','max']){
     $(id).hidden=!editable;
-    $(id).disabled=!editable||(id.startsWith('minus')?game.bet<=0:game.credit===0||(id!=='max'&&game.bet>=game.credit));
+    $(id).disabled=!editable||(allIn&&id!=='max')||(id.startsWith('minus')?game.bet<=0:game.credit===0||(id!=='max'&&game.bet>=game.credit));
   }
   $('bet-lock').hidden=editable;$('max').setAttribute('aria-pressed',String(game.bet>0&&game.bet===game.credit));
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';

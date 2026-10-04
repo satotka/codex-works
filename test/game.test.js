@@ -49,3 +49,5 @@ test('insufficient credit, limits and safe integer doubling',()=>{const g=new Ga
 test('all-in above 40 settles the full payout',()=>{const g=new GameState({deckFactory:factory('10S 11S 12S 13S 14S')});g.setBet(g.credit);assert.equal(g.bet,1000);if(g.bet===0)g.setBet(1);g.deal();assert.equal(g.credit,0);g.draw();assert.equal(g.win,500000);g.collect();assert.equal(g.credit,500000);assert.equal(g.win,0);g.setBet(g.credit+10);assert.equal(g.bet,g.credit);});
 
 test("zero bet cannot deal",()=>{const g=new GameState();g.setBet(0);assert.equal(g.deal(),false);assert.equal(g.credit,1000);});
+
+test("all-in locks adjustments until release",()=>{const g=new GameState();g.setBet(g.credit);g.setBet(995);assert.equal(g.bet,1000);g.setBet(1005);assert.equal(g.bet,1000);g.setBet(0);assert.equal(g.bet,0);g.setBet(5);assert.equal(g.bet,5);});
