@@ -169,3 +169,6 @@ MIN・−10・−1・BET数・＋1・＋10・MAXの1行。MIN=1、MAX=残りCRED
 
 ## 英語の状態表示と日本語ガイド（2026-10-04）
 状態の主表示はBET / HOLD / WIN 金額 / NO WIN / HIGH・LOW / DOUBLE WIN 金額 / TIE・PAID 金額 / PAID 金額など短い英語。GUIDE ONでだけ日本語の状況説明と次の操作を補足。GUIDE OFFでは遊び方と操作ヒントを非表示、保存/停止通知も英語。ボタン/金額ラベルはGUIDE・RELEASE・PAID・LOCKED、ダブルのカードラベルはBASE/NEXT。
+
+
+BET引継ぎ（2026-10-04）：負け・COLLECT・引き分け自動COLLECTで、前回BET額を次のBETとして残高から予約する。残高不足は残高までに調整、全額なら解除/DEALだけ有効。初回と完全リセットのBET 0は維持。CREDITは次回BET予約後の残高、獲得額PAIDは実際のWIN全額。予約済み状態を保存し、復元やDEALで二重控除しない。

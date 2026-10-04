@@ -24,7 +24,7 @@ test('reload during double keeps reference, next card and uncollected win; colle
   assert.deepEqual(next.guess(choice),game.guess(choice));assert.equal(next.credit,999);assert.equal(next.phase,'won');
   next=reload(game,storage);assert.deepEqual(next.doubleResult,game.doubleResult);
   if(next.phase==='won'){
-    const win=next.win;next.collect();next=reload(next,storage);assert.equal(next.credit,999+win);assert.equal(next.collect(),false);assert.equal(next.win,0);
+    const win=next.win;next.collect();next=reload(next,storage);assert.equal(next.credit,998+win);assert.equal(next.collect(),false);assert.equal(next.win,0);
   }
 });
 test('bad data or unavailable storage leaves a fresh game usable',()=>{

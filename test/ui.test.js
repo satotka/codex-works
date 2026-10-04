@@ -26,8 +26,8 @@ test('UI wiring: bet, deal, hold/release, draw, sound and next game',async()=>{
   const space=event('d','KeyD');listeners.keydown(space);assert.equal(space.prevented,true);assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
   const afterDraw=node('cards').innerHTML;listeners.keydown(event('d','KeyD',true));assert.equal(node('cards').innerHTML,afterDraw);
   if(!node('collect').disabled)node('collect').onclick();
-  assert.equal(node('deal').disabled,true);assert.equal(node('plus').disabled,false);
-  assert.equal(node('minus').disabled,true);node('min').onclick();assert.equal(node('bet').textContent,'1');
+  assert.equal(node('deal').disabled,false);assert.equal(node('plus').disabled,false);
+  assert.equal(node('minus').disabled,false);node('min').onclick();assert.equal(node('bet').textContent,'1');
   await new Promise(resolve=>setTimeout(resolve,660));
   node('deal').onclick();assert.match(node('deal').innerHTML,/DRAW/);
   delete globalThis.document;
