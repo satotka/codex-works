@@ -1,0 +1,239 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AMBER POKER — Joker Double</title><style>*{box-sizing:border-box}body{margin:0;background:#111115;color:#f4efe2;font-family:Arial,'Yu Gothic',sans-serif;min-height:100vh;padding:28px 24px;background-image:radial-gradient(ellipse at top,#343036 0,transparent 65%)}button{font:inherit;cursor:pointer}button:disabled{cursor:default;opacity:.3}button:focus-visible{outline:3px solid #fff;outline-offset:4px}.cabinet{max-width:1160px;margin:auto;border:1px solid #5b5050;border-radius:18px;background:linear-gradient(115deg,#302b2c,#1f1c20);box-shadow:0 25px 80px #0009;padding:25px 30px 18px}header{display:flex;align-items:center;justify-content:space-between;margin:0 6px 23px}.brand{display:flex;align-items:center;gap:16px}.brand-icon{font-size:50px;color:#edb457}h1{font-size:33px;letter-spacing:5px;margin:0;font-weight:900}h1 em{color:#edb457;font-style:normal}.brand p{font-size:12px;letter-spacing:3px;color:#b7a99d;margin:8px 0 0}.small{background:none;color:#cbbca5;border:1px solid #675b4c;border-radius:5px;padding:9px 12px;font-size:12px;letter-spacing:1px}.screen{position:relative;background:#080f14;border:3px solid #131013;border-radius:12px;box-shadow:inset 0 0 38px #000,0 0 0 1px #514541;padding:18px 27px 20px}.screen-top{display:flex;justify-content:space-between;font-size:12px;letter-spacing:2px;color:#a68652;margin-bottom:17px}.paytable{max-width:720px;margin:auto;font-size:14px}.table-head,.payrow{display:grid;grid-template-columns:1fr 100px 100px;gap:15px}.table-head{color:#789397;font-size:11px;letter-spacing:1.5px;margin-bottom:6px}.table-head span:not(:first-child),.payrow span:not(:first-child){text-align:right}.payrow{color:#d4c491;line-height:1.5;padding:1px 7px;border-radius:3px}.payrow:nth-child(odd){background:#12202966}.payrow.active{background:#edb457;color:#171713;font-weight:bold}.message{text-align:center;min-height:46px;margin:19px 0 9px;color:#f7c46b;font-size:16px;letter-spacing:1px}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.card-slot{min-width:0}.card{width:100%;aspect-ratio:.72;background:#f8f5ec;border-radius:8px;position:relative;border:3px solid #d5d1c6;box-shadow:0 4px 0 #0009;color:#182537;display:flex;align-items:center;justify-content:center}.card.red{color:#b92f39}.card.held{border-color:#f3bd5d;box-shadow:0 0 20px #ebb45233}.card:disabled{opacity:1}.corner{position:absolute;top:8px;left:10px;font-family:Georgia,serif;font-size:28px;line-height:1;text-align:center;font-weight:bold}.corner.bottom{top:auto;left:auto;bottom:8px;right:10px;transform:rotate(180deg)}.suit{font-size:68px;line-height:1}.joker-center{text-align:center;color:#624377;font-size:25px;font-weight:900;letter-spacing:3px}.joker-center b{display:block;font-size:57px;line-height:1.1;color:#9a6739}.joker-center small{font-size:12px;letter-spacing:2px}.card.back{border:5px solid #af8853;background:repeating-linear-gradient(45deg,#182f3f 0 3px,#203d4e 3px 6px);color:#d0a76a}.back span{font-size:45px;border:1px solid #ac8b54;padding:12px 17px;border-radius:50%;background:#182d3e}.hold-label{display:block;min-height:30px;text-align:center;font-size:13px;font-weight:bold;letter-spacing:3px;padding-top:9px;color:#f8c66e}.meters{display:grid;grid-template-columns:1.4fr 1fr 1.4fr;gap:20px;margin-top:12px}.meters>div{border-top:1px solid #3e3c30;display:flex;align-items:center;justify-content:space-between;padding-top:14px}.meters span{font-size:13px;color:#9ea9a2;letter-spacing:2px}.meters output{font-family:'Courier New',monospace;font-size:36px;color:#efc375;text-shadow:0 0 12px #e1a03844}.win-meter output{color:#b8e0b1}.console{display:grid;grid-template-columns:1.25fr 1.3fr 1fr 1fr;gap:16px;padding:25px 0 20px;align-items:end}.console button,.double-panel button{border-radius:6px;border:1px solid #c19243;border-bottom:5px solid #886127;background:linear-gradient(#f2c772,#d9a34b);color:#271d14;font-size:18px;font-weight:bold;letter-spacing:1px;min-height:67px;box-shadow:0 4px 8px #0005}.console button:active:not(:disabled){transform:translateY(2px)}button small{display:block;font-size:12px;letter-spacing:0;font-weight:normal;margin-top:4px}.console .purple{background:linear-gradient(#877393,#63536c);border-color:#493854;color:#fff1fe}.console .green{background:linear-gradient(#7c9b80,#58735e);border-color:#3c5943;color:#eff8ee}.bet-controls>span{display:block;font-size:11px;letter-spacing:2px;color:#b9aca1;margin-bottom:10px}.bet-controls>div{display:flex;gap:7px}.bet-controls button{background:linear-gradient(#514a47,#3b3534);color:#f2d7a8;border-color:#292322;min-height:49px;min-width:44px;font-size:22px}.bet-controls #max{font-size:13px;flex:1}footer{font-size:12px;color:#aa9c8b;display:flex;gap:16px;justify-content:space-between;align-items:center}.double-panel{text-align:center;border:1px solid #b89456;padding:15px;margin:10px auto;color:#f3c97a;background:#18202a}.double-panel[hidden]{display:none}.double-panel>strong{font-size:23px;letter-spacing:4px}.double-panel>span{display:block;font-size:13px;margin:10px}.double-panel button{min-height:50px;min-width:130px;margin:0 7px}#reset{background:#bba074;border:0;padding:8px;color:#181818;border-radius:4px}@media(min-width:1000px){.card{max-height:226px}}@media(max-width:760px){body{padding:12px 8px}.cabinet{padding:18px 12px}header{margin-bottom:18px}.brand{gap:8px}.brand-icon{font-size:30px}h1{font-size:22px;letter-spacing:2px}.brand p{font-size:10px;letter-spacing:1px}.screen{padding:15px 10px}.edition{display:none}.cards{gap:6px}.corner{font-size:18px;top:5px;left:5px}.corner.bottom{bottom:5px;right:5px}.suit{font-size:38px}.joker-center{font-size:13px;letter-spacing:0}.joker-center b{font-size:34px}.joker-center small{font-size:9px}.card{border-width:2px}.back span{font-size:20px;padding:8px}.meters{gap:10px}.meters>div{flex-direction:column;gap:5px}.meters output{font-size:26px}.console{grid-template-columns:1fr 1fr;gap:12px}.paytable{font-size:12px}.table-head,.payrow{grid-template-columns:1fr 65px 75px;gap:4px}.message{font-size:14px}.hold-label{font-size:11px;letter-spacing:1px}footer{flex-wrap:wrap;font-size:11px}.small{font-size:10px;padding:8px}.screen-top{font-size:10px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+/* Numeric cards use standard pip arrangements inside a dedicated center area. */
+.card{container-type:inline-size}
+.pips{position:absolute;inset:16% 22%;pointer-events:none}
+.pip{position:absolute;line-height:1;font-size:clamp(14px,19cqw,36px);transform:translate(-50%,-50%)}
+.pip.inverted{transform:translate(-50%,-50%) rotate(180deg)}
+.face-center{display:flex;flex-direction:column;align-items:center;line-height:1;gap:8px;pointer-events:none}
+.face-center b{font-family:Georgia,serif;font-size:clamp(30px,39cqw,74px)}
+.face-center>span{font-size:clamp(20px,24cqw,46px)}
+@media(max-width:760px){.pips{inset:17% 23%}.corner{font-size:clamp(11px,24cqw,18px)}}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.small,#reset{min-height:44px;min-width:44px}
+.controls-help{border-top:1px solid #64513c;margin-top:16px;padding-top:12px;color:#cfc0a9;font-size:14px}
+.controls-help summary{cursor:pointer;min-height:44px;display:list-item;line-height:1.6}
+.controls-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:8px 0}
+.controls-list span{line-height:1.6}.controls-list b{color:#efc375;display:block}
+.controls-help p{line-height:1.7;margin:12px 0 0;font-size:14px}
+@media(max-width:760px){.controls-list{grid-template-columns:1fr 1fr}.double-panel button{min-width:0;width:42%;margin:0 3px}.console button{min-height:60px}.card{min-height:80px}.brand p{letter-spacing:0}.small{padding:6px;font-size:10px}header{gap:8px}.hold-label{font-size:10px;letter-spacing:0}.screen{padding:12px 6px}}
+</style></head><body>
+<main class="cabinet"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><button id="sound" class="small" aria-pressed="true">SOUND ON</button></header>
+<section class="screen"><div class="screen-top"><span>1 JOKER · WILD CARD</span><span class="edition">ARCADE EDITION / 01</span></div>
+<section class="paytable" aria-label="配当表"><div class="table-head"><span>WINNING HAND</span><span>NATURAL</span><span>JOKER ×2</span></div><div id="payrows"></div></section>
+<div class="message" id="message" role="status" aria-live="polite">BETを決めて DEAL を押してください</div>
+<section id="cards" class="cards" aria-label="手札"></section>
+<div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 負け</span><div><button id="low">LOW <small>低い · S / 2</small></button><button id="high">HIGH <small>高い · W / 8</small></button></div></div>
+<div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div><span>BET</span><output id="bet">1</output></div><div class="win-meter"><span>WIN</span><output id="win">0</output></div></div>
+</section><section class="console"><div class="bet-controls"><span>BET SELECT · W＋ / S−</span><div><button id="minus" aria-label="BETを1減らす">−</button><button id="plus" aria-label="BETを1増やす">+</button><button id="max">MAX <small>40</small></button></div></div><button id="deal" class="primary">DEAL <small>配る</small></button><button id="double" class="purple">DOUBLE <small>D / Space / 6</small></button><button id="collect" class="green">COLLECT <small>A / 4</small></button></section>
+<footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT <small> . キー</small></button><span>FOR AMUSEMENT ONLY</span></footer>
+<details class="controls-help" open><summary>操作一覧 — テンキー・通常キーボード・タッチ対応</summary><div class="controls-list"><span><b>1–5</b> HOLD / RELEASE</span><span><b>D / Space / 0 / テンキーEnter</b> DEAL / DRAW</span><span><b>6 / D / Space</b> DOUBLE</span><span><b>4 / A</b> COLLECT</span><span><b>8 / W</b> HIGH</span><span><b>2 / S</b> LOW</span><span><b>+ / −</b> BET増減（開始前はW＋／S−も可）</span><span><b>＊</b> MAX BET</span><span><b>／</b> SOUND ON/OFF</span><span><b>．</b> NEW CREDIT（残高0のみ）</span></div><p>1〜5は通常ゲームでHOLD。ダブル中は上の8=HIGH／下の2=LOW、当たり後は左の4=COLLECT／右の6=DOUBLEです。テンキーはNum LockのON/OFFどちらにも対応。通常キーボードは上のW=HIGH／下のS=LOW、左のA=COLLECT／右のD=DOUBLE。数字列も使えます。スマホ・タブレットはカードとボタンをタップしてください。</p></details></main>
+<script>
+const SUITS = ['S','H','D','C'];
+const card = (rank, suit) => ({rank, suit, joker:false});
+const joker = () => ({rank:0, suit:null, joker:true});
+function validateHand(hand) {
+  if (!Array.isArray(hand) || hand.length !== 5) throw new Error('5 cards required');
+  const ids = new Set();
+  for (const c of hand) {
+    if (!c || (c.joker ? c.rank !== 0 || c.suit !== null : !Number.isInteger(c.rank) || c.rank<2 || c.rank>14 || !SUITS.includes(c.suit))) throw new Error('Invalid card');
+    const id = c.joker ? 'JOKER' : `${c.rank}${c.suit}`;
+    if (ids.has(id)) throw new Error('Duplicate card');
+    ids.add(id);
+  }
+}
+
+function secureRandom() { return crypto.getRandomValues(new Uint32Array(1))[0]/4294967296; }
+class Deck {
+  constructor({includeJoker=true,random=secureRandom}={}) {
+    this.cards=SUITS.flatMap(s=>Array.from({length:13},(_,i)=>card(i+2,s)));
+    if(includeJoker) this.cards.push(joker());
+    for(let i=this.cards.length-1;i>0;i--) {const j=Math.floor(random()*(i+1)); [this.cards[i],this.cards[j]]=[this.cards[j],this.cards[i]];}
+  }
+  draw() {if(!this.cards.length) throw new Error('Empty deck'); return this.cards.pop();}
+}
+
+const PAY_TABLE = [
+  {id:'naturalRoyal',name:'Natural Royal Flush',multiplier:500},
+  {id:'fiveKind',name:'Five of a Kind',multiplier:100},
+  {id:'straightFlush',name:'Straight Flush',multiplier:40},
+  {id:'fourKind',name:'Four of a Kind',multiplier:14},
+  {id:'fullHouse',name:'Full House',multiplier:6},
+  {id:'flush',name:'Flush',multiplier:4},
+  {id:'straight',name:'Straight',multiplier:3},
+  {id:'threeKind',name:'Three of a Kind',multiplier:1},
+  {id:'twoPair',name:'Two Pair',multiplier:1},
+  {id:'onePair',name:'One Pair',multiplier:0},
+  {id:'highCard',name:'High Card',multiplier:0}
+];
+
+function bestJokerInterpretation(hand,classify) {
+  const index=hand.findIndex(c=>c.joker);
+  let best=null;
+  // Duplicate rank/suit substitutions are intentional: a wild card can make five of a kind.
+  for(const suit of SUITS) for(let rank=2;rank<=14;rank++) {
+    const candidate=hand.slice(); candidate[index]=card(rank,suit);
+    const result=classify(candidate,false);
+    if(!best || result.order<best.order) best={...result,substitution:card(rank,suit)};
+  }
+  return {...best,jokerUsed:true,multiplier:best.multiplier*2};
+}
+
+function classify(hand,natural=true) {
+  const ranks=hand.map(c=>c.rank).sort((a,b)=>a-b);
+  const groups=[...new Set(ranks)].map(r=>ranks.filter(x=>x===r).length).sort((a,b)=>b-a);
+  const flush=hand.every(c=>c.suit===hand[0].suit);
+  const straight=groups.length===5 && (ranks[4]-ranks[0]===4 || ranks.join(',')==='2,3,4,5,14');
+  let id='highCard';
+  if(natural && flush && ranks.join(',')==='10,11,12,13,14') id='naturalRoyal';
+  else if(groups[0]===5) id='fiveKind';
+  else if(straight && flush) id='straightFlush';
+  else if(groups[0]===4) id='fourKind';
+  else if(groups[0]===3 && groups[1]===2) id='fullHouse';
+  else if(flush) id='flush';
+  else if(straight) id='straight';
+  else if(groups[0]===3) id='threeKind';
+  else if(groups[0]===2 && groups[1]===2) id='twoPair';
+  else if(groups[0]===2) id='onePair';
+  const order=PAY_TABLE.findIndex(p=>p.id===id);
+  return {...PAY_TABLE[order],order,jokerUsed:false};
+}
+function evaluateHand(hand) {validateHand(hand); return hand.some(c=>c.joker)?bestJokerInterpretation(hand,classify):classify(hand);}
+function payout(bet,result) {if(!Number.isInteger(bet)||bet<1||bet>40) throw new Error('Invalid bet'); return bet*result.multiplier;}
+
+class DoubleDown {
+  constructor(deckFactory=()=>new Deck({includeJoker:false})) {this.deckFactory=deckFactory;}
+  start() {
+    this.deck=this.deckFactory();
+    this.referenceCard=this.deck.draw();
+    this.active=true;
+    return this.referenceCard;
+  }
+  play(win,choice) {
+    if(!['high','low'].includes(choice)||!Number.isSafeInteger(win)||win<=0) throw new Error('Invalid double');
+    if(win>Math.floor(Number.MAX_SAFE_INTEGER/2)) throw new Error('Collect before doubling');
+    if(!this.active)throw new Error('Start double before choosing');
+    const card=this.deck.draw();
+    this.active=false;
+    const referenceCard=this.referenceCard;
+    const outcome=(choice==='high'?card.rank>referenceCard.rank:card.rank<referenceCard.rank)?'win':'lose';
+    return {referenceCard,card,choice,outcome,win:outcome==='win'?win*2:0};
+  }
+}
+
+class GameState {
+  constructor({deckFactory=()=>new Deck(),doubleDown=new DoubleDown()}={}) {
+    this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=1; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
+  }
+  setBet(value) {if(!['ready','lost'].includes(this.phase)||!Number.isFinite(value)) return; this.bet=Math.max(1,Math.min(40,Math.trunc(value)));}
+  deal() {
+    if(!['ready','lost'].includes(this.phase)||this.credit<this.bet) return false;
+    this.credit-=this.bet; this.win=0; this.deck=this.deckFactory(); this.hand=Array.from({length:5},()=>this.deck.draw()); this.held.fill(false); this.phase='hold'; this.result=null; this.doubleResult=null; return true;
+  }
+  toggleHold(i) {if(this.phase==='hold'&&Number.isInteger(i)&&i>=0&&i<5) this.held[i]=!this.held[i];}
+  draw() {if(this.phase!=='hold') return false; this.hand=this.hand.map((c,i)=>this.held[i]?c:this.deck.draw()); this.result=evaluateHand(this.hand); this.win=payout(this.bet,this.result); this.phase=this.win?'won':'lost'; return true;}
+  get canDouble() {return this.phase==='won'&&this.win<=Math.floor((Number.MAX_SAFE_INTEGER-this.credit)/2);}
+  startDouble() {if(!this.canDouble)return false; this.doubleResult={referenceCard:this.doubleDown.start(),card:null}; this.phase='double'; return true;}
+  guess(choice) {if(this.phase!=='double')return false; this.doubleResult=this.doubleDown.play(this.win,choice); this.win=this.doubleResult.win; this.phase=this.win?'won':'lost'; return this.doubleResult;}
+  collect() {if(this.phase!=='won')return false; this.credit+=this.win; this.win=0; this.phase='ready'; return true;}
+  reset() {if(this.credit===0&&['ready','lost'].includes(this.phase)){this.credit=1000;this.phase='ready';this.hand=[];this.result=null;this.doubleResult=null;return true;}return false;}
+}
+
+class Sound {
+  enabled=true;
+  play(type) {
+    if(!this.enabled)return;
+    try {this.ctx??=new (window.AudioContext||window.webkitAudioContext)();this.ctx.resume();const sequences={bet:[400],deal:[260,390,520],hold:[660],draw:[330,440],win:[523,659,784,1047],doubleWin:[659,784,1047,1319],doubleLose:[220,165,110],push:[440,440],collect:[784,659,523]};
+      (sequences[type]||[400]).forEach((f,i)=>{const o=this.ctx.createOscillator(),g=this.ctx.createGain(),t=this.ctx.currentTime+i*.095;o.type='square';o.frequency.value=f;g.gain.setValueAtTime(.035,t);g.gain.exponentialRampToValueAtTime(.001,t+.085);o.connect(g);g.connect(this.ctx.destination);o.start(t);o.stop(t+.09);});
+    }catch{/* Audio availability must not block gameplay. */}
+  }
+}
+
+const game=new GameState(),sound=new Sound(),$=id=>document.getElementById(id);
+const symbols={S:'♠',H:'♥',D:'♦',C:'♣'},ranks={11:'J',12:'Q',13:'K',14:'A'};
+let notice='';
+const pipLayouts={
+  2:[[50,12],[50,88]],
+  3:[[50,12],[50,50],[50,88]],
+  4:[[22,12],[78,12],[22,88],[78,88]],
+  5:[[22,12],[78,12],[50,50],[22,88],[78,88]],
+  6:[[22,12],[78,12],[22,50],[78,50],[22,88],[78,88]],
+  7:[[22,12],[78,12],[50,31],[22,50],[78,50],[22,88],[78,88]],
+  8:[[22,12],[78,12],[50,31],[22,50],[78,50],[50,69],[22,88],[78,88]],
+  9:[[22,12],[78,12],[22,37],[78,37],[50,50],[22,63],[78,63],[22,88],[78,88]],
+  10:[[22,12],[78,12],[50,25],[22,37],[78,37],[22,63],[78,63],[50,75],[22,88],[78,88]]
+};
+function cardCenter(c){
+  if(c.rank===14)return `<span class="suit ace" aria-hidden="true">${symbols[c.suit]}</span>`;
+  if(c.rank>=11)return `<span class="face-center" aria-hidden="true"><b>${ranks[c.rank]}</b><span>${symbols[c.suit]}</span></span>`;
+  return `<span class="pips" aria-hidden="true">${pipLayouts[c.rank].map(([x,y])=>`<span class="pip${y>50?' inverted':''}" style="left:${x}%;top:${y}%">${symbols[c.suit]}</span>`).join('')}</span>`;
+}
+$('payrows').innerHTML=PAY_TABLE.filter(p=>p.multiplier).map(p=>`<div class="payrow" data-hand="${p.id}"><span>${p.name}</span><span>${p.multiplier}</span><span>${p.id==='naturalRoyal'?'—':p.multiplier*2}</span></div>`).join('');
+function cardHtml(c,i,interactive) {
+  const held=interactive&&game.held[i];
+  const face=!c?'<span>♠</span>':c.joker?'<div class="joker-center"><b>★</b>JOKER<br><small>WILD CARD</small></div>':`<span class="corner">${ranks[c.rank]||c.rank}<br>${symbols[c.suit]}</span>${cardCenter(c)}<span class="corner bottom">${ranks[c.rank]||c.rank}<br>${symbols[c.suit]}</span>`;
+  const label=!c?'伏せたカード':c.joker?'JOKER':`${ranks[c.rank]||c.rank} ${symbols[c.suit]}`;
+  return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${interactive?' HOLD切替':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
+}
+function render(){
+  const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
+  ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
+  const showingDouble=game.doubleResult&&['double','won','lost'].includes(game.phase);
+  $('cards').innerHTML=Array.from({length:5},(_,i)=>{
+    const c=showingDouble?(i===1?game.doubleResult.referenceCard:i===3?game.doubleResult.card:null):game.hand[i];
+    const html=cardHtml(c,i,holding);
+    return showingDouble?html.replace('<span class="hold-label"> </span>',`<span class="hold-label">${i===1?'基準カード':i===3?'次のカード':' '}</span>`):html;
+  }).join('');
+  $('deal').innerHTML=holding?'DRAW <small>交換 · D / Space / 0</small>':'DEAL <small>配る · D / Space / 0</small>';
+  $('deal').disabled=!(holding||(editable&&game.credit>=game.bet));
+  $('minus').disabled=!editable||game.bet===1;$('plus').disabled=!editable||game.bet===40;$('max').disabled=!editable||game.bet===40;
+  $('double').disabled=!game.canDouble;$('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';
+  $('reset').hidden=!(game.credit===0&&editable);
+  document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
+  const messages={ready:'BETを決めて DEAL を押してください',hold:'残したいカードを HOLD → DRAW で1回交換',won:`${game.result?.name||''}${game.result?.jokerUsed?' · JOKER ×2':''} — COLLECT または DOUBLE`,lost:'NO WIN — 次のゲームは DEAL',double:'次のカードは基準より高い？低い？ W / S または 8 / 2で選択（同じ数字は負け）'};
+  $('message').textContent=notice||messages[game.phase];
+  if(game.phase==='won'&&!game.canDouble)$('message').textContent='上限に達しました — COLLECTで獲得してください';
+  if(editable&&game.credit<game.bet)$('message').textContent=game.credit===0?'CREDITがなくなりました。NEW CREDITで再開できます':'CREDIT不足 — BETを減らしてください';
+}
+function act(fn,tone){notice='';const result=fn();if(result!==false&&tone)sound.play(tone);render();}
+$('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(40),'bet');
+$('deal').onclick=()=>{if(game.phase==='hold'){act(()=>game.draw(),'draw');if(game.win)sound.play('win');}else act(()=>game.deal(),'deal');};
+$('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')act(()=>game.toggleHold(Number(b.dataset.index)),'hold');};
+$('double').onclick=()=>act(()=>game.startDouble(),'deal');$('collect').onclick=()=>act(()=>game.collect(),'collect');
+for(const choice of ['low','high'])$(choice).onclick=()=>{const r=game.guess(choice);if(!r)return;notice=`選択: ${choice.toUpperCase()} · 基準 ${ranks[r.referenceCard.rank]||r.referenceCard.rank} → 次 ${ranks[r.card.rank]||r.card.rank} — ${r.outcome==='win'?'DOUBLE WIN! 再挑戦またはCOLLECT':r.card.rank===r.referenceCard.rank?'同じ数字 · DOUBLE LOST · 次はDEAL':'DOUBLE LOST · 次はDEAL'}`;sound.play(r.outcome==='win'?'doubleWin':'doubleLose');render();};
+$('sound').onclick=()=>{sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));};
+$('reset').onclick=()=>act(()=>game.reset(),'collect');
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.altKey||e.metaKey||e.isComposing||e.target.closest('input,select,textarea,[contenteditable="true"]'))return;
+  const space=e.code==='Space'||e.key===' '||e.code==='NumpadEnter'||e.code==='Numpad0'||e.code==='Digit0'||e.key==='0';
+  const index=/^[1-5]$/.test(e.key)?Number(e.key)-1:/^(Digit|Numpad)[1-5]$/.test(e.code||'')?Number(e.code.slice(-1))-1:null;
+  let action={d:'double',a:'collect',w:'high',s:'low',c:'collect',h:'high',l:'low','6':'double','4':'collect','8':'high','2':'low','+':'plus','=':'plus','-':'minus','*':'max','/':'sound','.':'reset'}[(e.key||'').toLowerCase()]||{KeyD:'double',KeyA:'collect',KeyW:'high',KeyS:'low',KeyC:'collect',KeyH:'high',KeyL:'low',Numpad6:'double',Numpad4:'collect',Numpad8:'high',Numpad2:'low',NumpadAdd:'plus',NumpadSubtract:'minus',NumpadMultiply:'max',NumpadDivide:'sound',NumpadDecimal:'reset'}[e.code];
+  const primary=e.code==='Space'||e.key===' '||e.code==='KeyD'||(e.key||'').toLowerCase()==='d';
+  if(primary)action=game.phase==='won'?'double':'deal';
+  if(['ready','lost'].includes(game.phase)){
+    if((e.key||'').toLowerCase()==='w'||e.code==='KeyW')action='plus';
+    if((e.key||'').toLowerCase()==='s'||e.code==='KeyS')action='minus';
+  }
+  if(!space&&index===null&&!action)return;
+  // Prevent native Space from activating a previously focused HOLD/BET button.
+  e.preventDefault();
+  if(e.repeat)return;
+  if(game.phase==='hold'&&index!==null)act(()=>game.toggleHold(index),'hold');
+  else if(action){
+    const enabled=(action==='high'||action==='low')?game.phase==='double':action==='reset'?!$('reset').hidden:!$(action).disabled;
+    if(enabled)$(action).click();
+  }
+  else if(space){if(!$('deal').disabled)$('deal').click();}
+  else if(game.phase==='hold')act(()=>game.toggleHold(index),'hold');
+});
+render();
+
+
+
+</script></body></html>
+
+
+
+
+
+
+
