@@ -16,4 +16,4 @@ test('straights, full houses and joker substitutions highlight contributing card
   assert.deepEqual(roleCardIndices([card(7,'S'),card(7,'H'),joker(),card(2,'C'),card(9,'S')]),[0,1,2]);
 });
 
-test("initial pair is held automatically and can be released",()=>{const cards=[card(7,"S"),card(7,"H"),card(2,"D"),card(4,"C"),card(9,"S")];const game=new GameState({deckFactory:()=>({draw:()=>cards.shift()})});game.deal();assert.deepEqual(game.held,[true,true,false,false,false]);game.toggleHold(0);assert.deepEqual(game.held,[false,true,false,false,false]);});
+test("initial pair is held automatically and can be released",()=>{const cards=[card(7,"S"),card(7,"H"),card(2,"D"),card(4,"C"),card(9,"S")];const game=new GameState({deckFactory:()=>({draw:()=>cards.shift()})});if(game.bet===0)game.setBet(1);game.deal();assert.deepEqual(game.held,[true,true,false,false,false]);game.toggleHold(0);assert.deepEqual(game.held,[false,true,false,false,false]);});

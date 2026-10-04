@@ -4,7 +4,7 @@ import {evaluateHand,payout,roleCardIndices} from './hand-evaluator.js';
 import {DoubleDown} from './double-down.js';
 export class GameState {
   constructor({deckFactory=()=>new Deck(),doubleDown=new DoubleDown()}={}) {
-    this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=1; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
+    this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=0; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
   }
   setBet(value) {if(!['ready','lost'].includes(this.phase)||!Number.isFinite(value)) return; this.bet=Math.max(0,Math.min(this.credit,Math.trunc(value)));}
   deal() {

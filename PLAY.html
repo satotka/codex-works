@@ -189,7 +189,7 @@ summary::-webkit-details-marker{display:none}
 <section id="cards" class="cards" aria-label="手札"></section>
 
 <div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div class="win-meter"><span id="win-label">WIN</span><output id="win">0</output></div></div>
-<div class="bet-row"><button id="minus-ten">−10</button><button id="minus">−5</button><div class="bet-amount"><span>BET <span id="bet-lock" hidden>固定</span></span><output id="bet">1</output></div><button id="plus">＋5</button><button id="plus-ten">＋10</button><button id="max">All in</button></div><section class="console"><div id="normal-controls" class="normal-controls"><button id="deal" class="primary">DEAL</button><button id="collect" class="green">COLLECT</button></div><div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section></section>
+<div class="bet-row"><button id="minus-ten">−10</button><button id="minus">−5</button><div class="bet-amount"><span>BET <span id="bet-lock" hidden>固定</span></span><output id="bet">0</output></div><button id="plus">＋5</button><button id="plus-ten">＋10</button><button id="max">All in</button></div><section class="console"><div id="normal-controls" class="normal-controls"><button id="deal" class="primary">DEAL</button><button id="collect" class="green">COLLECT</button></div><div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section></section>
 <footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT</button><span id="save-status" role="status">自動保存</span><span>FOR AMUSEMENT ONLY</span></footer>
 <details class="controls-help"><summary>遊び方</summary>
 <p>カードとボタンをタップして操作できます。</p>
@@ -198,7 +198,7 @@ summary::-webkit-details-marker{display:none}
 <section><h2>カードを交換する</h2><p>残すカードをタップしてHOLD。もう一度タップすると解除。<br>DRAWでHOLDしていないカードを1回交換します。<br>当たり後はCOLLECTで獲得、DOUBLEでWIN全額を賭けて挑戦します。</p></section>
 <section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後はDOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
 </div>
-<section class="pc-controls"><h2>PCでの操作</h2><p>PCではキーボードだけ、またはテンキーだけでも操作できます。マウスでのクリックにも対応しています。</p><p><b>D／6</b> DEAL・DRAW・DOUBLE（状態に応じて切り替え）<br><b>1〜5</b> カードのHOLD／解除<br><b>W／8</b> BET＋5、ダブル中はHIGH<br><b>S／2</b> BET−5、ダブル中はLOW<br><b>A／4</b> COLLECT（手札選択中の4はHOLD）<br><b>＋／−</b> BETを5ずつ調整　<b>＊</b> All in　<b>／</b> サウンド　<b>．</b> NEW CREDIT（残高0の時）<br>テンキーはNum LockのON／OFFに対応しています。</p></section><section class="restart-section"><h2>最初からやり直す</h2><p>CREDITを1,000、BETを1に戻し、手札・WIN・進行状態をリセットします。</p><button id="restart-game">最初からやり直す</button></section></details></div></main>
+<section class="pc-controls"><h2>PCでの操作</h2><p>PCではキーボードだけ、またはテンキーだけでも操作できます。マウスでのクリックにも対応しています。</p><p><b>D／6</b> DEAL・DRAW・DOUBLE（状態に応じて切り替え）<br><b>1〜5</b> カードのHOLD／解除<br><b>W／8</b> BET＋5、ダブル中はHIGH<br><b>S／2</b> BET−5、ダブル中はLOW<br><b>A／4</b> COLLECT（手札選択中の4はHOLD）<br><b>＋／−</b> BETを5ずつ調整　<b>＊</b> All in　<b>／</b> サウンド　<b>．</b> NEW CREDIT（残高0の時）<br>テンキーはNum LockのON／OFFに対応しています。</p></section><section class="restart-section"><h2>最初からやり直す</h2><p>CREDITを1,000、BETを0に戻し、手札・WIN・進行状態をリセットします。</p><button id="restart-game">最初からやり直す</button></section></details></div></main>
 <script>
 const SUITS = ['S','H','D','C'];
 const card = (rank, suit) => ({rank, suit, joker:false});
@@ -353,7 +353,7 @@ function expectedHold(hand){
 
 class GameState {
   constructor({deckFactory=()=>new Deck(),doubleDown=new DoubleDown()}={}) {
-    this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=1; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
+    this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=0; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
   }
   setBet(value) {if(!['ready','lost'].includes(this.phase)||!Number.isFinite(value)) return; this.bet=Math.max(0,Math.min(this.credit,Math.trunc(value)));}
   deal() {

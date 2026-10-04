@@ -19,7 +19,7 @@ test('stale tab cannot overwrite credit through sound or game input',()=>{
 });
 test('DRAW blocks immediate mouse and keyboard DOUBLE but accepts a later input',()=>{
   const tab=setup();
-  vm.runInContext("game.phase='hold';game.hand=[10,11,12,13,14].map(rank=>card(rank,'S'));game.held.fill(true);",tab.context);
+  vm.runInContext("game.bet=1;game.phase='hold';game.hand=[10,11,12,13,14].map(rank=>card(rank,'S'));game.held.fill(true);",tab.context);
   tab.node('deal').onclick();assert.equal(vm.runInContext('game.phase',tab.context),'won');
   tab.node('deal').onclick();assert.equal(vm.runInContext('game.phase',tab.context),'won');
   tab.node('deal').click=()=>tab.node('deal').onclick();
@@ -34,7 +34,7 @@ test('corrupt save is backed up and recovery is disclosed; failed backup preserv
   assert.equal(protectedTab.node('play-area').inert,true);assert.match(protectedTab.node('session-text').textContent,/元データを保護/);
 });
 test('HOLD updates the same button without replacing focused card DOM',()=>{
-  const tab=setup();tab.node('deal').onclick();vm.runInContext('game.held.fill(false);render();',tab.context);
+  const tab=setup();tab.node('plus').onclick();tab.node('deal').onclick();vm.runInContext('game.held.fill(false);render();',tab.context);
   const button={classList:{toggle(){}},setAttribute(){},parentElement:{querySelector:()=>({textContent:''})}};
   const cards=tab.node('cards'),original=cards.innerHTML;cards.querySelector=()=>button;
   tab.listeners.keydown({key:'2',code:'Numpad2',target:{closest:()=>null},preventDefault(){}});
@@ -59,6 +59,7 @@ test('only D and 6 are main shortcuts; guide preference survives reload',()=>{
   tab.node('guide').onclick();assert.equal(tab.node('deal').attrs['data-key-hint'],'');assert.equal(storage.getItem('amber-poker.guide'),'off');
   const reopened=setup(storage);assert.equal(reopened.node('guide').textContent,'ガイド OFF');
   assert.doesNotMatch(reopened.node('message').innerHTML,/主操作キー/);
+  reopened.node('plus').onclick();
   reopened.node('deal').click=()=>reopened.node('deal').onclick();
   reopened.listeners.keydown({key:'Unidentified',code:'Numpad6',target:{closest:()=>null},preventDefault(){}});
   assert.equal(vm.runInContext('game.phase',reopened.context),'hold');
@@ -70,6 +71,6 @@ test('full restart requires confirmation and persists clean initial state',()=>{
  tab.node('restart-game').onclick();assert.equal(vm.runInContext('game.credit',tab.context),300);
  vm.runInContext('globalThis.confirm=()=>true;',tab.context);tab.node('restart-game').onclick();
  const saved=JSON.parse(storage.getItem('amber-poker.state.v1'));
- assert.equal(saved.credit,1000);assert.equal(saved.bet,1);assert.equal(saved.win,0);assert.equal(saved.phase,'ready');assert.deepEqual(saved.hand,[]);assert.deepEqual(saved.held,[false,false,false,false,false]);assert.equal(saved.doubleResult,null);assert.equal(saved.soundEnabled,true);assert.equal(storage.getItem('amber-poker.guide'),'on');
- const restored=setup(storage);assert.equal(restored.node('credit').textContent,'1,000');assert.equal(restored.node('bet').textContent,'1');
+ assert.equal(saved.credit,1000);assert.equal(saved.bet,0);assert.equal(saved.win,0);assert.equal(saved.phase,'ready');assert.deepEqual(saved.hand,[]);assert.deepEqual(saved.held,[false,false,false,false,false]);assert.equal(saved.doubleResult,null);assert.equal(saved.soundEnabled,true);assert.equal(storage.getItem('amber-poker.guide'),'on');
+ const restored=setup(storage);assert.equal(restored.node('credit').textContent,'1,000');assert.equal(restored.node('bet').textContent,'0');
 });
