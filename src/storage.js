@@ -16,7 +16,7 @@ function checkedCards(cards,allowJoker=true){
 function restoredDeck(cards){const deck=Object.create(Deck.prototype);deck.cards=cards;return deck;}
 export function saveGame(game,soundEnabled,storage){
   try{
-    storage.setItem(SAVE_KEY,JSON.stringify({version:1,collectedWin:game.collectedWin||0,credit:game.credit,bet:game.bet,win:game.win,phase:game.phase,hand:game.hand,held:game.held,deck:game.phase==='hold'?game.deck.cards:[],doubleResult:game.doubleResult,doubleDeck:game.phase==='double'?game.doubleDown.deck.cards:[],soundEnabled}));
+    storage.setItem(SAVE_KEY,JSON.stringify({version:2,collectedWin:game.collectedWin||0,credit:game.credit,bet:game.bet,win:game.win,phase:game.phase,hand:game.hand,held:game.held,deck:game.phase==='hold'?game.deck.cards:[],doubleResult:game.doubleResult,doubleDeck:game.phase==='double'?game.doubleDown.deck.cards:[],soundEnabled}));
     return true;
   }catch{return false;}
 }
@@ -25,8 +25,12 @@ export function restoreGame(game,storage){
   try{
     raw=storage.getItem(SAVE_KEY);if(raw===null)return {status:'empty'};
     const s=JSON.parse(raw);
-    if(s.version!==1||!['ready','hold','won','double','lost'].includes(s.phase)||![s.credit,s.win].every(n=>Number.isSafeInteger(n)&&n>=0)||!Number.isSafeInteger(s.credit+s.win)||!Number.isSafeInteger(s.bet)||s.bet<0||typeof s.soundEnabled!=='boolean')throw new Error('Invalid state');
+    if(![1,2].includes(s.version)||!['ready','hold','won','double','lost'].includes(s.phase)||![s.credit,s.win].every(n=>Number.isSafeInteger(n)&&n>=0)||!Number.isSafeInteger(s.credit+s.win)||!Number.isSafeInteger(s.bet)||s.bet<0||typeof s.soundEnabled!=='boolean')throw new Error('Invalid state');
     if(s.collectedWin!==undefined&&(!Number.isSafeInteger(s.collectedWin)||s.collectedWin<0))throw new Error('Invalid collected win');
+    if(['ready','lost'].includes(s.phase)){
+      if(s.version===1){s.bet=Math.min(s.credit,s.bet);s.credit-=s.bet;}
+      if(!Number.isSafeInteger(s.credit+s.bet))throw new Error('Invalid reserved bet');
+    }
     const hand=checkedCards(s.hand);
     if(hand.length)validateHand(hand);else if(s.phase!=='ready')throw new Error('Missing hand');
     if(!Array.isArray(s.held)||s.held.length!==5||s.held.some(v=>typeof v!=='boolean'))throw new Error('Invalid holds');

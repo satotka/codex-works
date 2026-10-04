@@ -40,3 +40,5 @@ test('bad data or unavailable storage leaves a fresh game usable',()=>{
   const denied={getItem(){throw Error('blocked');},setItem(){throw Error('quota');}};
   assert.equal(saveGame(game,true,denied),false);assert.equal(restoreGame(new GameState(),denied).status,'unavailable');
 });
+
+test('legacy editable saves migrate credit without double charging',()=>{const storage=memory();const game=new GameState();game.setBet(17);saveGame(game,true,storage);const old=JSON.parse(storage.value);old.version=1;old.credit=1000;storage.value=JSON.stringify(old);const next=new GameState();assert.equal(restoreGame(next,storage).status,'restored');assert.equal(next.credit,983);assert.equal(next.bet,17);assert.equal(next.deal(),true);assert.equal(next.credit,983);saveGame(next,true,storage);const active=JSON.parse(storage.value);active.version=1;storage.value=JSON.stringify(active);const resumed=new GameState();assert.equal(restoreGame(resumed,storage).status,'restored');assert.equal(resumed.credit,983);assert.equal(resumed.phase,'hold');assert.equal(resumed.deal(),false);});

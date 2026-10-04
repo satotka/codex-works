@@ -27,30 +27,30 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   node('sound').onclick(); // No audio API required when muted.
   for(const id of ['double','collect','high','low','deal','plus','minus','max','sound','reset'])node(id).click=()=>node(id).onclick();
   const keypad=code=>listeners.keydown({key:'Unidentified',code,target:{closest:()=>null},preventDefault(){}});
-  keypad('NumpadAdd');assert.equal(node('bet').textContent,'5');keypad('NumpadSubtract');assert.equal(node('bet').textContent,'0');
+  keypad('NumpadAdd');assert.equal(node('bet').textContent,'1');keypad('NumpadSubtract');assert.equal(node('bet').textContent,'0');
   keypad('NumpadMultiply');assert.equal(node('bet').textContent,'1,000');
   assert.equal(node('max').textContent,'解除');
   for(const id of ['plus','minus','plus-ten','minus-ten'])assert.equal(node(id).disabled,true);
   keypad('NumpadAdd');assert.equal(node('bet').textContent,'1,000');
   keypad('NumpadSubtract');assert.equal(node('bet').textContent,'1,000');
   keypad('NumpadMultiply');assert.equal(node('bet').textContent,'0');
-  assert.equal(node('max').textContent,'ALL IN');
+  assert.equal(node('max').textContent,'MAX');
   vm.runInContext('game.setBet(1);render();',context);
   const press=(key,repeat=false)=>listeners.keydown({key,repeat,target:{closest:()=>null},preventDefault(){}});
   for(const phase of ['ready','lost']){
     vm.runInContext(`game.phase='${phase}';game.setBet(1);render();`,context);
-    keypad('Numpad8');assert.equal(node('bet').textContent,'6');
+    keypad('Numpad8');assert.equal(node('bet').textContent,'2');
     keypad('Numpad2');assert.equal(node('bet').textContent,'1');
-    press('8');assert.equal(node('bet').textContent,'6');
+    press('8');assert.equal(node('bet').textContent,'2');
     press('2');assert.equal(node('bet').textContent,'1');
   }
-  press('w');assert.equal(node('bet').textContent,'6');
+  press('w');assert.equal(node('bet').textContent,'2');
   press('s');assert.equal(node('bet').textContent,'1');
   press('S');assert.equal(node('bet').textContent,'0');vm.runInContext('game.setBet(1);render();',context);
   press('d');assert.equal(node('bet').textContent,'1');assert.match(node('deal').innerHTML,/DRAW/);
   vm.runInContext("game.phase='ready';game.credit=1000;render();",context);
   vm.runInContext('game.setBet(40);render();',context);
-  press('W');assert.equal(node('bet').textContent,'45');
+  press('W');assert.equal(node('bet').textContent,'41');
   vm.runInContext('game.setBet(1);render();',context);
   // Exercise the real evaluator through each HIGH input path, not a stubbed result.
   for(const input of ['w','W','h','Numpad8','mouse']){
@@ -79,20 +79,20 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   vm.runInContext("game.phase='won';game.win=25;render();",context);
   press('d');press('S');assert.equal(node('win').textContent,'0');
   vm.runInContext("game.phase='won';game.win=25;render();",context);
-  press('6');press('2');assert.equal(node('win').textContent,'0');assert.equal(node('deal').disabled,false);
-  vm.runInContext('game.credit=1000;render();',context);
-  keypad('Numpad0');press('0');assert.equal(node('credit').textContent,'1,000');
+  press('6');press('2');assert.equal(node('win').textContent,'0');assert.equal(node('deal').disabled,true);
+  vm.runInContext('game.credit=1000;game.setBet(1);render();',context);
+  keypad('Numpad0');press('0');assert.equal(node('credit').textContent,'999');
   keypad('Numpad6');assert.equal(node('credit').textContent,'999');assert.match(node('deal').innerHTML,/DRAW/);
   vm.runInContext('game.held.fill(false);render();',context);
   node('cards').onclick({target:{closest:()=>({dataset:{index:'0'}})}});assert.match(node('cards').innerHTML,/held/);
   keypad('Numpad6');assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
   if(!node('collect').disabled)node('collect').onclick();
-  assert.equal(node('deal').disabled,false);
-  vm.runInContext("game.credit=0;game.phase='lost';render();",context);
+  assert.equal(node('deal').disabled,true);
+  vm.runInContext("game.credit=0;game.bet=0;game.phase='lost';render();",context);
   keypad('NumpadDecimal');assert.equal(node('credit').textContent,'1,000');
   for(const [key,code] of [['d','KeyD'],['D','KeyD'],['6','Digit6'],['Unidentified','Numpad6']]){
     const main=(repeat=false)=>listeners.keydown({key,code,repeat,target:{closest:()=>null},preventDefault(){this.prevented=true;}});
-    vm.runInContext("game.phase='ready';game.credit=1000;game.setBet(1);render();",context);
+    vm.runInContext("game.phase='ready';game.credit=1000;game.bet=0;game.setBet(1);render();",context);
     main();assert.match(node('deal').innerHTML,/DRAW/);assert.equal(node('credit').textContent,'999');
     const holdingCards=node('cards').innerHTML;main(true);assert.equal(node('cards').innerHTML,holdingCards);
     main();assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
@@ -104,7 +104,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   }
   const storage={value:null,getItem(){return this.value;},setItem(key,value){this.value=value;}};
   context.localStorage=storage;
-  vm.runInContext("storage=globalThis.localStorage;game.phase='ready';game.credit=321;game.win=0;game.doubleResult=null;render();",context);
+  vm.runInContext("storage=globalThis.localStorage;game.phase='ready';game.credit=321;game.bet=0;game.setBet(1);game.win=0;game.doubleResult=null;render();",context);
   node('deal').onclick();keypad('Numpad3');
   const previousCards=node('cards').innerHTML;
   const reopenedNodes=new Map();
