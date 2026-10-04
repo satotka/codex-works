@@ -26,12 +26,12 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 <section id="cards" class="cards" aria-label="手札"></section>
 <div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW <small>低い · S / 2</small></button><button id="high">HIGH <small>高い · W / 8</small></button></div></div>
 <div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div><span>BET</span><output id="bet">1</output></div><div class="win-meter"><span>WIN</span><output id="win">0</output></div></div>
-</section><section class="console"><div class="bet-controls"><span>BET SELECT · W＋ / S−</span><div><button id="minus" aria-label="BETを1減らす">−</button><button id="plus" aria-label="BETを1増やす">+</button><button id="max">MAX <small>40</small></button></div></div><button id="deal" class="primary">DEAL <small>配る</small></button><button id="double" class="purple">DOUBLE <small>Space / Enter / D / 6</small></button><button id="collect" class="green">COLLECT <small>A / 4</small></button></section>
+</section><section class="console"><div class="bet-controls"><span>BET SELECT · W / 8＋ · S / 2−</span><div><button id="minus" aria-label="BETを1減らす">−</button><button id="plus" aria-label="BETを1増やす">+</button><button id="max">MAX <small>40</small></button></div></div><button id="deal" class="primary">DEAL <small>配る</small></button><button id="double" class="purple">DOUBLE <small>Space / Enter / D / 6</small></button><button id="collect" class="green">COLLECT <small>A / 4</small></button></section>
 <footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT <small> . キー</small></button><span id="save-status" role="status">自動保存</span><span>FOR AMUSEMENT ONLY</span></footer>
 <details class="controls-help" open><summary>操作説明 — 状態別</summary>
 <p><b>共通の主操作：Space / Enter / D / 6（テンキー・数字列）</b><br>BET時はDEAL、手札を選ぶ時はDRAW、当たり後はDOUBLE。ダブル中は無効です。</p>
 <div class="controls-list">
-<section><h2>BET時</h2><p><b>W / ＋</b> BETを1増やす<br><b>S / −</b> BETを1減らす<br><b>＊</b> MAX BET（40）<br><b>主操作キー</b> DEAL：カードを配る</p></section>
+<section><h2>BET時</h2><p><b>W / 8 / ＋</b> BETを1増やす<br><b>S / 2 / −</b> BETを1減らす<br><b>＊</b> MAX BET（40）<br><b>主操作キー</b> DEAL：カードを配る</p></section>
 <section><h2>通常ゲーム時</h2><p><b>1–5 / カードをタップ</b> HOLD / RELEASE<br><b>主操作キー</b> DRAW：残さないカードを交換<br>当たり後：<b>主操作キー</b>でDOUBLE、<b>A / 4</b>でCOLLECT<br>負けた後：BETを選び、主操作キーで次のDEAL</p></section>
 <section><h2>ダブル中</h2><p><b>W / 8</b> HIGH：基準より高い<br><b>S / 2</b> LOW：基準より低い<br>同じ数字は引き分け。WINをそのまま自動COLLECTします。勝った後は主操作キーで再DOUBLE、A / 4でCOLLECT。</p></section>
 </div><p>カード・ボタンはクリック／タップでも操作できます。テンキーはNum LockのON/OFFに対応。<b>／</b>でSOUND ON/OFF、残高0の時は<b>．</b>でNEW CREDIT。0キーは使用しません。</p></details></main>
@@ -282,8 +282,8 @@ document.addEventListener('keydown',e=>{
   const primary=['Space','Enter','NumpadEnter','KeyD','Numpad6','Digit6'].includes(e.code)||[' ','enter','d','6'].includes((e.key||'').toLowerCase());
   if(primary)action=game.phase==='won'?'double':'deal';
   if(['ready','lost'].includes(game.phase)){
-    if((e.key||'').toLowerCase()==='w'||e.code==='KeyW')action='plus';
-    if((e.key||'').toLowerCase()==='s'||e.code==='KeyS')action='minus';
+    if((e.key||'').toLowerCase()==='w'||['KeyW','Numpad8','Digit8'].includes(e.code)||e.key==='8')action='plus';
+    if((e.key||'').toLowerCase()==='s'||['KeyS','Numpad2','Digit2'].includes(e.code)||e.key==='2')action='minus';
   }
   if(index===null&&!action)return;
   // Main keys override native button activation and never skip HIGH/LOW.

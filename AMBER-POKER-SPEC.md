@@ -391,3 +391,6 @@ localStorageのamber-poker.state.v1に、操作ごとにCREDIT・BET・未獲得
 
 ## ダブル引き分け（2026-10-04更新）
 基準カードと次のカードが同rankならHIGH/LOWどちらも引き分け（outcome=draw）。賭けていたWINを倍増せずそのままCREDITへ自動COLLECTし、WIN=0、readyへ戻る。結果カードと引き分け表示は次のDEALまで維持し、リロードでも二重加算しない。従来の同rank敗北規定より優先する。
+
+
+BET操作更新（2026-10-04）: ready/lostでは8（テンキー／数字列）=BET＋1、2=BET−1。W/Sと同じ。holdでは2=HOLD、doubleでは8=HIGH・2=LOWを維持する。

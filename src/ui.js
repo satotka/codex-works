@@ -69,8 +69,8 @@ document.addEventListener('keydown',e=>{
   const primary=['Space','Enter','NumpadEnter','KeyD','Numpad6','Digit6'].includes(e.code)||[' ','enter','d','6'].includes((e.key||'').toLowerCase());
   if(primary)action=game.phase==='won'?'double':'deal';
   if(['ready','lost'].includes(game.phase)){
-    if((e.key||'').toLowerCase()==='w'||e.code==='KeyW')action='plus';
-    if((e.key||'').toLowerCase()==='s'||e.code==='KeyS')action='minus';
+    if((e.key||'').toLowerCase()==='w'||['KeyW','Numpad8','Digit8'].includes(e.code)||e.key==='8')action='plus';
+    if((e.key||'').toLowerCase()==='s'||['KeyS','Numpad2','Digit2'].includes(e.code)||e.key==='2')action='minus';
   }
   if(index===null&&!action)return;
   // Main keys override native button activation and never skip HIGH/LOW.
