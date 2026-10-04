@@ -21,7 +21,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   }
   for(const [rank,label] of [[11,'J'],[12,'Q'],[13,'K']]){
     const center=vm.runInContext(`cardCenter({rank:${rank},suit:'S',joker:false});`,context);
-    assert.match(center,new RegExp(`<b>${label}</b>`));
+    assert.match(center,/class="court-art"/);assert.doesNotMatch(center,/<b>/);
   }
   assert.match(vm.runInContext(`cardCenter({rank:14,suit:'S',joker:false});`,context),/class="suit ace"/);
   node('sound').onclick(); // No audio API required when muted.
