@@ -1,3 +1,4 @@
+import {expectedHold} from './hold-strategy.js';
 import {Deck} from './deck.js';
 import {evaluateHand,payout,roleCardIndices} from './hand-evaluator.js';
 import {DoubleDown} from './double-down.js';
@@ -8,7 +9,7 @@ export class GameState {
   setBet(value) {if(!['ready','lost'].includes(this.phase)||!Number.isFinite(value)) return; this.bet=Math.max(1,Math.min(40,Math.trunc(value)));}
   deal() {
     if(!['ready','lost'].includes(this.phase)||this.credit<this.bet) return false;
-    this.collectedWin=0; this.credit-=this.bet; this.win=0; this.deck=this.deckFactory(); this.hand=Array.from({length:5},()=>this.deck.draw()); this.held.fill(false); for(const i of roleCardIndices(this.hand))this.held[i]=true; this.phase='hold'; this.result=null; this.doubleResult=null; return true;
+    this.collectedWin=0; this.credit-=this.bet; this.win=0; this.deck=this.deckFactory(); this.hand=Array.from({length:5},()=>this.deck.draw()); this.held.fill(false); for(const i of expectedHold(this.hand))this.held[i]=true; this.phase='hold'; this.result=null; this.doubleResult=null; return true;
   }
   toggleHold(i) {if(this.phase==='hold'&&Number.isInteger(i)&&i>=0&&i<5) this.held[i]=!this.held[i];}
   draw() {if(this.phase!=='hold') return false; this.hand=this.hand.map((c,i)=>this.held[i]?c:this.deck.draw()); this.result=evaluateHand(this.hand); this.win=payout(this.bet,this.result); this.phase=this.win?'won':'lost'; return true;}
