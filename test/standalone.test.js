@@ -27,24 +27,24 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   node('sound').onclick(); // No audio API required when muted.
   for(const id of ['double','collect','high','low','deal','plus','minus','max','sound','reset'])node(id).click=()=>node(id).onclick();
   const keypad=code=>listeners.keydown({key:'Unidentified',code,target:{closest:()=>null},preventDefault(){}});
-  keypad('NumpadAdd');assert.equal(node('bet').textContent,'2');keypad('NumpadSubtract');assert.equal(node('bet').textContent,'1');
-  keypad('NumpadMultiply');assert.equal(node('bet').textContent,'40');
+  keypad('NumpadAdd');assert.equal(node('bet').textContent,'6');keypad('NumpadSubtract');assert.equal(node('bet').textContent,'1');
+  keypad('NumpadMultiply');assert.equal(node('bet').textContent,'1,000');
   vm.runInContext('game.setBet(1);render();',context);
   const press=(key,repeat=false)=>listeners.keydown({key,repeat,target:{closest:()=>null},preventDefault(){}});
   for(const phase of ['ready','lost']){
     vm.runInContext(`game.phase='${phase}';game.setBet(1);render();`,context);
-    keypad('Numpad8');assert.equal(node('bet').textContent,'2');
+    keypad('Numpad8');assert.equal(node('bet').textContent,'6');
     keypad('Numpad2');assert.equal(node('bet').textContent,'1');
-    press('8');assert.equal(node('bet').textContent,'2');
+    press('8');assert.equal(node('bet').textContent,'6');
     press('2');assert.equal(node('bet').textContent,'1');
   }
-  press('w');assert.equal(node('bet').textContent,'2');
+  press('w');assert.equal(node('bet').textContent,'6');
   press('s');assert.equal(node('bet').textContent,'1');
   press('S');assert.equal(node('bet').textContent,'1');
   press('d');assert.equal(node('bet').textContent,'1');assert.match(node('deal').innerHTML,/DRAW/);
   vm.runInContext("game.phase='ready';game.credit=1000;render();",context);
   vm.runInContext('game.setBet(40);render();',context);
-  press('W');assert.equal(node('bet').textContent,'40');
+  press('W');assert.equal(node('bet').textContent,'45');
   vm.runInContext('game.setBet(1);render();',context);
   // Exercise the real evaluator through each HIGH input path, not a stubbed result.
   for(const input of ['w','W','h','Numpad8','mouse']){

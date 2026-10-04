@@ -25,7 +25,7 @@ export function restoreGame(game,storage){
   try{
     raw=storage.getItem(SAVE_KEY);if(raw===null)return {status:'empty'};
     const s=JSON.parse(raw);
-    if(s.version!==1||!['ready','hold','won','double','lost'].includes(s.phase)||![s.credit,s.win].every(n=>Number.isSafeInteger(n)&&n>=0)||!Number.isSafeInteger(s.credit+s.win)||!Number.isInteger(s.bet)||s.bet<1||s.bet>40||typeof s.soundEnabled!=='boolean')throw new Error('Invalid state');
+    if(s.version!==1||!['ready','hold','won','double','lost'].includes(s.phase)||![s.credit,s.win].every(n=>Number.isSafeInteger(n)&&n>=0)||!Number.isSafeInteger(s.credit+s.win)||!Number.isSafeInteger(s.bet)||s.bet<1||typeof s.soundEnabled!=='boolean')throw new Error('Invalid state');
     if(s.collectedWin!==undefined&&(!Number.isSafeInteger(s.collectedWin)||s.collectedWin<0))throw new Error('Invalid collected win');
     const hand=checkedCards(s.hand);
     if(hand.length)validateHand(hand);else if(s.phase!=='ready')throw new Error('Missing hand');

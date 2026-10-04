@@ -21,7 +21,7 @@ function classify(hand,natural=true) {
   return {...PAY_TABLE[order],order,jokerUsed:false};
 }
 export function evaluateHand(hand) {validateHand(hand); return hand.some(c=>c.joker)?bestJokerInterpretation(hand,classify):classify(hand);}
-export function payout(bet,result) {if(!Number.isInteger(bet)||bet<1||bet>40) throw new Error('Invalid bet'); return bet*result.multiplier;}
+export function payout(bet,result) {if(!Number.isSafeInteger(bet)||bet<1) throw new Error('Invalid bet'); const amount=bet*result.multiplier;if(!Number.isSafeInteger(amount))throw new Error('Payout limit');return amount;}
 
 export function roleCardIndices(hand,result=evaluateHand(hand)){
   if(result.id==='highCard')return [];
