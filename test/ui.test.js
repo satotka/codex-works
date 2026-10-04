@@ -9,7 +9,7 @@ test('UI wiring: bet, deal, hold/release, draw, sound and next game',async()=>{
   node('max').onclick();assert.equal(node('bet').textContent,'40');
   node('minus').onclick();assert.equal(node('bet').textContent,'39');
   node('plus').onclick();assert.equal(node('bet').textContent,'40');
-  assert.equal(node('double').disabled,true);assert.equal(node('collect').disabled,true);
+  assert.equal(node('collect').disabled,true);
   node('deal').onclick();assert.equal(node('credit').textContent,'960');assert.match(node('deal').innerHTML,/DRAW/);assert.equal(node('plus').disabled,true);
   const hold=()=>node('cards').onclick({target:{closest:()=>({dataset:{index:'0'}})}});
   hold();assert.match(node('cards').innerHTML,/held/);hold();assert.doesNotMatch(node('cards').innerHTML,/class="card [^"]*held/);
@@ -22,7 +22,7 @@ test('UI wiring: bet, deal, hold/release, draw, sound and next game',async()=>{
   }
   listeners.keydown(event('2','Digit2'));assert.match(node('cards').innerHTML,/held/);
   node('deal').click=()=>node('deal').onclick();
-  const space=event(' ','Space');listeners.keydown(space);assert.equal(space.prevented,true);assert.match(node('deal').innerHTML,/DEAL/);
+  const space=event(' ','Space');listeners.keydown(space);assert.equal(space.prevented,true);assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
   const afterDraw=node('cards').innerHTML;listeners.keydown(event(' ','Space',true));assert.equal(node('cards').innerHTML,afterDraw);
   if(!node('collect').disabled)node('collect').onclick();
   assert.equal(node('deal').disabled,false);assert.equal(node('plus').disabled,true); // MAX remains selected.

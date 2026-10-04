@@ -394,3 +394,7 @@ localStorageのamber-poker.state.v1に、操作ごとにCREDIT・BET・未獲得
 
 
 BET操作更新（2026-10-04）: ready/lostでは8（テンキー／数字列）=BET＋1、2=BET−1。W/Sと同じ。holdでは2=HOLD、doubleでは8=HIGH・2=LOWを維持する。
+
+
+## 初回UX改善（2026-10-04）
+主ボタンを同じ場所でDEAL→DRAW→DOUBLEに切り替える。手動COLLECT後は手札・HOLD・前回の役・ダブル表示をクリアし、カードは5枚の裏面へ戻す。獲得額は保存してリロード後も表示する。引き分けの自動COLLECTでは結果の2枚を次のDEALまで維持する。メッセージは結果・比較/補足・次の操作の3段に整理し、引き分けにはDRAW表記を使わない。以前の表示規定より優先する。

@@ -18,3 +18,8 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 @media(max-width:760px){.controls-list{grid-template-columns:1fr 1fr}.double-panel button{min-width:0;width:42%;margin:0 3px}.console button{min-height:60px}.card{min-height:80px}.brand p{letter-spacing:0}.small{padding:6px;font-size:10px}header{gap:8px}.hold-label{font-size:10px;letter-spacing:0}.screen{padding:12px 6px}}
 
 .controls-list h2{font-size:16px;color:#efc375;margin:8px 0}.controls-list section{min-width:0}.controls-list p{margin:0}
+
+.console{grid-template-columns:1.25fr 1.3fr 1fr}
+.message{min-height:96px;letter-spacing:0;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.message strong{font-size:20px;line-height:1.4}.message span{font-size:13px;line-height:1.5;color:#cfc0a9}.message span:empty{display:none}.message small{font-size:13px;line-height:1.5;color:#e4d8c4}
+@media(max-width:760px){.console{grid-template-columns:1fr 1fr}.bet-controls{grid-column:1/-1}.message strong{font-size:17px}.message{min-height:110px}}

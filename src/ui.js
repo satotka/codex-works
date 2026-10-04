@@ -4,7 +4,6 @@ import {Sound} from './sound.js';
 import {saveGame,restoreGame} from './storage.js';
 const game=new GameState(),sound=new Sound(),$=id=>document.getElementById(id);
 const symbols={S:'♠',H:'♥',D:'♦',C:'♣'},ranks={11:'J',12:'Q',13:'K',14:'A'};
-let notice='';
 let storage;
 try{storage=globalThis.localStorage;}catch{}
 const restored=restoreGame(game,storage);
@@ -43,23 +42,34 @@ function render(){
     const html=cardHtml(c,i,holding);
     return showingDouble?html.replace('<span class="hold-label"> </span>',`<span class="hold-label">${i===1?'基準カード':i===3?'次のカード':' '}</span>`):html;
   }).join('');
-  $('deal').innerHTML=holding?'DRAW <small>交換 · Space / Enter / D / 6</small>':'DEAL <small>配る · Space / Enter / D / 6</small>';
-  $('deal').disabled=!(holding||(editable&&game.credit>=game.bet));
+  $('deal').innerHTML=game.phase==='won'?'DOUBLE <small>WIN全額で挑戦 · Space / Enter / D / 6</small>':holding?'DRAW <small>交換 · Space / Enter / D / 6</small>':'DEAL <small>配る · Space / Enter / D / 6</small>';
+  $('deal').disabled=!(holding||game.canDouble||(editable&&game.credit>=game.bet));
   $('minus').disabled=!editable||game.bet===1;$('plus').disabled=!editable||game.bet===40;$('max').disabled=!editable||game.bet===40;
-  $('double').disabled=!game.canDouble;$('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';
+  $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';
   $('reset').hidden=!(game.credit===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
-  const messages={ready:'BETを決めて DEAL を押してください',hold:'残したいカードを HOLD → DRAW で1回交換',won:`${game.result?.name||''}${game.result?.jokerUsed?' · JOKER ×2':''} — COLLECT または DOUBLE`,lost:'NO WIN — 次のゲームは DEAL',double:'次のカードは基準より高い？低い？ W / S または 8 / 2で選択（同じ数字は引き分け・自動COLLECT）'};
-  $('message').textContent=notice||(game.phase==='ready'&&game.doubleResult?.outcome==='draw'?`同じ数字 · DRAW — ${game.doubleResult.win.toLocaleString()}をCOLLECTしました · 次はDEAL`:messages[game.phase]);
-  if(game.phase==='won'&&!game.canDouble)$('message').textContent='上限に達しました — COLLECTで獲得してください';
-  if(editable&&game.credit<game.bet)$('message').textContent=game.credit===0?'CREDITがなくなりました。NEW CREDITで再開できます':'CREDIT不足 — BETを減らしてください';
+  let title='BETを選んでください',detail='',next='主操作キーでDEAL';
+  if(holding){title='残すカードを選んでください';detail='カードをタップ、または1〜5でHOLD / RELEASE';next='主操作キーでDRAW（交換は1回）';}
+  if(game.phase==='won'){title=`未獲得WIN：${game.win.toLocaleString()}`;detail=`${game.result?.name||''}${game.result?.jokerUsed?' · JOKER ×2':''}`;next=game.canDouble?'DOUBLEでWIN全額を賭けて2倍に挑戦 ／ COLLECTで獲得':'上限に達しました。COLLECTで獲得してください';}
+  if(game.phase==='lost'){title='獲得なし';next='BETを選び、主操作キーで次のDEAL';}
+  if(game.phase==='double'){title='HIGH / LOWを選んでください';detail='基準より高い：W / 8　低い：S / 2';next='同じ数字は引き分け・WINを自動回収';}
+  const r=game.doubleResult;
+  if(r?.card&&['ready','won','lost'].includes(game.phase)){
+    detail=`${r.choice.toUpperCase()}を選択：基準${ranks[r.referenceCard.rank]||r.referenceCard.rank} → 次${ranks[r.card.rank]||r.card.rank}`;
+    if(r.outcome==='win')title=`ダブル成功 — 未獲得WIN：${game.win.toLocaleString()}`;
+    if(r.outcome==='lose')title='ダブル失敗 — 獲得なし';
+    if(r.outcome==='draw'){title=`引き分け — ${r.win.toLocaleString()}を獲得しました`;next='BETを選び、主操作キーで次のDEAL';}
+  }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、主操作キーで次のDEAL';}
+  if(editable&&game.credit<game.bet){next=game.credit===0?'NEW CREDITで再開できます':'CREDIT不足：BETを減らしてください';}
+  const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
 }
-function act(fn,tone){notice='';const result=fn();if(result!==false&&tone)sound.play(tone);render();}
+function act(fn,tone){const result=fn();if(result!==false&&tone)sound.play(tone);render();}
 $('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(40),'bet');
-$('deal').onclick=()=>{if(game.phase==='hold'){act(()=>game.draw(),'draw');if(game.win)sound.play('win');}else act(()=>game.deal(),'deal');};
+$('deal').onclick=()=>{if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){act(()=>game.draw(),'draw');if(game.win)sound.play('win');}else act(()=>game.deal(),'deal');};
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')act(()=>game.toggleHold(Number(b.dataset.index)),'hold');};
-$('double').onclick=()=>act(()=>game.startDouble(),'deal');$('collect').onclick=()=>act(()=>game.collect(),'collect');
-for(const choice of ['low','high'])$(choice).onclick=()=>{const r=game.guess(choice);if(!r)return;notice=`選択: ${choice.toUpperCase()} · 基準 ${ranks[r.referenceCard.rank]||r.referenceCard.rank} → 次 ${ranks[r.card.rank]||r.card.rank} — ${r.outcome==='win'?'DOUBLE WIN! 再挑戦またはCOLLECT':r.outcome==='draw'?`同じ数字 · DRAW — ${r.win.toLocaleString()}をCOLLECTしました · 次はDEAL`:'DOUBLE LOST · 次はDEAL'}`;sound.play(r.outcome==='win'?'doubleWin':r.outcome==='draw'?'collect':'doubleLose');render();};
+$('collect').onclick=()=>act(()=>game.collect(),'collect');
+for(const choice of ['low','high'])$(choice).onclick=()=>{const r=game.guess(choice);if(!r)return;sound.play(r.outcome==='win'?'doubleWin':r.outcome==='draw'?'collect':'doubleLose');render();};
 $('sound').onclick=()=>{sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));persist();};
 $('reset').onclick=()=>act(()=>game.reset(),'collect');
 document.addEventListener('keydown',e=>{
@@ -67,7 +77,7 @@ document.addEventListener('keydown',e=>{
   const index=/^[1-5]$/.test(e.key)?Number(e.key)-1:/^(Digit|Numpad)[1-5]$/.test(e.code||'')?Number(e.code.slice(-1))-1:null;
   let action={d:'double',a:'collect',w:'high',s:'low',c:'collect',h:'high',l:'low','6':'double','4':'collect','8':'high','2':'low','+':'plus','=':'plus','-':'minus','*':'max','/':'sound','.':'reset'}[(e.key||'').toLowerCase()]||{KeyD:'double',KeyA:'collect',KeyW:'high',KeyS:'low',KeyC:'collect',KeyH:'high',KeyL:'low',Numpad6:'double',Numpad4:'collect',Numpad8:'high',Numpad2:'low',NumpadAdd:'plus',NumpadSubtract:'minus',NumpadMultiply:'max',NumpadDivide:'sound',NumpadDecimal:'reset'}[e.code];
   const primary=['Space','Enter','NumpadEnter','KeyD','Numpad6','Digit6'].includes(e.code)||[' ','enter','d','6'].includes((e.key||'').toLowerCase());
-  if(primary)action=game.phase==='won'?'double':'deal';
+  if(primary)action='deal';
   if(['ready','lost'].includes(game.phase)){
     if((e.key||'').toLowerCase()==='w'||['KeyW','Numpad8','Digit8'].includes(e.code)||e.key==='8')action='plus';
     if((e.key||'').toLowerCase()==='s'||['KeyS','Numpad2','Digit2'].includes(e.code)||e.key==='2')action='minus';

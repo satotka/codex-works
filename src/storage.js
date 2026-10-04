@@ -16,7 +16,7 @@ function checkedCards(cards,allowJoker=true){
 function restoredDeck(cards){const deck=Object.create(Deck.prototype);deck.cards=cards;return deck;}
 export function saveGame(game,soundEnabled,storage){
   try{
-    storage.setItem(SAVE_KEY,JSON.stringify({version:1,credit:game.credit,bet:game.bet,win:game.win,phase:game.phase,hand:game.hand,held:game.held,deck:game.phase==='hold'?game.deck.cards:[],doubleResult:game.doubleResult,doubleDeck:game.phase==='double'?game.doubleDown.deck.cards:[],soundEnabled}));
+    storage.setItem(SAVE_KEY,JSON.stringify({version:1,collectedWin:game.collectedWin||0,credit:game.credit,bet:game.bet,win:game.win,phase:game.phase,hand:game.hand,held:game.held,deck:game.phase==='hold'?game.deck.cards:[],doubleResult:game.doubleResult,doubleDeck:game.phase==='double'?game.doubleDown.deck.cards:[],soundEnabled}));
     return true;
   }catch{return false;}
 }
@@ -25,6 +25,7 @@ export function restoreGame(game,storage){
     const raw=storage.getItem(SAVE_KEY);if(raw===null)return {status:'empty'};
     const s=JSON.parse(raw);
     if(s.version!==1||!['ready','hold','won','double','lost'].includes(s.phase)||![s.credit,s.win].every(n=>Number.isSafeInteger(n)&&n>=0)||!Number.isSafeInteger(s.credit+s.win)||!Number.isInteger(s.bet)||s.bet<1||s.bet>40||typeof s.soundEnabled!=='boolean')throw new Error('Invalid state');
+    if(s.collectedWin!==undefined&&(!Number.isSafeInteger(s.collectedWin)||s.collectedWin<0))throw new Error('Invalid collected win');
     const hand=checkedCards(s.hand);
     if(hand.length)validateHand(hand);else if(s.phase!=='ready')throw new Error('Missing hand');
     if(!Array.isArray(s.held)||s.held.length!==5||s.held.some(v=>typeof v!=='boolean'))throw new Error('Invalid holds');
@@ -56,7 +57,7 @@ export function restoreGame(game,storage){
       doubleDown.deck=restoredDeck(doubleDeck);doubleDown.referenceCard=doubleResult.referenceCard;doubleDown.active=true;
     }else if(doubleDeck.length)throw new Error('Unexpected double deck');
     const result=hand.length&&s.phase!=='hold'?evaluateHand(hand):null;
-    Object.assign(game,{credit:s.credit,bet:s.bet,win:s.win,phase:s.phase,hand,held:s.held.slice(),deck:restoredDeck(deck),doubleDown,doubleResult,result});
+    Object.assign(game,{collectedWin:s.collectedWin||0,credit:s.credit,bet:s.bet,win:s.win,phase:s.phase,hand,held:s.held.slice(),deck:restoredDeck(deck),doubleDown,doubleResult,result});
     return {status:'restored',soundEnabled:s.soundEnabled};
   }catch{return {status:'unavailable'};}
 }

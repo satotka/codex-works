@@ -47,18 +47,23 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   // Exercise the real evaluator through each HIGH input path, not a stubbed result.
   for(const input of ['w','W','h','Numpad8','mouse']){
     vm.runInContext("game.phase='won';game.win=25;game.doubleDown=new DoubleDown(()=>{const cards=[{rank:8,suit:'H',joker:false},{rank:14,suit:'S',joker:false}];return {draw:()=>cards.shift()};});render();",context);
-    node('double').onclick();
+    node('deal').onclick();
     assert.match(node('cards').innerHTML,/基準カード/);
     if(input==='mouse')node('high').onclick();else if(input==='Numpad8')keypad(input);else press(input);
     assert.equal(node('win').textContent,'50');
-    assert.match(node('message').textContent,/選択: HIGH · 基準 8 → 次 A.*DOUBLE WIN/);
-    assert.doesNotMatch(node('message').textContent,/DOUBLE LOST/);
+    assert.match(node('message').innerHTML,/ダブル成功.*HIGHを選択：基準8 → 次A/);
+    assert.doesNotMatch(node('message').innerHTML,/ダブル失敗/);
   }
-  vm.runInContext("game.phase='won';game.win=25;game.doubleDown={start:()=>({rank:8,suit:'H',joker:false}),play:(win,choice)=>({referenceCard:{rank:8,suit:'H',joker:false},card:{rank:14,suit:'S',joker:false},outcome:choice==='high'?'win':'lose',win:choice==='high'?win*2:0})};render();",context);
+  vm.runInContext("game.phase='won';game.win=25;game.doubleDown={start:()=>({rank:8,suit:'H',joker:false}),play:(win,choice)=>({choice,referenceCard:{rank:8,suit:'H',joker:false},card:{rank:14,suit:'S',joker:false},outcome:choice==='high'?'win':'lose',win:choice==='high'?win*2:0})};render();",context);
   keypad('Numpad6');assert.equal(node('double-panel').hidden,false);
   keypad('Numpad8');assert.equal(node('win').textContent,'50');
   press('d',true);assert.equal(node('double-panel').hidden,true);
   keypad('Numpad4');assert.equal(node('credit').textContent,'1,050');assert.equal(node('win').textContent,'0');
+  assert.equal((node('cards').innerHTML.match(/class="card back/g)||[]).length,5);
+  assert.equal(vm.runInContext('game.result',context),null);
+  assert.equal(vm.runInContext('game.held.some(Boolean)',context),false);
+  assert.match(node('message').innerHTML,/50を獲得しました/);
+  assert.match(node('deal').innerHTML,/DEAL/);
   press('c');assert.equal(node('credit').textContent,'1,050');
   vm.runInContext("game.phase='won';game.win=25;render();",context);
   press('D');press('W');assert.equal(node('win').textContent,'50');
@@ -66,12 +71,12 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   vm.runInContext("game.phase='won';game.win=25;render();",context);
   press('d');press('S');assert.equal(node('win').textContent,'0');
   vm.runInContext("game.phase='won';game.win=25;render();",context);
-  press('6');press('2');assert.equal(node('win').textContent,'0');assert.equal(node('double').disabled,true);
+  press('6');press('2');assert.equal(node('win').textContent,'0');assert.equal(node('deal').disabled,false);
   vm.runInContext('game.credit=1000;render();',context);
   keypad('Numpad0');press('0');assert.equal(node('credit').textContent,'1,000');
   keypad('Numpad6');assert.equal(node('credit').textContent,'999');assert.match(node('deal').innerHTML,/DRAW/);
   node('cards').onclick({target:{closest:()=>({dataset:{index:'0'}})}});assert.match(node('cards').innerHTML,/held/);
-  keypad('NumpadEnter');assert.match(node('deal').innerHTML,/DEAL/);
+  keypad('NumpadEnter');assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
   if(!node('collect').disabled)node('collect').onclick();
   assert.equal(node('deal').disabled,false);
   vm.runInContext("game.credit=0;game.phase='lost';render();",context);
@@ -81,8 +86,9 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
     vm.runInContext("game.phase='ready';game.credit=1000;game.setBet(1);render();",context);
     main();assert.match(node('deal').innerHTML,/DRAW/);assert.equal(node('credit').textContent,'999');
     const holdingCards=node('cards').innerHTML;main(true);assert.equal(node('cards').innerHTML,holdingCards);
-    main();assert.match(node('deal').innerHTML,/DEAL/);
+    main();assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
     vm.runInContext("game.phase='won';game.win=25;render();",context);
+    assert.match(node('deal').innerHTML,/DOUBLE/);
     main();assert.equal(node('double-panel').hidden,false);
     main();assert.equal(node('double-panel').hidden,false); // Cannot skip HIGH/LOW.
     main(true);assert.equal(node('double-panel').hidden,false);
@@ -106,14 +112,14 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   assert.equal(reopenedNode('win').textContent,node('win').textContent);
   vm.runInContext("game.phase='won';game.win=25;game.doubleDown=new DoubleDown(()=>{const deck=new Deck({includeJoker:false,random:()=>0.5});deck.cards=deck.cards.filter(c=>!(c.rank===8&&['S','H'].includes(c.suit)));deck.cards.push(card(8,'H'),card(8,'S'));return deck;});render();",reopened);
   const beforeTie=Number(reopenedNode('credit').textContent.replaceAll(',',''));
-  reopenedNode('double').onclick();reopenedNode('high').onclick();
+  reopenedNode('deal').onclick();reopenedNode('high').onclick();
   assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25);
   assert.equal(reopenedNode('win').textContent,'0');
-  assert.match(reopenedNode('message').textContent,/DRAW.*COLLECT/);
+  assert.match(reopenedNode('message').innerHTML,/引き分け.*獲得しました/);
   assert.match(reopenedNode('cards').innerHTML,/基準カード/);
   vm.runInNewContext(script,{crypto:webcrypto,localStorage:storage,document:{getElementById:reopenedNode,querySelectorAll:()=>[],addEventListener(){}}});
   assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25);
-  assert.match(reopenedNode('message').textContent,/DRAW.*COLLECT/);
+  assert.match(reopenedNode('message').innerHTML,/引き分け.*獲得しました/);
   assert.match(reopenedNode('cards').innerHTML,/基準カード/);
   assert.equal(reopenedNode('collect').disabled,true);
 });
