@@ -129,6 +129,19 @@ summary::-webkit-details-marker{display:none}
 .cards.double-burst::after{animation-duration:1200ms;box-shadow:inset 0 0 50px #ffcf7899,0 0 45px #ffd36b77}
 @keyframes win-sparkle{0%{opacity:0;transform:scale(.92)}20%{opacity:1}100%{opacity:0;transform:scale(1.12)}}
 @media(prefers-reduced-motion:reduce){.cards.win-burst::after,.cards.double-burst::after{animation:none;display:none}}
+
+.suit-mark{width:1em;height:1em;display:inline-block;vertical-align:middle;overflow:visible}
+.pip{font-size:clamp(14px,22cqw,38px)}
+.pips{inset:24% 24%}
+.corner{font-family:Arial,sans-serif;font-weight:800;font-size:clamp(13px,22cqw,30px);line-height:1.1}
+.corner .suit-mark{width:.95em;height:.95em}
+.suit.ace{font-size:clamp(38px,60cqw,88px)}
+.face-center.illustrated{position:absolute;inset:21% 20%;border:1px solid #bdab86;border-radius:3px;background:linear-gradient(145deg,#fbf5e4,#ede1c3);display:block;overflow:hidden}
+.court-art{width:100%;height:100%;display:block}
+.face-center.illustrated>b{position:absolute;bottom:2px;left:3px;font-size:clamp(12px,17cqw,24px);line-height:1;color:#fff9e9}
+.court-suit{position:absolute;bottom:3px;right:3px;font-size:clamp(12px,19cqw,28px);color:#fff9e9}
+
+.pips{inset:19% 24%}.pip{font-size:clamp(13px,18cqw,34px)}
 </style></head><body>
 <main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">最新状態を読み込む</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><div class="utility-bar"><button id="guide" class="small" aria-pressed="true">ガイド ON</button><button id="sound" class="small" aria-pressed="true">SOUND ON</button></div></header>
 <section class="screen"><div class="screen-top"><span>1 JOKER · WILD CARD</span><span class="edition">ARCADE EDITION / 01</span></div>
@@ -401,7 +414,9 @@ class PlaySession {
 }
 
 const game=new GameState(),sound=new Sound(),$=id=>document.getElementById(id);
-const symbols={S:'♠',H:'♥',D:'♦',C:'♣'},ranks={11:'J',12:'Q',13:'K',14:'A'};
+const suitPaths={S:'M50 3 C38 20 7 38 7 59 C7 82 34 89 46 72 C44 84 39 92 29 97 H71 C61 92 56 84 54 72 C66 89 93 82 93 59 C93 38 62 20 50 3Z',H:'M50 95 C39 81 5 56 5 30 C5 2 39 0 50 24 C61 0 95 2 95 30 C95 56 61 81 50 95Z',D:'M50 2 L94 50 L50 98 L6 50Z',C:'M45 66 C32 88 4 78 4 57 C4 38 23 28 37 39 C18 17 33 2 50 2 C67 2 82 17 63 39 C77 28 96 38 96 57 C96 78 68 88 55 66 C54 83 61 93 72 98 H28 C39 93 46 83 45 66Z'};
+const symbols=Object.fromEntries(Object.entries(suitPaths).map(([s,path])=>[s,`<svg class="suit-mark" viewBox="0 0 100 100" aria-hidden="true"><path fill="currentColor" d="${path}"/></svg>`]));
+const suitNames={S:'スペード',H:'ハート',D:'ダイヤ',C:'クラブ'},ranks={11:'J',12:'Q',13:'K',14:'A'};
 let roleIndices=[],currentRole='';
 let storage;
 try{storage=globalThis.localStorage;}catch{}
@@ -434,11 +449,15 @@ const pipLayouts={
   7:[[22,12],[78,12],[50,31],[22,50],[78,50],[22,88],[78,88]],
   8:[[22,12],[78,12],[50,31],[22,50],[78,50],[50,69],[22,88],[78,88]],
   9:[[22,12],[78,12],[22,37],[78,37],[50,50],[22,63],[78,63],[22,88],[78,88]],
-  10:[[22,12],[78,12],[50,25],[22,37],[78,37],[22,63],[78,63],[50,75],[22,88],[78,88]]
+  10:[[22,8],[78,8],[22,29],[78,29],[22,50],[78,50],[22,71],[78,71],[22,92],[78,92]]
 };
 function cardCenter(c){
   if(c.rank===14)return `<span class="suit ace" aria-hidden="true">${symbols[c.suit]}</span>`;
-  if(c.rank>=11)return `<span class="face-center" aria-hidden="true"><b>${ranks[c.rank]}</b><span>${symbols[c.suit]}</span></span>`;
+  if(c.rank>=11){
+    const headwear=c.rank===13?'<path d="M23 35 L17 10 L36 22 L50 4 L64 22 L83 10 L77 35Z" fill="#c6a052"/>':c.rank===12?'<path d="M25 35 L31 17 L42 27 L50 12 L58 27 L69 17 L75 35Z" fill="#c6a052"/>':'<path d="M22 33 Q24 4 72 17 L80 33Z" fill="currentColor"/><path d="M70 19 Q91 4 86 2" fill="none" stroke="#c6a052" stroke-width="5"/>';
+    const hair=c.rank===12?'<path d="M27 38 Q13 54 23 86 L36 77 L64 77 L77 86 Q87 54 73 38Z" fill="#473525"/>':'';
+    return `<span class="face-center illustrated" aria-hidden="true"><svg class="court-art" viewBox="0 0 100 125">${hair}<path d="M12 125 L19 92 L38 78 H62 L81 92 L88 125Z" fill="currentColor"/><path d="M38 80 L50 101 L62 80" fill="none" stroke="#d8b86b" stroke-width="5"/><rect x="32" y="31" width="36" height="49" rx="17" fill="#edcda5"/><path d="M39 48 H43 M57 48 H61" stroke="#302723" stroke-width="3" stroke-linecap="round"/><path d="M50 49 L47 60 H52 M42 68 Q50 72 58 68" fill="none" stroke="#95634c" stroke-width="2"/>${c.rank===13?'<path d="M34 63 Q50 79 66 63 L62 82 L50 90 L38 82Z" fill="#65452f"/>':''}${headwear}<path d="M27 36 H73" stroke="#a78036" stroke-width="5"/></svg><b>${ranks[c.rank]}</b><span class="court-suit">${symbols[c.suit]}</span></span>`;
+  }
   return `<span class="pips" aria-hidden="true">${pipLayouts[c.rank].map(([x,y])=>`<span class="pip${y>50?' inverted':''}" style="left:${x}%;top:${y}%">${symbols[c.suit]}</span>`).join('')}</span>`;
 }
 $('payrows').innerHTML=PAY_TABLE.filter(p=>p.multiplier).map(p=>`<div class="payrow" data-hand="${p.id}"><span>${p.name}</span><span>${p.multiplier}</span><span>${p.id==='naturalRoyal'?'—':p.multiplier*2}</span></div>`).join('');
@@ -446,7 +465,7 @@ function cardHtml(c,i,interactive) {
   const held=interactive&&game.held[i];
   const face=!c?'<span>♠</span>':c.joker?'<div class="joker-center"><b>★</b>JOKER<br><small>WILD CARD</small></div>':`<span class="corner">${ranks[c.rank]||c.rank}<br>${symbols[c.suit]}</span>${cardCenter(c)}<span class="corner bottom">${ranks[c.rank]||c.rank}<br>${symbols[c.suit]}</span>`;
   const inRole=c&&roleIndices.includes(i);
-  const label=!c?'伏せたカード':c.joker?'JOKER':`${ranks[c.rank]||c.rank} ${symbols[c.suit]}`;
+  const label=!c?'伏せたカード':c.joker?'JOKER':`${ranks[c.rank]||c.rank} ${suitNames[c.suit]}`;
   return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''} ${inRole?'in-role':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${inRole?' · '+currentRole+'のカード':''}${interactive?' HOLD切替':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
 function render(){
