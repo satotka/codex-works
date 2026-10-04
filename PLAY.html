@@ -183,17 +183,32 @@ summary::-webkit-details-marker{display:none}
 @media(max-width:760px){.bet-row{gap:4px;margin-top:8px}.bet-row button{font-size:11px;padding:4px 2px}.bet-amount output{font-size:20px}}
 
 #controls-help[hidden],#hint[hidden]{display:none!important}
+
+.utility-bar{display:flex;align-items:center;gap:8px}
+.small.icon-toggle{position:relative;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:10px;border-radius:10px;background:#211f1e;color:#9b9388;flex-shrink:0;letter-spacing:0}
+.icon-toggle>svg{width:23px;height:23px}
+.icon-toggle[aria-pressed="true"]{color:#efc375;border-color:#a47d42;background:#352b1e}
+.icon-toggle .toggle-dot{position:absolute;right:5px;bottom:5px;width:5px;height:5px;border:1px solid currentColor;border-radius:50%}
+.icon-toggle[aria-pressed="true"] .toggle-dot{background:currentColor}
+.icon-toggle:hover{border-color:#efc375}
+.paytable-details>summary,.controls-help>summary{display:flex;justify-content:space-between;width:100%;gap:12px;min-height:44px;padding:10px 12px;text-align:left;border-radius:6px;background:#24221f}
+.paytable-details[open]>summary{margin-bottom:10px}
+.disclosure-arrow{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s ease}
+details[open]>summary .disclosure-arrow{transform:rotate(180deg)}
+.paytable-details>summary:hover,.controls-help>summary:hover{background:#342d22;border-color:#ad864b}
+summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.disclosure-arrow{transition:none}}
 </style></head><body>
-<main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">RELOAD</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><div class="utility-bar"><button id="guide" class="small" aria-pressed="true">GUIDE ON</button><button id="sound" class="small" aria-pressed="true">SOUND ON</button></div></header>
+<main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">RELOAD</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><div class="utility-bar"><button id="guide" class="small icon-toggle" aria-label="Guide ON" title="Guide ON" aria-pressed="true"></button><button id="sound" class="small icon-toggle" aria-label="Sound ON" title="Sound ON" aria-pressed="true"></button></div></header>
 <section class="screen"><div class="screen-top"><span>1 JOKER · WILD CARD</span><span class="edition">ARCADE EDITION / 01</span></div>
-<details id="paytable-details" class="paytable-details" open><summary>PAYTABLE</summary><section class="paytable" aria-label="配当表"><div class="table-head"><span>WINNING HAND</span><span>NATURAL</span><span>JOKER ×2</span></div><div id="payrows"></div></section></details>
+<details id="paytable-details" class="paytable-details" open><summary><span>PAYTABLE</span><svg class="disclosure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><section class="paytable" aria-label="配当表"><div class="table-head"><span>WINNING HAND</span><span>NATURAL</span><span>JOKER ×2</span></div><div id="payrows"></div></section></details>
 <div class="message" id="message" role="status" aria-live="polite">BET</div>
 <section id="cards" class="cards" aria-label="手札"></section>
 
 <div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div class="win-meter"><span id="win-label">WIN</span><output id="win">0</output></div></div>
 <div class="bet-row"><button id="min">MIN</button><button id="minus-ten">−10</button><button id="minus">−1</button><div class="bet-amount"><span>BET <span id="bet-lock" hidden>LOCKED</span></span><output id="bet">0</output></div><button id="plus">＋1</button><button id="plus-ten">＋10</button><button id="max">MAX</button></div><section class="console"><div id="normal-controls" class="normal-controls"><button id="deal" class="primary">DEAL</button><button id="collect" class="green">COLLECT</button></div><div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section></section>
 <footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT</button><span id="save-status" role="status">自動保存</span><span>FOR AMUSEMENT ONLY</span></footer>
-<details id="controls-help" class="controls-help"><summary>遊び方</summary>
+<details id="controls-help" class="controls-help"><summary><span>遊び方</span><svg class="disclosure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
 <p>カードとボタンをタップして操作できます。</p>
 <div class="controls-list">
 <section><h2>BETを選ぶ</h2><p>−10／−1／＋1／＋10でBETを調整。MINで1、MAXで全額を選択。BETを増やすとCREDITから移し、減らすと戻します。DEAL時の追加控除はありません。全額選択中は増減できず、DEALまたは解除を選びます。解除するとBETを0に戻します。BET 0ではDEALできません。ゲーム中のBETは固定です。ゲーム終了後も同じBET額を次のゲームに引き継ぎます。残高が足りない場合は残高までに調整します。<br>DEALをタップしてカードを配ります。</p></section>
@@ -479,6 +494,15 @@ let lockPending=!!globalThis.navigator?.locks,primaryUntil=0;
 let restored=restoreGame(game,storage);
 let recoveryBlocked=restored.status==='invalid'&&!restored.backedUp;
 if(restored.status==='restored')sound.enabled=restored.soundEnabled;
+function updateUtilityButtons(){
+  const guideIcon='<path d="M4 4.5h6a3 3 0 0 1 2 1 3 3 0 0 1 2-1h6v15h-6a3 3 0 0 0-2 1 3 3 0 0 0-2-1H4z"/><path d="M12 5.5v15M7 9h2M15 9h2M7 13h2M15 13h2"/>';
+  const speaker='<path d="M4 9h4l5-4v14l-5-4H4z"/>';
+  for(const [id,on,icon] of [['guide',guideEnabled,guideIcon],['sound',sound.enabled,speaker+(sound.enabled?'<path d="M16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14"/>':'<path d="m17 9 5 6m0-6-5 6"/>')]]){
+    const button=$(id),label=`${id==='guide'?'Guide':'Sound'} ${on?'ON':'OFF'}`;
+    button.innerHTML=`<svg class="${id}-${on?'on':'off'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}${id==='guide'&&!on?'<path d="M3 3 21 21"/>':''}</svg><span class="toggle-dot" aria-hidden="true"></span>`;
+    button.setAttribute('aria-label',label);button.setAttribute('title',label);button.setAttribute('aria-pressed',String(on));
+  }
+}
 function allowed(){return !lockPending&&!recoveryBlocked&&session.check();}
 function persist(){
   if(!allowed()){$('save-status').textContent=!guideEnabled?(lockPending?'PREPARING':recoveryBlocked?'SAVE ERROR · DATA PROTECTED':'PLAY PAUSED · RELOAD'):lockPending?'プレイを準備中':recoveryBlocked?'保存を復元できません。元データを保護しています':'別タブでプレイ中、または保存が更新されました';return;}
@@ -526,7 +550,7 @@ function cardHtml(c,i,interactive) {
   return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''} ${inRole?'in-role':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${inRole?' · '+currentRole+'のカード':''}${interactive?' Toggle HOLD':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
 function render(){
-  persist();refreshAccess();
+  updateUtilityButtons();persist();refreshAccess();
   const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
   ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
   const collected=game.phase==='ready'&&(game.doubleResult?.outcome==='draw'?game.doubleResult.win:game.collectedWin)||0;
@@ -566,12 +590,12 @@ function render(){
   }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、DEALをタップ';}
   if(editable&&game.bet>Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500))next='表示できる金額の上限に達しました';
   if(editable&&game.credit+game.bet===0)next='NEW CREDITで再開できます';
-    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8 / +',minus:'S / 2 / −',max:'＊',sound:'／',reset:'．'};
+    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8 / +',minus:'S / 2 / −',max:'＊',reset:'．'};
   for(const [id,keys] of Object.entries(keyHints)){
     const button=$(id);
     button.setAttribute('data-key-hint',guideEnabled?keys:'');
   }
-  $('guide').textContent=guideEnabled?'GUIDE ON':'GUIDE OFF';$('guide').setAttribute('aria-pressed',String(guideEnabled));
+
   if(editable&&game.bet===0&&game.credit>0)next='BETを増やすか、MAXをタップしてください';
   let status=holding?'HOLD':game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':game.phase==='double'?'HIGH / LOW':allIn?'ALL IN':'BET';
   if(r?.card&&['ready','won','lost'].includes(game.phase)){
@@ -603,7 +627,7 @@ $('minus-ten').onclick=()=>act(()=>game.setBet(game.bet-10),'bet');$('plus-ten')
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};
 $('collect').onclick=()=>act(()=>game.collect(),'win');
 for(const choice of ['low','high'])$(choice).onclick=()=>{if(!allowed()){refreshAccess();return;}const r=game.guess(choice);if(!r)return;sound.play(r.outcome==='win'?'doubleWin':r.outcome==='draw'?'collect':'doubleLose');render();if(r.outcome==='win')celebrate(true);};
-$('sound').onclick=()=>{if(!allowed()){refreshAccess();return;}sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));persist();};
+$('sound').onclick=()=>{if(!allowed()){refreshAccess();return;}sound.enabled=!sound.enabled;updateUtilityButtons();persist();};
 $('reset').onclick=()=>act(()=>game.reset(),'collect');
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.altKey||e.metaKey||e.isComposing||e.target.closest('input,select,textarea,[contenteditable="true"]'))return;
@@ -627,8 +651,7 @@ document.addEventListener('keydown',e=>{
   }
   else if(game.phase==='hold')holdCard(index);
 });
-$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;
-$('sound').setAttribute('aria-pressed',String(sound.enabled));
+updateUtilityButtons();
 render();
 
 
@@ -641,7 +664,7 @@ if(globalThis.navigator?.locks){
     if(!lock){session.blocked=true;render();return;}
     // Reconcile updates made while the lock request was pending.
     const latest=restoreGame(game,storage);restored=latest;recoveryBlocked=latest.status==='invalid'&&!latest.backedUp;if(latest.status==='restored')sound.enabled=latest.soundEnabled;
-    session.saved();$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));render();
+    session.saved();updateUtilityButtons();render();
     await new Promise(resolve=>globalThis.addEventListener('pagehide',resolve,{once:true}));
   }).catch(()=>{lockPending=false;render();});
 }
@@ -662,7 +685,7 @@ $('restart-game').onclick=()=>{
   Object.assign(game,new GameState());game.deck=null;game.collectedWin=0;
   sound.enabled=true;guideEnabled=true;primaryUntil=0;
   try{storage.setItem('amber-poker.guide','on');}catch{}
-  $('sound').textContent='SOUND ON';$('sound').setAttribute('aria-pressed','true');
+  updateUtilityButtons();
   $('cards').classList?.remove('win-burst','double-burst');
   render();
 };

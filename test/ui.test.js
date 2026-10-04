@@ -5,7 +5,7 @@ test('UI wiring: bet, deal, hold/release, draw, sound and next game',async()=>{
   const node=id=>{if(!nodes.has(id))nodes.set(id,{id,innerHTML:'',textContent:'',disabled:false,hidden:false,attrs:{},setAttribute(k,v){this.attrs[k]=v;}});return nodes.get(id);};
   globalThis.document={getElementById:node,querySelectorAll:()=>[],addEventListener:(type,fn)=>listeners[type]=fn};
   await import('../src/ui.js');
-  node('sound').onclick();assert.equal(node('sound').textContent,'SOUND OFF');
+  node('sound').onclick();assert.match(node('sound').innerHTML,/sound-off/);
   node('max').onclick();assert.equal(node('bet').textContent,'1,000');node('max').onclick();for(let i=0;i<4;i++)node('plus-ten').onclick();
   node('minus').onclick();assert.equal(node('bet').textContent,'39');
   node('plus').onclick();assert.equal(node('bet').textContent,'40');

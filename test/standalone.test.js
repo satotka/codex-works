@@ -114,7 +114,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   assert.equal(reopenedNode('credit').textContent,'320');
   assert.equal(reopenedNode('cards').innerHTML,previousCards);
   assert.match(reopenedNode('deal').innerHTML,/DRAW/);
-  assert.equal(reopenedNode('sound').textContent,'SOUND OFF');
+  assert.match(reopenedNode('sound').innerHTML,/sound-off/);
   assert.match(reopenedNode('save-status').textContent,/自動保存 ON/);
   reopenedNode('deal').onclick();vm.runInContext('storage=undefined;session.storage=undefined;',context);node('deal').onclick();
   assert.equal(reopenedNode('cards').innerHTML,node('cards').innerHTML);

@@ -17,6 +17,15 @@ let lockPending=!!globalThis.navigator?.locks,primaryUntil=0;
 let restored=restoreGame(game,storage);
 let recoveryBlocked=restored.status==='invalid'&&!restored.backedUp;
 if(restored.status==='restored')sound.enabled=restored.soundEnabled;
+function updateUtilityButtons(){
+  const guideIcon='<path d="M4 4.5h6a3 3 0 0 1 2 1 3 3 0 0 1 2-1h6v15h-6a3 3 0 0 0-2 1 3 3 0 0 0-2-1H4z"/><path d="M12 5.5v15M7 9h2M15 9h2M7 13h2M15 13h2"/>';
+  const speaker='<path d="M4 9h4l5-4v14l-5-4H4z"/>';
+  for(const [id,on,icon] of [['guide',guideEnabled,guideIcon],['sound',sound.enabled,speaker+(sound.enabled?'<path d="M16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14"/>':'<path d="m17 9 5 6m0-6-5 6"/>')]]){
+    const button=$(id),label=`${id==='guide'?'Guide':'Sound'} ${on?'ON':'OFF'}`;
+    button.innerHTML=`<svg class="${id}-${on?'on':'off'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}${id==='guide'&&!on?'<path d="M3 3 21 21"/>':''}</svg><span class="toggle-dot" aria-hidden="true"></span>`;
+    button.setAttribute('aria-label',label);button.setAttribute('title',label);button.setAttribute('aria-pressed',String(on));
+  }
+}
 function allowed(){return !lockPending&&!recoveryBlocked&&session.check();}
 function persist(){
   if(!allowed()){$('save-status').textContent=!guideEnabled?(lockPending?'PREPARING':recoveryBlocked?'SAVE ERROR · DATA PROTECTED':'PLAY PAUSED · RELOAD'):lockPending?'プレイを準備中':recoveryBlocked?'保存を復元できません。元データを保護しています':'別タブでプレイ中、または保存が更新されました';return;}
@@ -64,7 +73,7 @@ function cardHtml(c,i,interactive) {
   return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''} ${inRole?'in-role':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${inRole?' · '+currentRole+'のカード':''}${interactive?' Toggle HOLD':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
 function render(){
-  persist();refreshAccess();
+  updateUtilityButtons();persist();refreshAccess();
   const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
   ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
   const collected=game.phase==='ready'&&(game.doubleResult?.outcome==='draw'?game.doubleResult.win:game.collectedWin)||0;
@@ -104,12 +113,12 @@ function render(){
   }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、DEALをタップ';}
   if(editable&&game.bet>Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500))next='表示できる金額の上限に達しました';
   if(editable&&game.credit+game.bet===0)next='NEW CREDITで再開できます';
-    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8 / +',minus:'S / 2 / −',max:'＊',sound:'／',reset:'．'};
+    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8 / +',minus:'S / 2 / −',max:'＊',reset:'．'};
   for(const [id,keys] of Object.entries(keyHints)){
     const button=$(id);
     button.setAttribute('data-key-hint',guideEnabled?keys:'');
   }
-  $('guide').textContent=guideEnabled?'GUIDE ON':'GUIDE OFF';$('guide').setAttribute('aria-pressed',String(guideEnabled));
+
   if(editable&&game.bet===0&&game.credit>0)next='BETを増やすか、MAXをタップしてください';
   let status=holding?'HOLD':game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':game.phase==='double'?'HIGH / LOW':allIn?'ALL IN':'BET';
   if(r?.card&&['ready','won','lost'].includes(game.phase)){
@@ -141,7 +150,7 @@ $('minus-ten').onclick=()=>act(()=>game.setBet(game.bet-10),'bet');$('plus-ten')
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};
 $('collect').onclick=()=>act(()=>game.collect(),'win');
 for(const choice of ['low','high'])$(choice).onclick=()=>{if(!allowed()){refreshAccess();return;}const r=game.guess(choice);if(!r)return;sound.play(r.outcome==='win'?'doubleWin':r.outcome==='draw'?'collect':'doubleLose');render();if(r.outcome==='win')celebrate(true);};
-$('sound').onclick=()=>{if(!allowed()){refreshAccess();return;}sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));persist();};
+$('sound').onclick=()=>{if(!allowed()){refreshAccess();return;}sound.enabled=!sound.enabled;updateUtilityButtons();persist();};
 $('reset').onclick=()=>act(()=>game.reset(),'collect');
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.altKey||e.metaKey||e.isComposing||e.target.closest('input,select,textarea,[contenteditable="true"]'))return;
@@ -165,8 +174,7 @@ document.addEventListener('keydown',e=>{
   }
   else if(game.phase==='hold')holdCard(index);
 });
-$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;
-$('sound').setAttribute('aria-pressed',String(sound.enabled));
+updateUtilityButtons();
 render();
 
 
@@ -179,7 +187,7 @@ if(globalThis.navigator?.locks){
     if(!lock){session.blocked=true;render();return;}
     // Reconcile updates made while the lock request was pending.
     const latest=restoreGame(game,storage);restored=latest;recoveryBlocked=latest.status==='invalid'&&!latest.backedUp;if(latest.status==='restored')sound.enabled=latest.soundEnabled;
-    session.saved();$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));render();
+    session.saved();updateUtilityButtons();render();
     await new Promise(resolve=>globalThis.addEventListener('pagehide',resolve,{once:true}));
   }).catch(()=>{lockPending=false;render();});
 }
@@ -200,7 +208,7 @@ $('restart-game').onclick=()=>{
   Object.assign(game,new GameState());game.deck=null;game.collectedWin=0;
   sound.enabled=true;guideEnabled=true;primaryUntil=0;
   try{storage.setItem('amber-poker.guide','on');}catch{}
-  $('sound').textContent='SOUND ON';$('sound').setAttribute('aria-pressed','true');
+  updateUtilityButtons();
   $('cards').classList?.remove('win-burst','double-burst');
   render();
 };

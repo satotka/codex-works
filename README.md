@@ -172,3 +172,6 @@ MIN・−10・−1・BET数・＋1・＋10・MAXの1行。MIN=1、MAX=残りCRED
 
 
 BET引継ぎ（2026-10-04）：負け・COLLECT・引き分け自動COLLECTで、前回BET額を次のBETとして残高から予約する。残高不足は残高までに調整、全額なら解除/DEALだけ有効。初回と完全リセットのBET 0は維持。CREDITは次回BET予約後の残高、獲得額PAIDは実際のWIN全額。予約済み状態を保存し、復元やDEALで二重控除しない。
+
+
+UI切替（2026-10-04）：GUIDEは本、SOUNDはスピーカーのSVGアイコン。ONは金色、OFFは斜線付き。44pxボタン、aria-label/title/aria-pressedで状態を提供し、保存復元時も同期。配当表と遊び方は全幅summaryと上下に回転する矢印で開閉を示す。実ブラウザー目視確認は未実施。

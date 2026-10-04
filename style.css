@@ -183,3 +183,18 @@ summary::-webkit-details-marker{display:none}
 @media(max-width:760px){.bet-row{gap:4px;margin-top:8px}.bet-row button{font-size:11px;padding:4px 2px}.bet-amount output{font-size:20px}}
 
 #controls-help[hidden],#hint[hidden]{display:none!important}
+
+.utility-bar{display:flex;align-items:center;gap:8px}
+.small.icon-toggle{position:relative;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:10px;border-radius:10px;background:#211f1e;color:#9b9388;flex-shrink:0;letter-spacing:0}
+.icon-toggle>svg{width:23px;height:23px}
+.icon-toggle[aria-pressed="true"]{color:#efc375;border-color:#a47d42;background:#352b1e}
+.icon-toggle .toggle-dot{position:absolute;right:5px;bottom:5px;width:5px;height:5px;border:1px solid currentColor;border-radius:50%}
+.icon-toggle[aria-pressed="true"] .toggle-dot{background:currentColor}
+.icon-toggle:hover{border-color:#efc375}
+.paytable-details>summary,.controls-help>summary{display:flex;justify-content:space-between;width:100%;gap:12px;min-height:44px;padding:10px 12px;text-align:left;border-radius:6px;background:#24221f}
+.paytable-details[open]>summary{margin-bottom:10px}
+.disclosure-arrow{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s ease}
+details[open]>summary .disclosure-arrow{transform:rotate(180deg)}
+.paytable-details>summary:hover,.controls-help>summary:hover{background:#342d22;border-color:#ad864b}
+summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.disclosure-arrow{transition:none}}

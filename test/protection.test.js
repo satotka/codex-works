@@ -57,7 +57,7 @@ test('only D and 6 are main shortcuts; guide preference survives reload',()=>{
   assert.equal(tab.node('deal').attrs['data-key-hint'],'D / 6');
   assert.equal(tab.node('high').attrs['data-key-hint'],'W / 8');
   tab.node('guide').onclick();assert.equal(tab.node('deal').attrs['data-key-hint'],'');assert.equal(storage.getItem('amber-poker.guide'),'off');
-  const reopened=setup(storage);assert.equal(reopened.node('guide').textContent,'GUIDE OFF');
+  const reopened=setup(storage);assert.match(reopened.node('guide').innerHTML,/guide-off/);
   assert.doesNotMatch(reopened.node('message').innerHTML,/主操作キー/);
   reopened.node('plus').onclick();
   reopened.node('deal').click=()=>reopened.node('deal').onclick();
