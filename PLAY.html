@@ -123,6 +123,12 @@ summary::-webkit-details-marker{display:none}
 .card.held{border-color:#ffd078;box-shadow:0 0 8px 2px #f8bd5999,0 0 22px 5px #f0a63566,0 0 36px 8px #e8982926}
 .card.held::after{content:'';position:absolute;inset:-7px;border:1px solid #ffd07877;border-radius:12px;box-shadow:0 0 10px #ffce6b66;pointer-events:none}
 .card.held.in-role::before{border-color:#39aaba;border-width:2px}
+
+.cards{position:relative;isolation:isolate}
+.cards.win-burst::after,.cards.double-burst::after{content:'';position:absolute;inset:-16px;z-index:2;pointer-events:none;border-radius:12px;background:radial-gradient(circle at 12% 22%,#ffd778 0 2px,transparent 3px),radial-gradient(circle at 30% 70%,#fff0bd 0 3px,transparent 4px),radial-gradient(circle at 52% 12%,#ffc25c 0 3px,transparent 4px),radial-gradient(circle at 72% 62%,#fff0bd 0 2px,transparent 3px),radial-gradient(circle at 92% 30%,#ffd778 0 3px,transparent 4px);box-shadow:inset 0 0 35px #ffc65b88,0 0 30px #ffba4755;animation:win-sparkle 900ms ease-out both}
+.cards.double-burst::after{animation-duration:1200ms;box-shadow:inset 0 0 50px #ffcf7899,0 0 45px #ffd36b77}
+@keyframes win-sparkle{0%{opacity:0;transform:scale(.92)}20%{opacity:1}100%{opacity:0;transform:scale(1.12)}}
+@media(prefers-reduced-motion:reduce){.cards.win-burst::after,.cards.double-burst::after{animation:none;display:none}}
 </style></head><body>
 <main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">最新状態を読み込む</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><div class="utility-bar"><button id="guide" class="small" aria-pressed="true">ガイド ON</button><button id="sound" class="small" aria-pressed="true">SOUND ON</button></div></header>
 <section class="screen"><div class="screen-top"><span>1 JOKER · WILD CARD</span><span class="edition">ARCADE EDITION / 01</span></div>
@@ -443,12 +449,18 @@ function render(){
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
 }
+function celebrate(doubled=false){
+  const stage=$('cards');
+  stage.classList?.remove('win-burst','double-burst');
+  void stage.offsetWidth;
+  stage.classList?.add(doubled?'double-burst':'win-burst');
+}
 function act(fn,tone){if(!allowed()){refreshAccess();return;}const result=fn();if(result!==false&&tone)sound.play(tone);render();}
 $('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(40),'bet');
-$('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){primaryUntil=Date.now()+(guideEnabled?650:400);act(()=>game.draw(),'draw');if(game.win)sound.play('win');}else act(()=>game.deal(),'deal');};
+$('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){primaryUntil=Date.now()+(guideEnabled?650:400);act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};
 $('collect').onclick=()=>act(()=>game.collect(),'win');
-for(const choice of ['low','high'])$(choice).onclick=()=>{if(!allowed()){refreshAccess();return;}const r=game.guess(choice);if(!r)return;sound.play(r.outcome==='win'?'doubleWin':r.outcome==='draw'?'collect':'doubleLose');render();};
+for(const choice of ['low','high'])$(choice).onclick=()=>{if(!allowed()){refreshAccess();return;}const r=game.guess(choice);if(!r)return;sound.play(r.outcome==='win'?'doubleWin':r.outcome==='draw'?'collect':'doubleLose');render();if(r.outcome==='win')celebrate(true);};
 $('sound').onclick=()=>{if(!allowed()){refreshAccess();return;}sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));persist();};
 $('reset').onclick=()=>act(()=>game.reset(),'collect');
 document.addEventListener('keydown',e=>{

@@ -123,3 +123,9 @@ summary::-webkit-details-marker{display:none}
 .card.held{border-color:#ffd078;box-shadow:0 0 8px 2px #f8bd5999,0 0 22px 5px #f0a63566,0 0 36px 8px #e8982926}
 .card.held::after{content:'';position:absolute;inset:-7px;border:1px solid #ffd07877;border-radius:12px;box-shadow:0 0 10px #ffce6b66;pointer-events:none}
 .card.held.in-role::before{border-color:#39aaba;border-width:2px}
+
+.cards{position:relative;isolation:isolate}
+.cards.win-burst::after,.cards.double-burst::after{content:'';position:absolute;inset:-16px;z-index:2;pointer-events:none;border-radius:12px;background:radial-gradient(circle at 12% 22%,#ffd778 0 2px,transparent 3px),radial-gradient(circle at 30% 70%,#fff0bd 0 3px,transparent 4px),radial-gradient(circle at 52% 12%,#ffc25c 0 3px,transparent 4px),radial-gradient(circle at 72% 62%,#fff0bd 0 2px,transparent 3px),radial-gradient(circle at 92% 30%,#ffd778 0 3px,transparent 4px);box-shadow:inset 0 0 35px #ffc65b88,0 0 30px #ffba4755;animation:win-sparkle 900ms ease-out both}
+.cards.double-burst::after{animation-duration:1200ms;box-shadow:inset 0 0 50px #ffcf7899,0 0 45px #ffd36b77}
+@keyframes win-sparkle{0%{opacity:0;transform:scale(.92)}20%{opacity:1}100%{opacity:0;transform:scale(1.12)}}
+@media(prefers-reduced-motion:reduce){.cards.win-burst::after,.cards.double-burst::after{animation:none;display:none}}
