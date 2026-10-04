@@ -25,8 +25,60 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 @media(max-width:760px){.console{grid-template-columns:1fr 1fr}.bet-controls{grid-column:1/-1}.message strong{font-size:17px}.message{min-height:110px}}
 
 .double-panel{min-height:145px;margin:10px auto;display:flex;flex-direction:column;justify-content:center}
-.double-panel[hidden]{display:flex!important;visibility:hidden;pointer-events:none}
+.double-panel[hidden]{display:none!important}
 #session-warning{border:1px solid #edb457;padding:16px;margin-bottom:16px;color:#f7c46b}
 #session-warning[hidden]{display:none}
 #reload-state{min-height:44px;padding:8px 16px}
 #play-area[inert]{opacity:.5}
+
+/* Keep the hand, balances, and current controls together across viewport sizes. */
+body{padding:16px}
+.cabinet{padding:18px 24px 12px}
+header{margin-bottom:12px}
+.screen{padding:14px 20px}
+.screen-top{margin-bottom:8px}
+.paytable-details>summary{cursor:pointer;min-height:44px;line-height:44px;color:#cfc0a9;font-size:13px}
+.paytable-details[open]>summary{min-height:24px;line-height:24px}
+.paytable{font-size:13px}
+.message{min-height:82px;margin:10px 0 8px;gap:4px}
+.card{height:clamp(110px,25dvh,220px);max-height:none;aspect-ratio:auto}
+.hold-label{min-height:24px;padding-top:5px;letter-spacing:1px}
+.meters{margin-top:8px;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.meters>div{min-width:0;padding-top:8px;gap:5px}
+.meters output{font-size:clamp(20px,2.6vw,32px);overflow-wrap:anywhere}
+.console{padding:12px 0 0;min-height:88px;gap:12px}
+.normal-controls{display:contents}
+.normal-controls[hidden]{display:none}
+.double-panel{grid-column:1/-1;min-height:76px;margin:0;padding:8px;display:block}
+.double-panel>strong,.double-panel>span{display:none}
+.double-panel>div{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.double-panel button{width:100%;margin:0;min-height:60px}
+footer{flex-wrap:wrap;gap:6px 14px;margin-top:10px}
+.controls-help{margin-top:10px;padding-top:4px}
+@media(min-width:761px) and (max-height:760px){
+  body{padding:8px}.cabinet{padding:12px 18px 8px}
+  header{margin-bottom:8px}.brand-icon{font-size:32px}h1{font-size:26px}.brand p{margin-top:4px}
+  .screen{padding:8px 16px}.message{min-height:70px;margin:5px 0}.message strong{font-size:18px}
+  .card{height:clamp(90px,24dvh,170px)}
+  .console{padding-top:8px;min-height:76px}.console button{min-height:56px}
+}
+@media(max-width:760px){
+  body{padding:6px}.cabinet{padding:10px 8px 8px;border-radius:10px}
+  header{margin:0 2px 8px}.brand-icon{display:none}h1{font-size:20px;letter-spacing:1px}.brand p{font-size:9px;margin-top:4px}
+  .screen{padding:8px 6px}.screen-top{font-size:9px;letter-spacing:1px;margin-bottom:2px}
+  .message{min-height:86px;margin:4px 0 6px}.message strong{font-size:16px}.message span,.message small{font-size:12px}
+  .cards{gap:4px}.card{height:auto;aspect-ratio:.72;min-height:74px}
+  .hold-label{font-size:9px;letter-spacing:0;min-height:20px}
+  .meters{gap:6px;margin-top:4px}.meters>div{flex-direction:column;padding-top:6px;gap:2px}
+  .meters span{font-size:10px;letter-spacing:1px}.meters output{font-size:clamp(17px,5.4vw,25px)}
+  .console{grid-template-columns:1fr 1fr;gap:6px;padding-top:8px;min-height:116px}
+  .bet-controls{grid-column:1/-1}.bet-controls>span{font-size:10px;margin-bottom:4px;letter-spacing:0}
+  .bet-controls button{min-height:44px}.bet-controls>div{gap:6px}
+  .console button,.double-panel button{min-height:48px;font-size:16px}
+  .console button small{font-size:10px}
+  .double-panel{padding:0;border:0;min-height:110px;display:flex;justify-content:center}
+  .controls-list{grid-template-columns:1fr}footer{font-size:10px}#hint{display:none}
+}
+@media(max-height:480px) and (min-width:761px){
+  .card{height:90px}.message{min-height:66px}.screen-top,.brand p{display:none}
+}

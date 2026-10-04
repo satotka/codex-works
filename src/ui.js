@@ -62,7 +62,7 @@ function render(){
   $('deal').innerHTML=game.phase==='won'?'DOUBLE <small>WIN全額で挑戦 · Space / Enter / D / 6</small>':holding?'DRAW <small>交換 · Space / Enter / D / 6</small>':'DEAL <small>配る · Space / Enter / D / 6</small>';
   $('deal').disabled=!(holding||game.canDouble||(editable&&game.credit>=game.bet));
   $('minus').disabled=!editable||game.bet===1;$('plus').disabled=!editable||game.bet===40;$('max').disabled=!editable||game.bet===40;
-  $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';
+  $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';
   $('reset').hidden=!(game.credit===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
   let title='BETを選んでください',detail='',next='主操作キーでDEAL';
@@ -130,3 +130,9 @@ if(globalThis.navigator?.locks){
 }
 
 globalThis.addEventListener?.('pageshow',e=>{if(e.persisted)globalThis.location.reload();});
+
+const compactViewport=globalThis.matchMedia?.('(max-width: 760px), (max-height: 760px)');
+if(compactViewport){
+  const adaptPaytable=()=>{$('paytable-details').open=!compactViewport.matches;};
+  adaptPaytable();compactViewport.addEventListener('change',adaptPaytable);
+}
