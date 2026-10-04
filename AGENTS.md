@@ -22,3 +22,7 @@ Double: reveal a reference card, choose HIGH/LOW, draw the next card from the sa
 No real-browser visual/audio verification has been completed. Record actual checks and limitations honestly. Commit completed work to the remote repository so it is not stored only in an ephemeral task workspace.
 
 Monorepo scope: work only inside amber-poker/. Do not change the root dist/ or .openai/ used by another app. Run all build/test commands from amber-poker/.
+
+
+## 主操作キーの統一（2026-10-04更新）
+Space・Enter（通常／テンキー）・D・6（数字列／テンキー）は全て同じ主操作。ready/lostではDEAL、holdではDRAW、wonではDOUBLE、doubleでは無効。0は操作に割り当てない。Enterはフォーカスボタンの通常動作より主操作を優先する。操作説明はBET時・通常ゲーム時（HOLD/交換と当たり後）・ダブル中に分ける。この規定が以前のキー割当より優先する。

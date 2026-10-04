@@ -122,3 +122,7 @@ BET変更可能なready/lostではW=BET＋1、S=BET−1。doubleではW=HIGH、S
 
 最新の操作優先規定: DキーとSpaceは同じ主操作。ready/lostではDEAL、holdではDRAW、wonではDOUBLE、doubleでは無効（H/L選択はW/Sまたは8/2）。0・テンキーEnterは従来どおりDEAL/DRAW、6はDOUBLE。DをMAXへは割り当てない。以前のD専用・Space専用記述より本規定を優先する。
 
+
+
+## 主操作キーの統一（2026-10-04更新）
+Space・Enter（通常／テンキー）・D・6（数字列／テンキー）は全て同じ主操作。ready/lostではDEAL、holdではDRAW、wonではDOUBLE、doubleでは無効。0は操作に割り当てない。Enterはフォーカスボタンの通常動作より主操作を優先する。操作説明はBET時・通常ゲーム時（HOLD/交換と当たり後）・ダブル中に分ける。この規定が以前のキー割当より優先する。

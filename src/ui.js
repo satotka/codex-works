@@ -36,7 +36,7 @@ function render(){
     const html=cardHtml(c,i,holding);
     return showingDouble?html.replace('<span class="hold-label"> </span>',`<span class="hold-label">${i===1?'基準カード':i===3?'次のカード':' '}</span>`):html;
   }).join('');
-  $('deal').innerHTML=holding?'DRAW <small>交換 · D / Space / 0</small>':'DEAL <small>配る · D / Space / 0</small>';
+  $('deal').innerHTML=holding?'DRAW <small>交換 · Space / Enter / D / 6</small>':'DEAL <small>配る · Space / Enter / D / 6</small>';
   $('deal').disabled=!(holding||(editable&&game.credit>=game.bet));
   $('minus').disabled=!editable||game.bet===1;$('plus').disabled=!editable||game.bet===40;$('max').disabled=!editable||game.bet===40;
   $('double').disabled=!game.canDouble;$('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';
@@ -57,17 +57,16 @@ $('sound').onclick=()=>{sound.enabled=!sound.enabled;$('sound').textContent=`SOU
 $('reset').onclick=()=>act(()=>game.reset(),'collect');
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.altKey||e.metaKey||e.isComposing||e.target.closest('input,select,textarea,[contenteditable="true"]'))return;
-  const space=e.code==='Space'||e.key===' '||e.code==='NumpadEnter'||e.code==='Numpad0'||e.code==='Digit0'||e.key==='0';
   const index=/^[1-5]$/.test(e.key)?Number(e.key)-1:/^(Digit|Numpad)[1-5]$/.test(e.code||'')?Number(e.code.slice(-1))-1:null;
   let action={d:'double',a:'collect',w:'high',s:'low',c:'collect',h:'high',l:'low','6':'double','4':'collect','8':'high','2':'low','+':'plus','=':'plus','-':'minus','*':'max','/':'sound','.':'reset'}[(e.key||'').toLowerCase()]||{KeyD:'double',KeyA:'collect',KeyW:'high',KeyS:'low',KeyC:'collect',KeyH:'high',KeyL:'low',Numpad6:'double',Numpad4:'collect',Numpad8:'high',Numpad2:'low',NumpadAdd:'plus',NumpadSubtract:'minus',NumpadMultiply:'max',NumpadDivide:'sound',NumpadDecimal:'reset'}[e.code];
-  const primary=e.code==='Space'||e.key===' '||e.code==='KeyD'||(e.key||'').toLowerCase()==='d';
+  const primary=['Space','Enter','NumpadEnter','KeyD','Numpad6','Digit6'].includes(e.code)||[' ','enter','d','6'].includes((e.key||'').toLowerCase());
   if(primary)action=game.phase==='won'?'double':'deal';
   if(['ready','lost'].includes(game.phase)){
     if((e.key||'').toLowerCase()==='w'||e.code==='KeyW')action='plus';
     if((e.key||'').toLowerCase()==='s'||e.code==='KeyS')action='minus';
   }
-  if(!space&&index===null&&!action)return;
-  // Prevent native Space from activating a previously focused HOLD/BET button.
+  if(index===null&&!action)return;
+  // Main keys override native button activation and never skip HIGH/LOW.
   e.preventDefault();
   if(e.repeat)return;
   if(game.phase==='hold'&&index!==null)act(()=>game.toggleHold(index),'hold');
@@ -75,7 +74,6 @@ document.addEventListener('keydown',e=>{
     const enabled=(action==='high'||action==='low')?game.phase==='double':action==='reset'?!$('reset').hidden:!$(action).disabled;
     if(enabled)$(action).click();
   }
-  else if(space){if(!$('deal').disabled)$('deal').click();}
   else if(game.phase==='hold')act(()=>game.toggleHold(index),'hold');
 });
 render();

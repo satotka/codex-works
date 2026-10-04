@@ -61,21 +61,24 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   vm.runInContext("game.phase='won';game.win=25;render();",context);
   press('6');press('2');assert.equal(node('win').textContent,'0');assert.equal(node('double').disabled,true);
   vm.runInContext('game.credit=1000;render();',context);
-  keypad('Numpad0');assert.equal(node('credit').textContent,'999');assert.match(node('deal').innerHTML,/DRAW/);
+  keypad('Numpad0');press('0');assert.equal(node('credit').textContent,'1,000');
+  keypad('Numpad6');assert.equal(node('credit').textContent,'999');assert.match(node('deal').innerHTML,/DRAW/);
   node('cards').onclick({target:{closest:()=>({dataset:{index:'0'}})}});assert.match(node('cards').innerHTML,/held/);
   keypad('NumpadEnter');assert.match(node('deal').innerHTML,/DEAL/);
   if(!node('collect').disabled)node('collect').onclick();
   assert.equal(node('deal').disabled,false);
   vm.runInContext("game.credit=0;game.phase='lost';render();",context);
   keypad('NumpadDecimal');assert.equal(node('credit').textContent,'1,000');
-  for(const key of ['d','D',' ']){
+  for(const [key,code] of [['d','KeyD'],['D','KeyD'],[' ','Space'],['Enter','Enter'],['Enter','NumpadEnter'],['6','Digit6'],['Unidentified','Numpad6']]){
+    const main=(repeat=false)=>listeners.keydown({key,code,repeat,target:{closest:()=>null},preventDefault(){this.prevented=true;}});
     vm.runInContext("game.phase='ready';game.credit=1000;game.setBet(1);render();",context);
-    press(key);assert.match(node('deal').innerHTML,/DRAW/);assert.equal(node('credit').textContent,'999');
-    press(key);assert.match(node('deal').innerHTML,/DEAL/);
+    main();assert.match(node('deal').innerHTML,/DRAW/);assert.equal(node('credit').textContent,'999');
+    const holdingCards=node('cards').innerHTML;main(true);assert.equal(node('cards').innerHTML,holdingCards);
+    main();assert.match(node('deal').innerHTML,/DEAL/);
     vm.runInContext("game.phase='won';game.win=25;render();",context);
-    press(key);assert.equal(node('double-panel').hidden,false);
-    press(key);assert.equal(node('double-panel').hidden,false); // Cannot skip HIGH/LOW.
-    press(key,true);assert.equal(node('double-panel').hidden,false);
+    main();assert.equal(node('double-panel').hidden,false);
+    main();assert.equal(node('double-panel').hidden,false); // Cannot skip HIGH/LOW.
+    main(true);assert.equal(node('double-panel').hidden,false);
   }
 });
 
