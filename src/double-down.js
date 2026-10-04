@@ -14,7 +14,7 @@ export class DoubleDown {
     const card=this.deck.draw();
     this.active=false;
     const referenceCard=this.referenceCard;
-    const outcome=(choice==='high'?card.rank>referenceCard.rank:card.rank<referenceCard.rank)?'win':'lose';
-    return {referenceCard,card,choice,outcome,win:outcome==='win'?win*2:0};
+    const outcome=card.rank===referenceCard.rank?'draw':(choice==='high'?card.rank>referenceCard.rank:card.rank<referenceCard.rank)?'win':'lose';
+    return {referenceCard,card,choice,outcome,win:outcome==='win'?win*2:outcome==='draw'?win:0};
   }
 }

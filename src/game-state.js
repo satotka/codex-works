@@ -14,7 +14,7 @@ export class GameState {
   draw() {if(this.phase!=='hold') return false; this.hand=this.hand.map((c,i)=>this.held[i]?c:this.deck.draw()); this.result=evaluateHand(this.hand); this.win=payout(this.bet,this.result); this.phase=this.win?'won':'lost'; return true;}
   get canDouble() {return this.phase==='won'&&this.win<=Math.floor((Number.MAX_SAFE_INTEGER-this.credit)/2);}
   startDouble() {if(!this.canDouble)return false; this.doubleResult={referenceCard:this.doubleDown.start(),card:null}; this.phase='double'; return true;}
-  guess(choice) {if(this.phase!=='double')return false; this.doubleResult=this.doubleDown.play(this.win,choice); this.win=this.doubleResult.win; this.phase=this.win?'won':'lost'; return this.doubleResult;}
+  guess(choice) {if(this.phase!=='double')return false; this.doubleResult=this.doubleDown.play(this.win,choice); this.win=this.doubleResult.win; this.phase=this.win?'won':'lost'; if(this.doubleResult.outcome==='draw')this.collect(); return this.doubleResult;}
   collect() {if(this.phase!=='won')return false; this.credit+=this.win; this.win=0; this.phase='ready'; return true;}
   reset() {if(this.credit===0&&['ready','lost'].includes(this.phase)){this.credit=1000;this.phase='ready';this.hand=[];this.result=null;this.doubleResult=null;return true;}return false;}
 }

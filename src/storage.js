@@ -41,9 +41,11 @@ export function restoreGame(game,storage){
         doubleResult={referenceCard,card:null};
       }else{
         const card=checkedCards([referenceCard,d.card],false)[1];
-        if(!['high','low'].includes(d.choice)||!['win','lose'].includes(d.outcome)||!Number.isSafeInteger(d.win)||d.win<0)throw new Error('Invalid double result');
+        if(!['high','low'].includes(d.choice)||!['win','lose','draw'].includes(d.outcome)||!Number.isSafeInteger(d.win)||d.win<0)throw new Error('Invalid double result');
         const won=d.choice==='high'?card.rank>referenceCard.rank:card.rank<referenceCard.rank;
-        if(d.outcome!==(won?'win':'lose')||(won?d.win<=0:d.win!==0))throw new Error('Invalid outcome');
+        if(d.outcome==='draw'){
+          if(card.rank!==referenceCard.rank||d.win<=0||s.phase!=='ready'||s.win!==0)throw new Error('Invalid draw');
+        }else if(d.outcome!==(won?'win':'lose')||(won?d.win<=0:d.win!==0))throw new Error('Invalid outcome');
         doubleResult={referenceCard,card,choice:d.choice,outcome:d.outcome,win:d.win};
       }
     }

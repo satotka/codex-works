@@ -97,6 +97,17 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   reopenedNode('deal').onclick();node('deal').onclick();
   assert.equal(reopenedNode('cards').innerHTML,node('cards').innerHTML);
   assert.equal(reopenedNode('win').textContent,node('win').textContent);
+  vm.runInContext("game.phase='won';game.win=25;game.doubleDown=new DoubleDown(()=>{const deck=new Deck({includeJoker:false,random:()=>0.5});deck.cards=deck.cards.filter(c=>!(c.rank===8&&['S','H'].includes(c.suit)));deck.cards.push(card(8,'H'),card(8,'S'));return deck;});render();",reopened);
+  const beforeTie=Number(reopenedNode('credit').textContent.replaceAll(',',''));
+  reopenedNode('double').onclick();reopenedNode('high').onclick();
+  assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25);
+  assert.equal(reopenedNode('win').textContent,'0');
+  assert.match(reopenedNode('message').textContent,/DRAW.*COLLECT/);
+  assert.match(reopenedNode('cards').innerHTML,/基準カード/);
+  vm.runInNewContext(script,{crypto:webcrypto,localStorage:storage,document:{getElementById:reopenedNode,querySelectorAll:()=>[],addEventListener(){}}});
+  assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25);
+  assert.match(reopenedNode('message').textContent,/DRAW.*COLLECT/);
+  assert.match(reopenedNode('cards').innerHTML,/基準カード/);
+  assert.equal(reopenedNode('collect').disabled,true);
 });
-
 

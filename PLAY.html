@@ -24,7 +24,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 <section class="paytable" aria-label="配当表"><div class="table-head"><span>WINNING HAND</span><span>NATURAL</span><span>JOKER ×2</span></div><div id="payrows"></div></section>
 <div class="message" id="message" role="status" aria-live="polite">BETを決めて DEAL を押してください</div>
 <section id="cards" class="cards" aria-label="手札"></section>
-<div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 負け</span><div><button id="low">LOW <small>低い · S / 2</small></button><button id="high">HIGH <small>高い · W / 8</small></button></div></div>
+<div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW <small>低い · S / 2</small></button><button id="high">HIGH <small>高い · W / 8</small></button></div></div>
 <div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div><span>BET</span><output id="bet">1</output></div><div class="win-meter"><span>WIN</span><output id="win">0</output></div></div>
 </section><section class="console"><div class="bet-controls"><span>BET SELECT · W＋ / S−</span><div><button id="minus" aria-label="BETを1減らす">−</button><button id="plus" aria-label="BETを1増やす">+</button><button id="max">MAX <small>40</small></button></div></div><button id="deal" class="primary">DEAL <small>配る</small></button><button id="double" class="purple">DOUBLE <small>Space / Enter / D / 6</small></button><button id="collect" class="green">COLLECT <small>A / 4</small></button></section>
 <footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT <small> . キー</small></button><span id="save-status" role="status">自動保存</span><span>FOR AMUSEMENT ONLY</span></footer>
@@ -33,7 +33,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 <div class="controls-list">
 <section><h2>BET時</h2><p><b>W / ＋</b> BETを1増やす<br><b>S / −</b> BETを1減らす<br><b>＊</b> MAX BET（40）<br><b>主操作キー</b> DEAL：カードを配る</p></section>
 <section><h2>通常ゲーム時</h2><p><b>1–5 / カードをタップ</b> HOLD / RELEASE<br><b>主操作キー</b> DRAW：残さないカードを交換<br>当たり後：<b>主操作キー</b>でDOUBLE、<b>A / 4</b>でCOLLECT<br>負けた後：BETを選び、主操作キーで次のDEAL</p></section>
-<section><h2>ダブル中</h2><p><b>W / 8</b> HIGH：基準より高い<br><b>S / 2</b> LOW：基準より低い<br>同じ数字は負け。勝った後は主操作キーで再DOUBLE、A / 4でCOLLECT。</p></section>
+<section><h2>ダブル中</h2><p><b>W / 8</b> HIGH：基準より高い<br><b>S / 2</b> LOW：基準より低い<br>同じ数字は引き分け。WINをそのまま自動COLLECTします。勝った後は主操作キーで再DOUBLE、A / 4でCOLLECT。</p></section>
 </div><p>カード・ボタンはクリック／タップでも操作できます。テンキーはNum LockのON/OFFに対応。<b>／</b>でSOUND ON/OFF、残高0の時は<b>．</b>でNEW CREDIT。0キーは使用しません。</p></details></main>
 <script>
 const SUITS = ['S','H','D','C'];
@@ -123,8 +123,8 @@ class DoubleDown {
     const card=this.deck.draw();
     this.active=false;
     const referenceCard=this.referenceCard;
-    const outcome=(choice==='high'?card.rank>referenceCard.rank:card.rank<referenceCard.rank)?'win':'lose';
-    return {referenceCard,card,choice,outcome,win:outcome==='win'?win*2:0};
+    const outcome=card.rank===referenceCard.rank?'draw':(choice==='high'?card.rank>referenceCard.rank:card.rank<referenceCard.rank)?'win':'lose';
+    return {referenceCard,card,choice,outcome,win:outcome==='win'?win*2:outcome==='draw'?win:0};
   }
 }
 
@@ -141,7 +141,7 @@ class GameState {
   draw() {if(this.phase!=='hold') return false; this.hand=this.hand.map((c,i)=>this.held[i]?c:this.deck.draw()); this.result=evaluateHand(this.hand); this.win=payout(this.bet,this.result); this.phase=this.win?'won':'lost'; return true;}
   get canDouble() {return this.phase==='won'&&this.win<=Math.floor((Number.MAX_SAFE_INTEGER-this.credit)/2);}
   startDouble() {if(!this.canDouble)return false; this.doubleResult={referenceCard:this.doubleDown.start(),card:null}; this.phase='double'; return true;}
-  guess(choice) {if(this.phase!=='double')return false; this.doubleResult=this.doubleDown.play(this.win,choice); this.win=this.doubleResult.win; this.phase=this.win?'won':'lost'; return this.doubleResult;}
+  guess(choice) {if(this.phase!=='double')return false; this.doubleResult=this.doubleDown.play(this.win,choice); this.win=this.doubleResult.win; this.phase=this.win?'won':'lost'; if(this.doubleResult.outcome==='draw')this.collect(); return this.doubleResult;}
   collect() {if(this.phase!=='won')return false; this.credit+=this.win; this.win=0; this.phase='ready'; return true;}
   reset() {if(this.credit===0&&['ready','lost'].includes(this.phase)){this.credit=1000;this.phase='ready';this.hand=[];this.result=null;this.doubleResult=null;return true;}return false;}
 }
@@ -195,9 +195,11 @@ function restoreGame(game,storage){
         doubleResult={referenceCard,card:null};
       }else{
         const card=checkedCards([referenceCard,d.card],false)[1];
-        if(!['high','low'].includes(d.choice)||!['win','lose'].includes(d.outcome)||!Number.isSafeInteger(d.win)||d.win<0)throw new Error('Invalid double result');
+        if(!['high','low'].includes(d.choice)||!['win','lose','draw'].includes(d.outcome)||!Number.isSafeInteger(d.win)||d.win<0)throw new Error('Invalid double result');
         const won=d.choice==='high'?card.rank>referenceCard.rank:card.rank<referenceCard.rank;
-        if(d.outcome!==(won?'win':'lose')||(won?d.win<=0:d.win!==0))throw new Error('Invalid outcome');
+        if(d.outcome==='draw'){
+          if(card.rank!==referenceCard.rank||d.win<=0||s.phase!=='ready'||s.win!==0)throw new Error('Invalid draw');
+        }else if(d.outcome!==(won?'win':'lose')||(won?d.win<=0:d.win!==0))throw new Error('Invalid outcome');
         doubleResult={referenceCard,card,choice:d.choice,outcome:d.outcome,win:d.win};
       }
     }
@@ -248,7 +250,7 @@ function render(){
   persist();
   const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
   ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
-  const showingDouble=game.doubleResult&&['double','won','lost'].includes(game.phase);
+  const showingDouble=game.doubleResult&&(['double','won','lost'].includes(game.phase)||game.doubleResult.outcome==='draw');
   $('cards').innerHTML=Array.from({length:5},(_,i)=>{
     const c=showingDouble?(i===1?game.doubleResult.referenceCard:i===3?game.doubleResult.card:null):game.hand[i];
     const html=cardHtml(c,i,holding);
@@ -260,8 +262,8 @@ function render(){
   $('double').disabled=!game.canDouble;$('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';
   $('reset').hidden=!(game.credit===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
-  const messages={ready:'BETを決めて DEAL を押してください',hold:'残したいカードを HOLD → DRAW で1回交換',won:`${game.result?.name||''}${game.result?.jokerUsed?' · JOKER ×2':''} — COLLECT または DOUBLE`,lost:'NO WIN — 次のゲームは DEAL',double:'次のカードは基準より高い？低い？ W / S または 8 / 2で選択（同じ数字は負け）'};
-  $('message').textContent=notice||messages[game.phase];
+  const messages={ready:'BETを決めて DEAL を押してください',hold:'残したいカードを HOLD → DRAW で1回交換',won:`${game.result?.name||''}${game.result?.jokerUsed?' · JOKER ×2':''} — COLLECT または DOUBLE`,lost:'NO WIN — 次のゲームは DEAL',double:'次のカードは基準より高い？低い？ W / S または 8 / 2で選択（同じ数字は引き分け・自動COLLECT）'};
+  $('message').textContent=notice||(game.phase==='ready'&&game.doubleResult?.outcome==='draw'?`同じ数字 · DRAW — ${game.doubleResult.win.toLocaleString()}をCOLLECTしました · 次はDEAL`:messages[game.phase]);
   if(game.phase==='won'&&!game.canDouble)$('message').textContent='上限に達しました — COLLECTで獲得してください';
   if(editable&&game.credit<game.bet)$('message').textContent=game.credit===0?'CREDITがなくなりました。NEW CREDITで再開できます':'CREDIT不足 — BETを減らしてください';
 }
@@ -270,7 +272,7 @@ $('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=
 $('deal').onclick=()=>{if(game.phase==='hold'){act(()=>game.draw(),'draw');if(game.win)sound.play('win');}else act(()=>game.deal(),'deal');};
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')act(()=>game.toggleHold(Number(b.dataset.index)),'hold');};
 $('double').onclick=()=>act(()=>game.startDouble(),'deal');$('collect').onclick=()=>act(()=>game.collect(),'collect');
-for(const choice of ['low','high'])$(choice).onclick=()=>{const r=game.guess(choice);if(!r)return;notice=`選択: ${choice.toUpperCase()} · 基準 ${ranks[r.referenceCard.rank]||r.referenceCard.rank} → 次 ${ranks[r.card.rank]||r.card.rank} — ${r.outcome==='win'?'DOUBLE WIN! 再挑戦またはCOLLECT':r.card.rank===r.referenceCard.rank?'同じ数字 · DOUBLE LOST · 次はDEAL':'DOUBLE LOST · 次はDEAL'}`;sound.play(r.outcome==='win'?'doubleWin':'doubleLose');render();};
+for(const choice of ['low','high'])$(choice).onclick=()=>{const r=game.guess(choice);if(!r)return;notice=`選択: ${choice.toUpperCase()} · 基準 ${ranks[r.referenceCard.rank]||r.referenceCard.rank} → 次 ${ranks[r.card.rank]||r.card.rank} — ${r.outcome==='win'?'DOUBLE WIN! 再挑戦またはCOLLECT':r.outcome==='draw'?`同じ数字 · DRAW — ${r.win.toLocaleString()}をCOLLECTしました · 次はDEAL`:'DOUBLE LOST · 次はDEAL'}`;sound.play(r.outcome==='win'?'doubleWin':r.outcome==='draw'?'collect':'doubleLose');render();};
 $('sound').onclick=()=>{sound.enabled=!sound.enabled;$('sound').textContent=`SOUND ${sound.enabled?'ON':'OFF'}`;$('sound').setAttribute('aria-pressed',String(sound.enabled));persist();};
 $('reset').onclick=()=>act(()=>game.reset(),'collect');
 document.addEventListener('keydown',e=>{
