@@ -402,7 +402,7 @@ function render(){
   if(collected)$('win').textContent=collected.toLocaleString();
   const showingDouble=game.doubleResult&&(['double','won','lost'].includes(game.phase)||game.doubleResult.outcome==='draw');
   roleIndices=[];currentRole='';
-  if(!showingDouble&&game.hand.length===5){const evaluated=evaluateHand(game.hand);roleIndices=roleCardIndices(game.hand,evaluated);currentRole=evaluated.name;}
+
   $('cards').innerHTML=Array.from({length:5},(_,i)=>{
     const c=showingDouble?(i===1?game.doubleResult.referenceCard:i===3?game.doubleResult.card:null):game.hand[i];
     const html=cardHtml(c,i,holding);
