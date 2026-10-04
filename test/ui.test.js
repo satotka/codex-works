@@ -22,8 +22,8 @@ test('UI wiring: bet, deal, hold/release, draw, sound and next game',async()=>{
   }
   listeners.keydown(event('2','Digit2'));assert.match(node('cards').innerHTML,/held/);
   node('deal').click=()=>node('deal').onclick();
-  const space=event(' ','Space');listeners.keydown(space);assert.equal(space.prevented,true);assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
-  const afterDraw=node('cards').innerHTML;listeners.keydown(event(' ','Space',true));assert.equal(node('cards').innerHTML,afterDraw);
+  const space=event('d','KeyD');listeners.keydown(space);assert.equal(space.prevented,true);assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
+  const afterDraw=node('cards').innerHTML;listeners.keydown(event('d','KeyD',true));assert.equal(node('cards').innerHTML,afterDraw);
   if(!node('collect').disabled)node('collect').onclick();
   assert.equal(node('deal').disabled,false);assert.equal(node('plus').disabled,true); // MAX remains selected.
   assert.equal(node('minus').disabled,false);

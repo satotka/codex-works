@@ -78,12 +78,12 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   keypad('Numpad0');press('0');assert.equal(node('credit').textContent,'1,000');
   keypad('Numpad6');assert.equal(node('credit').textContent,'999');assert.match(node('deal').innerHTML,/DRAW/);
   node('cards').onclick({target:{closest:()=>({dataset:{index:'0'}})}});assert.match(node('cards').innerHTML,/held/);
-  keypad('NumpadEnter');assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
+  keypad('Numpad6');assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
   if(!node('collect').disabled)node('collect').onclick();
   assert.equal(node('deal').disabled,false);
   vm.runInContext("game.credit=0;game.phase='lost';render();",context);
   keypad('NumpadDecimal');assert.equal(node('credit').textContent,'1,000');
-  for(const [key,code] of [['d','KeyD'],['D','KeyD'],[' ','Space'],['Enter','Enter'],['Enter','NumpadEnter'],['6','Digit6'],['Unidentified','Numpad6']]){
+  for(const [key,code] of [['d','KeyD'],['D','KeyD'],['6','Digit6'],['Unidentified','Numpad6']]){
     const main=(repeat=false)=>listeners.keydown({key,code,repeat,target:{closest:()=>null},preventDefault(){this.prevented=true;}});
     vm.runInContext("game.phase='ready';game.credit=1000;game.setBet(1);render();",context);
     main();assert.match(node('deal').innerHTML,/DRAW/);assert.equal(node('credit').textContent,'999');

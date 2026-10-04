@@ -7,6 +7,7 @@ const game=new GameState(),sound=new Sound(),$=id=>document.getElementById(id);
 const symbols={S:'♠',H:'♥',D:'♦',C:'♣'},ranks={11:'J',12:'Q',13:'K',14:'A'};
 let storage;
 try{storage=globalThis.localStorage;}catch{}
+let guideEnabled=true;try{guideEnabled=storage.getItem('amber-poker.guide')!=='off';}catch{}
 const session=new PlaySession(storage);
 let lockPending=!!globalThis.navigator?.locks,primaryUntil=0;
 let restored=restoreGame(game,storage);
@@ -59,7 +60,7 @@ function render(){
     const html=cardHtml(c,i,holding);
     return showingDouble?html.replace('<span class="hold-label"> </span>',`<span class="hold-label">${i===1?'基準カード':i===3?'次のカード':' '}</span>`):html;
   }).join('');
-  $('deal').innerHTML=game.phase==='won'?'DOUBLE <small>WIN全額で挑戦 · Space / Enter / D / 6</small>':holding?'DRAW <small>交換 · Space / Enter / D / 6</small>':'DEAL <small>配る · Space / Enter / D / 6</small>';
+  $('deal').innerHTML=game.phase==='won'?'DOUBLE':holding?'DRAW':'DEAL';
   $('deal').disabled=!(holding||game.canDouble||(editable&&game.credit>=game.bet));
   $('minus').disabled=!editable||game.bet===1;$('plus').disabled=!editable||game.bet===40;$('max').disabled=!editable||game.bet===40;
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';
@@ -78,6 +79,14 @@ function render(){
     if(r.outcome==='draw'){title=`引き分け — ${r.win.toLocaleString()}を獲得しました`;next='BETを選び、主操作キーで次のDEAL';}
   }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、主操作キーで次のDEAL';}
   if(editable&&game.credit<game.bet){next=game.credit===0?'NEW CREDITで再開できます':'CREDIT不足：BETを減らしてください';}
+  if(!guideEnabled){
+    if(game.phase==='hold')title='HOLDするカードを選択';
+    if(game.phase==='ready'&&!game.collectedWin&&!game.doubleResult)title='BET';
+    if(game.phase==='won')title=`WIN ${game.win.toLocaleString()}`;
+    if(game.phase==='double')title='HIGH / LOW';
+    detail='';next=editable&&game.credit<game.bet?(game.credit===0?'NEW CREDITで再開':'BETを減らしてください'):game.phase==='won'&&!game.canDouble?'COLLECTしてください':'';
+  }
+  $('guide').textContent=guideEnabled?'ガイド ON':'ガイド OFF';$('guide').setAttribute('aria-pressed',String(guideEnabled));
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
 }
@@ -91,9 +100,10 @@ $('sound').onclick=()=>{if(!allowed()){refreshAccess();return;}sound.enabled=!so
 $('reset').onclick=()=>act(()=>game.reset(),'collect');
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.altKey||e.metaKey||e.isComposing||e.target.closest('input,select,textarea,[contenteditable="true"]'))return;
+  if(['Space','Enter','NumpadEnter'].includes(e.code)||[' ','Enter'].includes(e.key)){if(e.target.closest('#deal'))e.preventDefault();return;}
   const index=/^[1-5]$/.test(e.key)?Number(e.key)-1:/^(Digit|Numpad)[1-5]$/.test(e.code||'')?Number(e.code.slice(-1))-1:null;
   let action={d:'double',a:'collect',w:'high',s:'low',c:'collect',h:'high',l:'low','6':'double','4':'collect','8':'high','2':'low','+':'plus','=':'plus','-':'minus','*':'max','/':'sound','.':'reset'}[(e.key||'').toLowerCase()]||{KeyD:'double',KeyA:'collect',KeyW:'high',KeyS:'low',KeyC:'collect',KeyH:'high',KeyL:'low',Numpad6:'double',Numpad4:'collect',Numpad8:'high',Numpad2:'low',NumpadAdd:'plus',NumpadSubtract:'minus',NumpadMultiply:'max',NumpadDivide:'sound',NumpadDecimal:'reset'}[e.code];
-  const primary=['Space','Enter','NumpadEnter','KeyD','Numpad6','Digit6'].includes(e.code)||[' ','enter','d','6'].includes((e.key||'').toLowerCase());
+  const primary=['KeyD','Numpad6','Digit6'].includes(e.code)||['d','6'].includes((e.key||'').toLowerCase());
   if(primary)action='deal';
   if(['ready','lost'].includes(game.phase)){
     if((e.key||'').toLowerCase()==='w'||['KeyW','Numpad8','Digit8'].includes(e.code)||e.key==='8')action='plus';
@@ -131,8 +141,10 @@ if(globalThis.navigator?.locks){
 
 globalThis.addEventListener?.('pageshow',e=>{if(e.persisted)globalThis.location.reload();});
 
-const compactViewport=globalThis.matchMedia?.('(max-width: 760px), (max-height: 760px)');
+const compactViewport=globalThis.matchMedia?.('(max-width: 760px)');
 if(compactViewport){
   const adaptPaytable=()=>{$('paytable-details').open=!compactViewport.matches;};
   adaptPaytable();compactViewport.addEventListener('change',adaptPaytable);
 }
+
+$('guide').onclick=()=>{guideEnabled=!guideEnabled;try{storage.setItem('amber-poker.guide',guideEnabled?'on':'off');}catch{}render();};

@@ -82,3 +82,33 @@ footer{flex-wrap:wrap;gap:6px 14px;margin-top:10px}
 @media(max-height:480px) and (min-width:761px){
   .card{height:90px}.message{min-height:66px}.screen-top,.brand p{display:none}
 }
+
+/* Quiet controls and a fixed card shape in desktop and mobile modes. */
+.utility-bar{display:flex;gap:8px}
+.screen{display:grid;grid-template-columns:230px minmax(0,1fr);column-gap:24px}
+.screen-top{grid-column:1/-1}
+.paytable-details{grid-column:1;grid-row:2/6;align-self:start;border:1px solid #55442d;border-radius:8px;padding:8px 10px;background:#121a20}
+.paytable-details>summary,.controls-help>summary{list-style:none;display:inline-flex;align-items:center;justify-content:center;min-height:44px;line-height:1.2;padding:8px 16px;border:1px solid #685333;border-radius:6px;color:#efc375;background:#24221f;font-size:12px;letter-spacing:1px}
+summary::-webkit-details-marker{display:none}
+.paytable-details[open]>summary{min-height:44px;line-height:1.2;margin-bottom:8px}
+.paytable .table-head,.paytable .payrow{grid-template-columns:minmax(0,1fr) 34px 38px;gap:4px}
+.paytable{font-size:11px}.table-head{font-size:9px;letter-spacing:0}.payrow{padding:3px 0}
+.message,.cards,.meters,.console{grid-column:2}
+.cards{justify-items:center;gap:8px}
+.card-slot{width:min(100%,calc(clamp(110px,25dvh,220px)*.72))}
+.card{height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:18/25!important}
+.corner{font-size:clamp(12px,20cqw,28px)}.suit.ace{font-size:clamp(26px,45cqw,68px)}
+.back span{font-size:clamp(18px,30cqw,45px);padding:6px}
+.message{min-height:74px}.message span:empty,.message small:empty{display:none}
+.controls-help{border:0;padding:0}.controls-help[open]{padding-bottom:12px}
+.controls-list{margin-top:12px;padding:12px;border:1px solid #55442d;border-radius:8px;background:#121a20}
+.console button small{display:none}
+@media(min-width:761px) and (max-height:760px){.card-slot{width:min(100%,calc(clamp(100px,24dvh,170px)*.72))}}
+@media(max-width:760px){
+ .screen{display:block}.utility-bar{gap:4px}.utility-bar .small{font-size:10px;padding:5px}
+ .paytable-details{border:0;padding:0;background:none}.paytable-details[open]{padding-bottom:8px}
+ .paytable{font-size:12px}.paytable .table-head,.paytable .payrow{grid-template-columns:minmax(0,1fr) 48px 54px}
+ .card-slot{width:100%}.cards{gap:4px}.message{min-height:66px}
+ .console{min-height:108px}.bet-controls>span{font-size:10px}
+ .paytable-details>summary,.controls-help>summary{font-size:11px;padding:8px 14px}
+}

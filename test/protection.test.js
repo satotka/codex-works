@@ -23,7 +23,7 @@ test('DRAW blocks immediate mouse and keyboard DOUBLE but accepts a later input'
   tab.node('deal').onclick();assert.equal(vm.runInContext('game.phase',tab.context),'won');
   tab.node('deal').onclick();assert.equal(vm.runInContext('game.phase',tab.context),'won');
   tab.node('deal').click=()=>tab.node('deal').onclick();
-  tab.listeners.keydown({key:'Enter',code:'Enter',target:{closest:()=>null},preventDefault(){}});
+  tab.listeners.keydown({key:'d',code:'KeyD',target:{closest:()=>null},preventDefault(){}});
   assert.equal(vm.runInContext('game.phase',tab.context),'won');
   tab.advance(651);tab.node('deal').onclick();assert.equal(vm.runInContext('game.phase',tab.context),'double');
 });
@@ -47,4 +47,18 @@ test('web lock owner plays while another tab is paused',async()=>{
   await Promise.resolve();
   assert.equal(a.node('play-area').inert,false);assert.equal(b.node('play-area').inert,true);
   const saved=storage.getItem('amber-poker.state.v1');b.node('sound').onclick();assert.equal(storage.getItem('amber-poker.state.v1'),saved);
+});
+test('only D and 6 are main shortcuts; guide preference survives reload',()=>{
+  const storage=memory(),tab=setup(storage);
+  for(const [key,code] of [[' ','Space'],['Enter','Enter'],['Enter','NumpadEnter']]){
+    tab.listeners.keydown({key,code,target:{closest:()=>null},preventDefault(){}});
+    assert.equal(vm.runInContext('game.phase',tab.context),'ready');
+  }
+  tab.node('guide').onclick();assert.equal(storage.getItem('amber-poker.guide'),'off');
+  const reopened=setup(storage);assert.equal(reopened.node('guide').textContent,'ガイド OFF');
+  assert.doesNotMatch(reopened.node('message').innerHTML,/主操作キー/);
+  reopened.node('deal').click=()=>reopened.node('deal').onclick();
+  reopened.listeners.keydown({key:'Unidentified',code:'Numpad6',target:{closest:()=>null},preventDefault(){}});
+  assert.equal(vm.runInContext('game.phase',reopened.context),'hold');
+  assert.equal(reopened.node('deal').innerHTML,'DRAW');
 });
