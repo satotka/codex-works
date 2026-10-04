@@ -43,7 +43,7 @@ const pipLayouts={
 function cardCenter(c){
   if(c.rank===14)return `<span class="suit ace" aria-hidden="true">${symbols[c.suit]}</span>`;
   if(c.rank>=11)return `<span class="face-center" aria-hidden="true"><b>${ranks[c.rank]}</b><span>${symbols[c.suit]}</span></span>`;
-  return `<span class="compact-center" aria-hidden="true"><b>${c.rank}</b><span>${symbols[c.suit]}</span></span><span class="pips" aria-hidden="true">${pipLayouts[c.rank].map(([x,y])=>`<span class="pip${y>50?' inverted':''}" style="left:${x}%;top:${y}%">${symbols[c.suit]}</span>`).join('')}</span>`;
+  return `<span class="pips" aria-hidden="true">${pipLayouts[c.rank].map(([x,y])=>`<span class="pip${y>50?' inverted':''}" style="left:${x}%;top:${y}%">${symbols[c.suit]}</span>`).join('')}</span>`;
 }
 $('payrows').innerHTML=PAY_TABLE.filter(p=>p.multiplier).map(p=>`<div class="payrow" data-hand="${p.id}"><span>${p.name}</span><span>${p.multiplier}</span><span>${p.id==='naturalRoyal'?'—':p.multiplier*2}</span></div>`).join('');
 function cardHtml(c,i,interactive) {
