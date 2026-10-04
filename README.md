@@ -165,3 +165,7 @@ BETは−10・−5・BET数・＋5・＋10・All inの1行。固定上限40を�
 
 ## BETの予約方式（2026-10-04更新）
 MIN・−10・−1・BET数・＋1・＋10・MAXの1行。MIN=1、MAX=残りCREDIT＋BET全額。全額選択中は解除／DEALだけ有効、解除=BET 0。BET増減時にCREDITとBET間で移動し、DEALで二重控除しない。負け／COLLECT後はBET 0に戻して次の賭け金を選ぶ。W/8/＋=＋1、S/2/−=−1。保存形式version 2、旧version 1のBET選択中は予約方式に移行、ゲーム途中の控除済みCREDITは維持。
+
+
+## 英語の状態表示と日本語ガイド（2026-10-04）
+状態の主表示はBET / HOLD / WIN 金額 / NO WIN / HIGH・LOW / DOUBLE WIN 金額 / TIE・PAID 金額 / PAID 金額など短い英語。GUIDE ONでだけ日本語の状況説明と次の操作を補足。GUIDE OFFでは遊び方と操作ヒントを非表示、保存/停止通知も英語。ボタン/金額ラベルはGUIDE・RELEASE・PAID・LOCKED、ダブルのカードラベルはBASE/NEXT。

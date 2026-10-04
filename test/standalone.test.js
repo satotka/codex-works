@@ -29,7 +29,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   const keypad=code=>listeners.keydown({key:'Unidentified',code,target:{closest:()=>null},preventDefault(){}});
   keypad('NumpadAdd');assert.equal(node('bet').textContent,'1');keypad('NumpadSubtract');assert.equal(node('bet').textContent,'0');
   keypad('NumpadMultiply');assert.equal(node('bet').textContent,'1,000');
-  assert.equal(node('max').textContent,'解除');
+  assert.equal(node('max').textContent,'RELEASE');
   for(const id of ['plus','minus','plus-ten','minus-ten'])assert.equal(node(id).disabled,true);
   keypad('NumpadAdd');assert.equal(node('bet').textContent,'1,000');
   keypad('NumpadSubtract');assert.equal(node('bet').textContent,'1,000');
@@ -56,7 +56,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   for(const input of ['w','W','h','Numpad8','mouse']){
     vm.runInContext("game.phase='won';game.win=25;game.doubleDown=new DoubleDown(()=>{const cards=[{rank:8,suit:'H',joker:false},{rank:14,suit:'S',joker:false}];return {draw:()=>cards.shift()};});render();",context);
     node('deal').onclick();
-    assert.match(node('cards').innerHTML,/基準カード/);
+    assert.match(node('cards').innerHTML,/BASE/);
     if(input==='mouse')node('high').onclick();else if(input==='Numpad8')keypad(input);else press(input);
     assert.equal(node('win').textContent,'50');
     assert.match(node('message').innerHTML,/ダブル成功.*HIGHを選択：基準8 → 次A/);
@@ -66,7 +66,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   keypad('Numpad6');assert.equal(node('double-panel').hidden,false);
   keypad('Numpad8');assert.equal(node('win').textContent,'50');
   press('d',true);assert.equal(node('double-panel').hidden,true);
-  keypad('Numpad4');assert.equal(node('credit').textContent,'1,050');assert.equal(node('win').textContent,node('win-label').textContent==='獲得額'?'50':'0');
+  keypad('Numpad4');assert.equal(node('credit').textContent,'1,050');assert.equal(node('win').textContent,node('win-label').textContent==='PAID'?'50':'0');
   assert.equal((node('cards').innerHTML.match(/class="card back/g)||[]).length,5);
   assert.equal(vm.runInContext('game.result',context),null);
   assert.equal(vm.runInContext('game.held.some(Boolean)',context),false);
@@ -124,13 +124,13 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   reopenedNode('deal').onclick();reopenedNode('high').onclick();
   assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25);
   assert.equal(reopenedNode('win').textContent,'25');
-  assert.equal(reopenedNode('win-label').textContent,'獲得額');
-  assert.match(reopenedNode('message').innerHTML,/引き分け.*獲得しました/);
-  assert.match(reopenedNode('cards').innerHTML,/基準カード/);
+  assert.equal(reopenedNode('win-label').textContent,'PAID');
+  assert.match(reopenedNode('message').innerHTML,/TIE.*引き分け.*獲得しました/);
+  assert.match(reopenedNode('cards').innerHTML,/BASE/);
   vm.runInNewContext(script,{Date:testDate,crypto:webcrypto,localStorage:storage,document:{getElementById:reopenedNode,querySelectorAll:()=>[],addEventListener(){}}});
   assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25);
-  assert.match(reopenedNode('message').innerHTML,/引き分け.*獲得しました/);
-  assert.match(reopenedNode('cards').innerHTML,/基準カード/);
+  assert.match(reopenedNode('message').innerHTML,/TIE.*引き分け.*獲得しました/);
+  assert.match(reopenedNode('cards').innerHTML,/BASE/);
   assert.equal(reopenedNode('collect').disabled,true);
 });
 

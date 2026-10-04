@@ -57,7 +57,7 @@ test('only D and 6 are main shortcuts; guide preference survives reload',()=>{
   assert.equal(tab.node('deal').attrs['data-key-hint'],'D / 6');
   assert.equal(tab.node('high').attrs['data-key-hint'],'W / 8');
   tab.node('guide').onclick();assert.equal(tab.node('deal').attrs['data-key-hint'],'');assert.equal(storage.getItem('amber-poker.guide'),'off');
-  const reopened=setup(storage);assert.equal(reopened.node('guide').textContent,'ガイド OFF');
+  const reopened=setup(storage);assert.equal(reopened.node('guide').textContent,'GUIDE OFF');
   assert.doesNotMatch(reopened.node('message').innerHTML,/主操作キー/);
   reopened.node('plus').onclick();
   reopened.node('deal').click=()=>reopened.node('deal').onclick();
@@ -73,4 +73,17 @@ test('full restart requires confirmation and persists clean initial state',()=>{
  const saved=JSON.parse(storage.getItem('amber-poker.state.v1'));
  assert.equal(saved.credit,1000);assert.equal(saved.bet,0);assert.equal(saved.win,0);assert.equal(saved.phase,'ready');assert.deepEqual(saved.hand,[]);assert.deepEqual(saved.held,[false,false,false,false,false]);assert.equal(saved.doubleResult,null);assert.equal(saved.soundEnabled,true);assert.equal(storage.getItem('amber-poker.guide'),'on');
  const restored=setup(storage);assert.equal(restored.node('credit').textContent,'1,000');assert.equal(restored.node('bet').textContent,'0');
+});
+
+test('guide off uses concise English in every game state',()=>{
+  const {node,context}=setup();node('guide').onclick();
+  for(const phase of ['ready','hold','won','lost','double']){
+    vm.runInContext(`game.phase='${phase}';game.win=${phase==='won'||phase==='double'?15:0};game.doubleResult=${phase==='double'?"{referenceCard:card(8,'S'),card:null}":'null'};render();`,context);
+    assert.doesNotMatch(node('message').innerHTML,/[ぁ-んァ-ヶ一-龯]/);
+    assert.equal(node('controls-help').hidden,true);
+    assert.equal(node('hint').hidden,true);
+    assert.doesNotMatch(node('save-status').textContent,/[ぁ-んァ-ヶ一-龯]/);
+  }
+  assert.match(node('message').innerHTML,/HIGH \/ LOW/);
+  node('guide').onclick();assert.match(node('message').innerHTML,/高いと思ったら/);assert.equal(node('controls-help').hidden,false);
 });

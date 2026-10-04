@@ -181,3 +181,5 @@ summary::-webkit-details-marker{display:none}
 .bet-amount{flex:1.6;min-width:0;text-align:center}.bet-amount>span{display:block;font-size:10px;letter-spacing:1px;color:#a89b86}.bet-amount output{font-family:monospace;font-size:24px;color:#f1c97e;overflow-wrap:anywhere}
 #max{background:#68502c;color:#fff1cb}
 @media(max-width:760px){.bet-row{gap:4px;margin-top:8px}.bet-row button{font-size:11px;padding:4px 2px}.bet-amount output{font-size:20px}}
+
+#controls-help[hidden],#hint[hidden]{display:none!important}

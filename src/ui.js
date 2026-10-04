@@ -7,7 +7,7 @@ import {saveGame,restoreGame} from './storage.js';
 const game=new GameState(),sound=new Sound(),$=id=>document.getElementById(id);
 const suitPaths={S:'M50 3 C38 20 7 38 7 59 C7 82 34 89 46 72 C44 84 39 92 29 97 H71 C61 92 56 84 54 72 C66 89 93 82 93 59 C93 38 62 20 50 3Z',H:'M50 95 C39 81 5 56 5 30 C5 2 39 0 50 24 C61 0 95 2 95 30 C95 56 61 81 50 95Z',D:'M50 2 L94 50 L50 98 L6 50Z',C:'M45 66 C32 88 4 78 4 57 C4 38 23 28 37 39 C18 17 33 2 50 2 C67 2 82 17 63 39 C77 28 96 38 96 57 C96 78 68 88 55 66 C54 83 61 93 72 98 H28 C39 93 46 83 45 66Z'};
 const symbols=Object.fromEntries(Object.entries(suitPaths).map(([s,path])=>[s,`<svg class="suit-mark" viewBox="0 0 100 100" aria-hidden="true"><path fill="currentColor" d="${path}"/></svg>`]));
-const suitNames={S:'スペード',H:'ハート',D:'ダイヤ',C:'クラブ'},ranks={11:'J',12:'Q',13:'K',14:'A'};
+const suitNames={S:'Spades',H:'Hearts',D:'Diamonds',C:'Clubs'},ranks={11:'J',12:'Q',13:'K',14:'A'};
 let roleIndices=[],currentRole='';
 let storage;
 try{storage=globalThis.localStorage;}catch{}
@@ -19,11 +19,11 @@ let recoveryBlocked=restored.status==='invalid'&&!restored.backedUp;
 if(restored.status==='restored')sound.enabled=restored.soundEnabled;
 function allowed(){return !lockPending&&!recoveryBlocked&&session.check();}
 function persist(){
-  if(!allowed()){$('save-status').textContent=lockPending?'プレイを準備中':recoveryBlocked?'保存を復元できません。元データを保護しています':'別タブでプレイ中、または保存が更新されました';return;}
+  if(!allowed()){$('save-status').textContent=!guideEnabled?(lockPending?'PREPARING':recoveryBlocked?'SAVE ERROR · DATA PROTECTED':'PLAY PAUSED · RELOAD'):lockPending?'プレイを準備中':recoveryBlocked?'保存を復元できません。元データを保護しています':'別タブでプレイ中、または保存が更新されました';return;}
   const saved=saveGame(game,sound.enabled,storage);if(saved)session.saved();
-  $('save-status').textContent=restored.status==='invalid'?'保存を復元できませんでした。元データを退避し、初期状態で再開しました':saved?'自動保存 ON · リロード後も続きから再開':'保存できません · この画面でプレイを続けられます';
+  $('save-status').textContent=!guideEnabled?(restored.status==='invalid'?'SAVE RECOVERED':saved?'AUTOSAVE ON':'AUTOSAVE UNAVAILABLE'):restored.status==='invalid'?'保存を復元できませんでした。元データを退避し、初期状態で再開しました':saved?'自動保存 ON · リロード後も続きから再開':'保存できません · この画面でプレイを続けられます';
 }
-function refreshAccess(){const active=allowed();$('play-area').inert=!active;$('session-warning').hidden=active;$('session-text').textContent=recoveryBlocked?'保存を復元できません。元データを保護したため操作を停止しています。':lockPending?'プレイを準備しています。':'別タブでプレイ中、または保存が更新されました。プレイ中のタブを閉じて、最新状態を読み込んでください。';}
+function refreshAccess(){const active=allowed();$('play-area').inert=!active;$('session-warning').hidden=active;$('session-text').textContent=!guideEnabled?(recoveryBlocked?'SAVE ERROR · DATA PROTECTED':lockPending?'PREPARING':'PLAY PAUSED · CLOSE OTHER TAB AND RELOAD'):recoveryBlocked?'保存を復元できません。元データを保護したため操作を停止しています。':lockPending?'プレイを準備しています。':'別タブでプレイ中、または保存が更新されました。プレイ中のタブを閉じて、最新状態を読み込んでください。';}
 function holdCard(index){if(!allowed()){refreshAccess();return;}game.toggleHold(index);sound.play('hold');persist();
   const button=$('cards').querySelector?.(`[data-index="${index}"]`);
   if(!button){render();return;}
@@ -60,15 +60,15 @@ function cardHtml(c,i,interactive) {
   const held=interactive&&game.held[i];
   const face=!c?'<span>♠</span>':c.joker?'<div class="joker-center"><b>★</b>JOKER<br><small>WILD CARD</small></div>':`<span class="corner">${ranks[c.rank]||c.rank}<br>${symbols[c.suit]}</span>${cardCenter(c)}<span class="corner bottom">${ranks[c.rank]||c.rank}<br>${symbols[c.suit]}</span>`;
   const inRole=c&&roleIndices.includes(i);
-  const label=!c?'伏せたカード':c.joker?'JOKER':`${ranks[c.rank]||c.rank} ${suitNames[c.suit]}`;
-  return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''} ${inRole?'in-role':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${inRole?' · '+currentRole+'のカード':''}${interactive?' HOLD切替':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
+  const label=!c?'Face-down card':c.joker?'JOKER':`${ranks[c.rank]||c.rank} ${suitNames[c.suit]}`;
+  return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''} ${inRole?'in-role':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${inRole?' · '+currentRole+'のカード':''}${interactive?' Toggle HOLD':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
 function render(){
   persist();refreshAccess();
   const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
   ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
   const collected=game.phase==='ready'&&(game.doubleResult?.outcome==='draw'?game.doubleResult.win:game.collectedWin)||0;
-  $('win-label').textContent=collected?'獲得額':'WIN';
+  $('win-label').textContent=collected?'PAID':'WIN';
   if(collected)$('win').textContent=collected.toLocaleString();
   const showingDouble=game.doubleResult&&(['double','won','lost'].includes(game.phase)||game.doubleResult.outcome==='draw');
   roleIndices=[];currentRole='';
@@ -76,12 +76,12 @@ function render(){
   $('cards').innerHTML=Array.from({length:5},(_,i)=>{
     const c=showingDouble?(i===1?game.doubleResult.referenceCard:i===3?game.doubleResult.card:null):game.hand[i];
     const html=cardHtml(c,i,holding);
-    return showingDouble?html.replace('<span class="hold-label"> </span>',`<span class="hold-label">${i===1?'基準カード':i===3?'次のカード':' '}</span>`):html;
+    return showingDouble?html.replace('<span class="hold-label"> </span>',`<span class="hold-label">${i===1?'BASE':i===3?'NEXT':' '}</span>`):html;
   }).join('');
   $('deal').innerHTML=game.phase==='won'?'DOUBLE':holding?'DRAW':'DEAL';
   $('deal').disabled=!(holding||game.canDouble||(editable&&game.bet>0&&game.bet<=Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500)));
   const allIn=game.allIn;
-  $('max').textContent=allIn?'解除':'MAX';
+  $('max').textContent=allIn?'RELEASE':'MAX';
   for(const id of ['min','minus','minus-ten','plus','plus-ten','max']){
     $(id).hidden=!editable;
     $(id).disabled=!editable||(allIn&&id!=='max')||(id==='max'?game.credit+game.bet===0:id==='min'?game.credit+game.bet===0||game.bet===1:id.startsWith('minus')?game.bet<=0:game.credit===0);
@@ -104,20 +104,26 @@ function render(){
   }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、DEALをタップ';}
   if(editable&&game.bet>Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500))next='表示できる金額の上限に達しました';
   if(editable&&game.credit+game.bet===0)next='NEW CREDITで再開できます';
-  if(!guideEnabled){
-    if(game.phase==='hold')title='HOLDするカードを選択';
-    if(game.phase==='ready'&&!game.collectedWin&&!game.doubleResult)title='BET';
-    if(game.phase==='won')title=`WIN ${game.win.toLocaleString()}`;
-    if(game.phase==='double')title='HIGH / LOW';
-    detail='';next=editable&&game.credit+game.bet===0?'NEW CREDITで再開':game.phase==='won'&&!game.canDouble?'COLLECTしてください':'';
-  }
     const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8 / +',minus:'S / 2 / −',max:'＊',sound:'／',reset:'．'};
   for(const [id,keys] of Object.entries(keyHints)){
     const button=$(id);
     button.setAttribute('data-key-hint',guideEnabled?keys:'');
   }
-  $('guide').textContent=guideEnabled?'ガイド ON':'ガイド OFF';$('guide').setAttribute('aria-pressed',String(guideEnabled));
+  $('guide').textContent=guideEnabled?'GUIDE ON':'GUIDE OFF';$('guide').setAttribute('aria-pressed',String(guideEnabled));
   if(editable&&game.bet===0&&game.credit>0)next='BETを増やすか、MAXをタップしてください';
+  let status=holding?'HOLD':game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':game.phase==='double'?'HIGH / LOW':allIn?'ALL IN':'BET';
+  if(r?.card&&['ready','won','lost'].includes(game.phase)){
+    if(r.outcome==='win')status=`DOUBLE WIN ${game.win.toLocaleString()}`;
+    if(r.outcome==='lose')status='NO WIN';
+    if(r.outcome==='draw')status=`TIE · PAID ${r.win.toLocaleString()}`;
+  }else if(collected)status=`PAID ${collected.toLocaleString()}`;
+  if(editable&&game.credit+game.bet===0)status='NO CREDIT';
+  if(editable&&game.bet>Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500))status='BET LIMIT';
+  if(guideEnabled){detail=[title,detail].filter(Boolean).join(' · ');}
+  else {detail='';next='';}
+  title=status;
+  $('controls-help').hidden=!guideEnabled;
+  $('hint').hidden=!guideEnabled;
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
 }
