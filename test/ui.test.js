@@ -11,6 +11,7 @@ test('UI wiring: bet, deal, hold/release, draw, sound and next game',async()=>{
   node('plus').onclick();assert.equal(node('bet').textContent,'40');
   assert.equal(node('collect').disabled,true);
   node('deal').onclick();assert.equal(node('credit').textContent,'960');assert.match(node('deal').innerHTML,/DRAW/);assert.equal(node('plus').disabled,true);
+  for(const match of node('cards').innerHTML.matchAll(/class="card [^"]*held[^"]*" data-index="(\d)"/g))node('cards').onclick({target:{closest:()=>({dataset:{index:match[1]}})}});
   const hold=()=>node('cards').onclick({target:{closest:()=>({dataset:{index:'0'}})}});
   hold();assert.match(node('cards').innerHTML,/held/);hold();assert.doesNotMatch(node('cards').innerHTML,/class="card [^"]*held/);
   const event=(key,code,repeat=false)=>({key,code,repeat,target:{closest:selector=>selector.includes('button')?{}:null},preventDefault(){this.prevented=true;}});

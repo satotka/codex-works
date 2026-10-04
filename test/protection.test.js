@@ -34,7 +34,7 @@ test('corrupt save is backed up and recovery is disclosed; failed backup preserv
   assert.equal(protectedTab.node('play-area').inert,true);assert.match(protectedTab.node('session-text').textContent,/元データを保護/);
 });
 test('HOLD updates the same button without replacing focused card DOM',()=>{
-  const tab=setup();tab.node('deal').onclick();
+  const tab=setup();tab.node('deal').onclick();vm.runInContext('game.held.fill(false);render();',tab.context);
   const button={classList:{toggle(){}},setAttribute(){},parentElement:{querySelector:()=>({textContent:''})}};
   const cards=tab.node('cards'),original=cards.innerHTML;cards.querySelector=()=>button;
   tab.listeners.keydown({key:'2',code:'Numpad2',target:{closest:()=>null},preventDefault(){}});

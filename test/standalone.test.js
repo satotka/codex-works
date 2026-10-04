@@ -77,6 +77,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   vm.runInContext('game.credit=1000;render();',context);
   keypad('Numpad0');press('0');assert.equal(node('credit').textContent,'1,000');
   keypad('Numpad6');assert.equal(node('credit').textContent,'999');assert.match(node('deal').innerHTML,/DRAW/);
+  vm.runInContext('game.held.fill(false);render();',context);
   node('cards').onclick({target:{closest:()=>({dataset:{index:'0'}})}});assert.match(node('cards').innerHTML,/held/);
   keypad('Numpad6');assert.match(node('deal').innerHTML,/DEAL|DOUBLE/);
   if(!node('collect').disabled)node('collect').onclick();
