@@ -81,6 +81,8 @@ function render(){
   $('deal').innerHTML=game.phase==='won'?'DOUBLE':holding?'DRAW':'DEAL';
   $('deal').disabled=!(holding||game.canDouble||(editable&&game.credit>=game.bet));
   $('minus').disabled=!editable||game.bet===1;$('plus').disabled=!editable||game.bet===40;$('max').disabled=!editable||game.bet===40;
+  $('minus').hidden=!editable;$('plus').hidden=!editable;$('bet-lock').hidden=editable;$('bet-presets').hidden=!editable;
+  for(const amount of [1,5,10,20,40]){const button=$(amount===40?'max':'bet-'+amount);button.setAttribute('aria-pressed',String(game.bet===amount));button.disabled=!editable||(amount===40&&game.bet===40);}
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';
   $('reset').hidden=!(game.credit===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
@@ -122,6 +124,7 @@ function celebrate(doubled=false){
 function act(fn,tone){if(!allowed()){refreshAccess();return;}const result=fn();if(result!==false&&tone)sound.play(tone);render();}
 $('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(40),'bet');
 $('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){primaryUntil=Date.now()+100;act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
+for(const amount of [1,5,10,20])$('bet-'+amount).onclick=()=>act(()=>game.setBet(amount),'bet');
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};
 $('collect').onclick=()=>act(()=>game.collect(),'win');
 for(const choice of ['low','high'])$(choice).onclick=()=>{if(!allowed()){refreshAccess();return;}const r=game.guess(choice);if(!r)return;sound.play(r.outcome==='win'?'doubleWin':r.outcome==='draw'?'collect':'doubleLose');render();if(r.outcome==='win')celebrate(true);};

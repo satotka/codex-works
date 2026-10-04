@@ -5,13 +5,13 @@
 <div class="message" id="message" role="status" aria-live="polite">BETを決めて DEAL を押してください</div>
 <section id="cards" class="cards" aria-label="手札"></section>
 
-<div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div><span>BET</span><output id="bet">1</output></div><div class="win-meter"><span id="win-label">WIN</span><output id="win">0</output></div></div>
-<section class="console"><div id="normal-controls" class="normal-controls"><div class="bet-controls"><span>BET</span><div><button id="minus" aria-label="BETを1減らす">−</button><button id="plus" aria-label="BETを1増やす">+</button><button id="max">MAX</button></div></div><button id="deal" class="primary">DEAL</button><button id="collect" class="green">COLLECT</button></div><div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section></section>
+<div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div class="bet-meter"><span>BET <span id="bet-lock" hidden>固定</span></span><div class="bet-stepper"><button id="minus" aria-label="BETを1減らす">−</button><output id="bet">1</output><button id="plus" aria-label="BETを1増やす">+</button></div></div><div class="win-meter"><span id="win-label">WIN</span><output id="win">0</output></div></div>
+<div id="bet-presets" class="bet-presets" aria-label="BETを直接選択"><button id="bet-1">1</button><button id="bet-5">5</button><button id="bet-10">10</button><button id="bet-20">20</button><button id="max" aria-label="BETを40にする">40</button></div><section class="console"><div id="normal-controls" class="normal-controls"><button id="deal" class="primary">DEAL</button><button id="collect" class="green">COLLECT</button></div><div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section></section>
 <footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT</button><span id="save-status" role="status">自動保存</span><span>FOR AMUSEMENT ONLY</span></footer>
 <details class="controls-help"><summary>遊び方</summary>
 <p>カードとボタンをタップして操作できます。</p>
 <div class="controls-list">
-<section><h2>BETを選ぶ</h2><p>＋／−でBETを調整。MAXで最大BET。<br>DEALをタップしてカードを配ります。</p></section>
+<section><h2>BETを選ぶ</h2><p>＋／−でBETを調整。1・5・10・20・40をタップして直接選べます。ゲーム中のBETは固定です。<br>DEALをタップしてカードを配ります。</p></section>
 <section><h2>カードを交換する</h2><p>残すカードをタップしてHOLD。もう一度タップすると解除。<br>DRAWでHOLDしていないカードを1回交換します。<br>当たり後はCOLLECTで獲得、DOUBLEでWIN全額を賭けて挑戦します。</p></section>
 <section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後はDOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
 </div>
