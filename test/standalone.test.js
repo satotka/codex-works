@@ -60,7 +60,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   keypad('Numpad6');assert.equal(node('double-panel').hidden,false);
   keypad('Numpad8');assert.equal(node('win').textContent,'50');
   press('d',true);assert.equal(node('double-panel').hidden,true);
-  keypad('Numpad4');assert.equal(node('credit').textContent,'1,050');assert.equal(node('win').textContent,'0');
+  keypad('Numpad4');assert.equal(node('credit').textContent,'1,050');assert.equal(node('win').textContent,node('win-label').textContent==='獲得額'?'50':'0');
   assert.equal((node('cards').innerHTML.match(/class="card back/g)||[]).length,5);
   assert.equal(vm.runInContext('game.result',context),null);
   assert.equal(vm.runInContext('game.held.some(Boolean)',context),false);
@@ -69,7 +69,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   press('c');assert.equal(node('credit').textContent,'1,050');
   vm.runInContext("game.phase='won';game.win=25;render();",context);
   press('D');press('W');assert.equal(node('win').textContent,'50');
-  press('A');assert.equal(node('credit').textContent,'1,100');assert.equal(node('win').textContent,'0');
+  press('A');assert.equal(node('credit').textContent,'1,100');assert.equal(node('win').textContent,'50');
   vm.runInContext("game.phase='won';game.win=25;render();",context);
   press('d');press('S');assert.equal(node('win').textContent,'0');
   vm.runInContext("game.phase='won';game.win=25;render();",context);
@@ -116,7 +116,8 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   const beforeTie=Number(reopenedNode('credit').textContent.replaceAll(',',''));
   reopenedNode('deal').onclick();reopenedNode('high').onclick();
   assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25);
-  assert.equal(reopenedNode('win').textContent,'0');
+  assert.equal(reopenedNode('win').textContent,'25');
+  assert.equal(reopenedNode('win-label').textContent,'獲得額');
   assert.match(reopenedNode('message').innerHTML,/引き分け.*獲得しました/);
   assert.match(reopenedNode('cards').innerHTML,/基準カード/);
   vm.runInNewContext(script,{Date:testDate,crypto:webcrypto,localStorage:storage,document:{getElementById:reopenedNode,querySelectorAll:()=>[],addEventListener(){}}});
