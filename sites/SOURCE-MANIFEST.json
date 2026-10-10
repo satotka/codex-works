@@ -34,10 +34,10 @@
     },
     {
       "app": "amber-poker",
-      "version": 35,
+      "version": 36,
       "project_id": "appgprj_6ac12e6bb87481918a743e5c414a9fe5",
-      "source_commit": "09f27f490ef6be412bf6ce3e51c75a576255663c",
-      "source_tree": "53a417f70f4d7745f9ac9c0b6cc80b1aefb148ed",
+      "source_commit": "6a262aa1565bd935d1242d50d46f42db54836c0f",
+      "source_tree": "3c5f3cbd148d258c5e3828c60bcf9da50aa7a3f3",
       "github_path": "sites/amber-poker",
       "source_branch": "site-source/amber-poker",
       "files": [
@@ -54,7 +54,7 @@
         {
           "path": "AGENTS.md",
           "mode": "100644",
-          "blob_sha": "08d3266efc7aba829fd3c583cafb011c875459e8"
+          "blob_sha": "02a3afc3b2d45a1acd54a2de03df584a0c32e1c8"
         },
         {
           "path": "AMBER-POKER-REBUILD-PROMPT.md",
@@ -64,7 +64,7 @@
         {
           "path": "AMBER-POKER-SPEC.md",
           "mode": "100644",
-          "blob_sha": "dc84b5812cce8cc2d371c825b556f00c326e3775"
+          "blob_sha": "ab821ddd930eae79afb3a5f8e5ceaeea97b6b4a7"
         },
         {
           "path": "CLOUD-HANDOFF.md",
@@ -74,17 +74,17 @@
         {
           "path": "PLAY.html",
           "mode": "100644",
-          "blob_sha": "a69b7e1d896016d7e624e5ad0596c5a63dbfe324"
+          "blob_sha": "3e005a6cbec8ea35dcdd61570b6cc293bccf3c57"
         },
         {
           "path": "README.md",
           "mode": "100644",
-          "blob_sha": "5252c056a5f9b3cd8623bc7754ff4ec0097f73aa"
+          "blob_sha": "24a33f4dc5c60d65724568cfa88a962b0773b4ea"
         },
         {
           "path": "index.html",
           "mode": "100644",
-          "blob_sha": "ed1910f52d66b13ef27e4fe0ebb5000d37bfb6b5"
+          "blob_sha": "92cc2063ed797b245762585931e27ed5089c8352"
         },
         {
           "path": "package.json",
@@ -119,7 +119,7 @@
         {
           "path": "src/game-state.js",
           "mode": "100644",
-          "blob_sha": "4b765e714e2f44dca9f8d55a69ac360dddb47fe4"
+          "blob_sha": "5e0a5edc1e02ec4e13542bf6ee073a1a58fac931"
         },
         {
           "path": "src/hand-evaluator.js",
@@ -159,7 +159,7 @@
         {
           "path": "src/ui.js",
           "mode": "100644",
-          "blob_sha": "c5ed66834d2abf749b5f0a8dc09691a66d304121"
+          "blob_sha": "6b5568b2c45e19a494a2d3c212e948b2e8fc2062"
         },
         {
           "path": "start-game.cmd",
@@ -174,7 +174,7 @@
         {
           "path": "test/game.test.js",
           "mode": "100644",
-          "blob_sha": "0685e2786abcf4b004dae1eb1f6f7602a908dc43"
+          "blob_sha": "46c9e51714ae8cbf5d83144bc4c1f208c5014a45"
         },
         {
           "path": "test/highlight.test.js",
@@ -194,7 +194,7 @@
         {
           "path": "test/standalone.test.js",
           "mode": "100644",
-          "blob_sha": "d47faa0524b473398dcee08e4914c140b2706826"
+          "blob_sha": "c27ca7a994d6312b9a72b2fa69767d2ef82dc6a8"
         },
         {
           "path": "test/storage.test.js",
@@ -204,7 +204,7 @@
         {
           "path": "test/ui.test.js",
           "mode": "100644",
-          "blob_sha": "921dd2c033c903a5cfe8e66f1ad1afca1b4e48ed"
+          "blob_sha": "66bcc227f0066a12390f519af26177a8b70013de"
         }
       ]
     },

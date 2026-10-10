@@ -5,7 +5,7 @@
 | アプリ | 最新版の作業場所 | Sites版 | 元コミット | 公開URL |
 | --- | --- | --- | --- | --- |
 | PLAY LAB | `play-lab/` | v1 | `6261b5c4cab8a6febc10dfa2b54d69c344ccf535` | https://play-lab-takaa-1004.satotka.chatgpt.site |
-| AMBER POKER | `amber-poker/` | v35 | `09f27f490ef6be412bf6ce3e51c75a576255663c` | https://amber-poker.satotka.chatgpt.site |
+| AMBER POKER | `amber-poker/` | v36 | `6a262aa1565bd935d1242d50d46f42db54836c0f` | https://amber-poker.satotka.chatgpt.site |
 | AMBER DERBY | `amber-derby/` | v1 | `451e4501b00c814e6a00daf2a7ba70ee02e57f65` | https://amber-derby.satotka.chatgpt.site |
 
 `SOURCE-MANIFEST.json` にSite ID、元ツリーSHA、全45ファイルのGit blob SHAを記録しています。各アプリの `.openai/hosting.json` は元のSite IDを保持しています。GitHubへの保存はSitesへの自動公開を設定するものではありません。この保存作業ではSitesのソース変更・再公開・アクセス権変更を行っていません。
@@ -21,3 +21,5 @@
 今回の確認結果: PLAY LABのJavaScript構文確認成功、POKERのビルド成功・7テストファイル成功、DERBYの2テストファイル成功。3アプリの全追跡ファイルの内容・モードを照合しました。実ブラウザーでの表示・音声確認は実施していません。
 
 元コミットは `git switch --detach <元コミット>` で調査できます。その場合は単独アプリがリポジトリ直下に配置されるため、継続作業は通常の `main` の `sites/<app>/` で行ってください。
+
+2026-10-11更新: AMBER POKER v36を公開。MIN=BET 0、MAX=全額BET設定とし、全額設定後の−1／−10／MIN操作を可能にしました。ビルド・7テストファイル成功。POKERのマニフェストと元ソースブランチをv36に更新しました。実ブラウザー確認は未実施です。
