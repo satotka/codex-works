@@ -213,7 +213,7 @@ summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
 <details id="controls-help" class="controls-help"><summary><span>遊び方</span><svg class="disclosure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
 <p>カードとボタンをタップして操作できます。ジョーカー1枚を含む53枚でプレイします。ジョーカーは好きな数字・マークの代わりになるワイルドカードです。</p>
 <div class="controls-list">
-<section><h2>BETを選ぶ</h2><p>−10／−1／＋1／＋10でBETを調整。MINで1、MAXで全額を選択。BETを増やすとCREDITから移し、減らすと戻します。DEAL時の追加控除はありません。全額選択中は増減できず、DEALまたは解除を選びます。解除するとBETを0に戻します。BET 0ではDEALできません。ゲーム中のBETは固定です。ゲーム終了後も同じBET額を次のゲームに引き継ぎます。残高が足りない場合は残高までに調整します。<br>DEALをタップしてカードを配ります。</p></section>
+<section><h2>BETを選ぶ</h2><p>−10／−1／＋1／＋10でBETを調整。MINで0、MAXで残りCREDITと現在のBETを合わせた全額をBETに設定。BETを増やすとCREDITから移し、減らすと戻します。DEAL時の追加控除はありません。MAXで全額を設定した後も、−1／−10で減額したり、MINでBETを0に戻せます。BET 0ではDEALできません。ゲーム中のBETは固定です。ゲーム終了後も同じBET額を次のゲームに引き継ぎます。残高が足りない場合は残高までに調整します。<br>DEALをタップしてカードを配ります。</p></section>
 <section><h2>カードを交換する</h2><p>残すカードをタップしてHOLD。もう一度タップすると解除。<br>DRAWでHOLDしていないカードを1回交換します。<br>当たり後はCOLLECTで獲得、DOUBLEでWIN全額を賭けて挑戦します。</p></section>
 <section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後はDOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
 </div>
@@ -374,9 +374,8 @@ class GameState {
   constructor({deckFactory=()=>new Deck(),doubleDown=new DoubleDown()}={}) {
     this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=0; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
   }
-  get allIn() {return ['ready','lost'].includes(this.phase)&&this.bet>0&&this.credit===0;}
   setBet(value) {
-    if(!['ready','lost'].includes(this.phase)||!Number.isSafeInteger(value)||(this.allIn&&value!==0))return;
+    if(!['ready','lost'].includes(this.phase)||!Number.isSafeInteger(value))return;
     const total=this.credit+this.bet;
     const next=Math.max(0,Math.min(total,value));
     this.credit=total-next;this.bet=next;
@@ -568,13 +567,11 @@ function render(){
   }).join('');
   $('deal').innerHTML=game.phase==='won'?'DOUBLE':holding?'DRAW':'DEAL';
   $('deal').disabled=!(holding||game.canDouble||(editable&&game.bet>0&&game.bet<=Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500)));
-  const allIn=game.allIn;
-  $('max').textContent=allIn?'RELEASE':'MAX';
   for(const id of ['min','minus','minus-ten','plus','plus-ten','max']){
     $(id).hidden=!editable;
-    $(id).disabled=!editable||(allIn&&id!=='max')||(id==='max'?game.credit+game.bet===0:id==='min'?game.credit+game.bet===0||game.bet===1:id.startsWith('minus')?game.bet<=0:game.credit===0);
+    $(id).disabled=!editable||(id==='min'||id.startsWith('minus')?game.bet===0:game.credit===0);
   }
-  $('bet-lock').hidden=editable;$('max').setAttribute('aria-pressed',String(allIn));
+  $('bet-lock').hidden=editable;
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';
   $('reset').hidden=!(game.credit===0&&game.bet===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
@@ -599,7 +596,7 @@ function render(){
   }
 
   if(editable&&game.bet===0&&game.credit>0)next='BETを増やすか、MAXをタップしてください';
-  let status=holding?'HOLD':game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':game.phase==='double'?'HIGH / LOW':allIn?'ALL IN':'BET';
+  let status=holding?'HOLD':game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':game.phase==='double'?'HIGH / LOW':'BET';
   if(r?.card&&['ready','won','lost'].includes(game.phase)){
     if(r.outcome==='win')status=`DOUBLE WIN ${game.win.toLocaleString()}`;
     if(r.outcome==='lose')status='NO WIN';
@@ -622,9 +619,9 @@ function celebrate(doubled=false){
   stage.classList?.add(doubled?'double-burst':'win-burst');
 }
 function act(fn,tone){if(!allowed()){refreshAccess();return;}const result=fn();if(result!==false&&tone)sound.play(tone);render();}
-$('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(game.allIn?0:game.credit+game.bet),'bet');
+$('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(game.credit+game.bet),'bet');
 $('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){primaryUntil=Date.now()+100;act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
-$('min').onclick=()=>act(()=>game.setBet(1),'bet');
+$('min').onclick=()=>act(()=>game.setBet(0),'bet');
 $('minus-ten').onclick=()=>act(()=>game.setBet(game.bet-10),'bet');$('plus-ten').onclick=()=>act(()=>game.setBet(game.bet+10),'bet');
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};
 $('collect').onclick=()=>act(()=>game.collect(),'win');

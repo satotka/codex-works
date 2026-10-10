@@ -29,12 +29,17 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   const keypad=code=>listeners.keydown({key:'Unidentified',code,target:{closest:()=>null},preventDefault(){}});
   keypad('NumpadAdd');assert.equal(node('bet').textContent,'1');keypad('NumpadSubtract');assert.equal(node('bet').textContent,'0');
   keypad('NumpadMultiply');assert.equal(node('bet').textContent,'1,000');
-  assert.equal(node('max').textContent,'RELEASE');
-  for(const id of ['plus','minus','plus-ten','minus-ten'])assert.equal(node(id).disabled,true);
+  for(const id of ['plus','plus-ten','max'])assert.equal(node(id).disabled,true);
+  for(const id of ['min','minus','minus-ten'])assert.equal(node(id).disabled,false);
   keypad('NumpadAdd');assert.equal(node('bet').textContent,'1,000');
-  keypad('NumpadSubtract');assert.equal(node('bet').textContent,'1,000');
-  keypad('NumpadMultiply');assert.equal(node('bet').textContent,'0');
-  assert.equal(node('max').textContent,'MAX');
+  keypad('NumpadSubtract');assert.equal(node('bet').textContent,'999');
+  node('minus-ten').onclick();assert.equal(node('bet').textContent,'989');
+  keypad('NumpadMultiply');assert.equal(node('bet').textContent,'1,000');
+  assert.doesNotMatch(node('message').innerHTML,/ALL IN/);
+  node('min').onclick();assert.equal(node('bet').textContent,'0');
+  assert.equal(node('credit').textContent,'1,000');
+  assert.equal(node('deal').disabled,true);
+  assert.equal(node('min').disabled,true);
   vm.runInContext('game.setBet(1);render();',context);
   const press=(key,repeat=false)=>listeners.keydown({key,repeat,target:{closest:()=>null},preventDefault(){}});
   for(const phase of ['ready','lost']){

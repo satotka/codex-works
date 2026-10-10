@@ -50,7 +50,7 @@ test('all-in above 40 settles the full payout',()=>{const g=new GameState({deckF
 
 test("zero bet cannot deal",()=>{const g=new GameState();g.setBet(0);assert.equal(g.deal(),false);assert.equal(g.credit,1000);});
 
-test("all-in locks adjustments until release",()=>{const g=new GameState();g.setBet(g.credit);g.setBet(995);assert.equal(g.bet,1000);g.setBet(1005);assert.equal(g.bet,1000);g.setBet(0);assert.equal(g.bet,0);g.setBet(5);assert.equal(g.bet,5);});
+test('maximum bet remains editable and transfers credit back',()=>{const g=new GameState();g.setBet(g.credit+g.bet);assert.equal(g.credit,0);g.setBet(g.bet-1);assert.equal(g.bet,999);assert.equal(g.credit,1);g.setBet(g.bet-10);assert.equal(g.bet,989);assert.equal(g.credit,11);g.setBet(g.credit+g.bet);g.setBet(0);assert.equal(g.bet,0);assert.equal(g.credit,1000);assert.equal(g.deal(),false);});
 
 test('bet transfers credit and deal never deducts twice',()=>{const g=new GameState({deckFactory:factory('10S 11S 12S 13S 14S')});g.setBet(10);assert.equal(g.credit,990);g.setBet(1);assert.equal(g.credit,999);g.deal();assert.equal(g.credit,999);g.draw();g.collect();assert.equal(g.bet,1);assert.equal(g.credit,1498);});
 

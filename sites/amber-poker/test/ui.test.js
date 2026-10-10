@@ -6,7 +6,7 @@ test('UI wiring: bet, deal, hold/release, draw, sound and next game',async()=>{
   globalThis.document={getElementById:node,querySelectorAll:()=>[],addEventListener:(type,fn)=>listeners[type]=fn};
   await import('../src/ui.js');
   node('sound').onclick();assert.match(node('sound').innerHTML,/sound-off/);
-  node('max').onclick();assert.equal(node('bet').textContent,'1,000');node('max').onclick();for(let i=0;i<4;i++)node('plus-ten').onclick();
+  node('max').onclick();assert.equal(node('bet').textContent,'1,000');node('min').onclick();for(let i=0;i<4;i++)node('plus-ten').onclick();
   node('minus').onclick();assert.equal(node('bet').textContent,'39');
   node('plus').onclick();assert.equal(node('bet').textContent,'40');
   assert.equal(node('collect').disabled,true);
@@ -27,7 +27,7 @@ test('UI wiring: bet, deal, hold/release, draw, sound and next game',async()=>{
   const afterDraw=node('cards').innerHTML;listeners.keydown(event('d','KeyD',true));assert.equal(node('cards').innerHTML,afterDraw);
   if(!node('collect').disabled)node('collect').onclick();
   assert.equal(node('deal').disabled,false);assert.equal(node('plus').disabled,false);
-  assert.equal(node('minus').disabled,false);node('min').onclick();assert.equal(node('bet').textContent,'1');
+  assert.equal(node('minus').disabled,false);node('min').onclick();assert.equal(node('bet').textContent,'0');assert.equal(node('deal').disabled,true);node('plus').onclick();assert.equal(node('bet').textContent,'1');
   await new Promise(resolve=>setTimeout(resolve,660));
   node('deal').onclick();assert.match(node('deal').innerHTML,/DRAW/);
   delete globalThis.document;

@@ -6,9 +6,8 @@ export class GameState {
   constructor({deckFactory=()=>new Deck(),doubleDown=new DoubleDown()}={}) {
     this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=0; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
   }
-  get allIn() {return ['ready','lost'].includes(this.phase)&&this.bet>0&&this.credit===0;}
   setBet(value) {
-    if(!['ready','lost'].includes(this.phase)||!Number.isSafeInteger(value)||(this.allIn&&value!==0))return;
+    if(!['ready','lost'].includes(this.phase)||!Number.isSafeInteger(value))return;
     const total=this.credit+this.bet;
     const next=Math.max(0,Math.min(total,value));
     this.credit=total-next;this.bet=next;
