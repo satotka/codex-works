@@ -1,0 +1,263 @@
+{
+  "verified_on": "2026-10-11",
+  "apps": [
+    {
+      "app": "play-lab",
+      "version": 1,
+      "project_id": "appgprj_6ac18440c4688191990484f30fe1669b",
+      "source_commit": "6261b5c4cab8a6febc10dfa2b54d69c344ccf535",
+      "source_tree": "3554931bb436b9c90503d9c7620c83cff35637d3",
+      "github_path": "sites/play-lab",
+      "source_branch": "site-source/play-lab",
+      "files": [
+        {
+          "path": ".openai/hosting.json",
+          "mode": "100644",
+          "blob_sha": "16467c6e6957faea7a9ea5fbe20f11433e939995"
+        },
+        {
+          "path": "dist/app.js",
+          "mode": "100644",
+          "blob_sha": "3cc290c826d262d65e115d32d53f094ca56e8837"
+        },
+        {
+          "path": "dist/index.html",
+          "mode": "100644",
+          "blob_sha": "5ae40a63ac68202504e667e8d61d729d704b4d26"
+        },
+        {
+          "path": "dist/style.css",
+          "mode": "100644",
+          "blob_sha": "30a48a7b4b84b7cd73b4deaa66c0352f65889cb7"
+        }
+      ]
+    },
+    {
+      "app": "amber-poker",
+      "version": 35,
+      "project_id": "appgprj_6ac12e6bb87481918a743e5c414a9fe5",
+      "source_commit": "09f27f490ef6be412bf6ce3e51c75a576255663c",
+      "source_tree": "53a417f70f4d7745f9ac9c0b6cc80b1aefb148ed",
+      "github_path": "sites/amber-poker",
+      "source_branch": "site-source/amber-poker",
+      "files": [
+        {
+          "path": ".gitignore",
+          "mode": "100644",
+          "blob_sha": "696c5380e40908d2a5eb14c1e853527079789164"
+        },
+        {
+          "path": ".openai/hosting.json",
+          "mode": "100644",
+          "blob_sha": "e819da308c58eb3bc150d326d836a42b2f4a1193"
+        },
+        {
+          "path": "AGENTS.md",
+          "mode": "100644",
+          "blob_sha": "08d3266efc7aba829fd3c583cafb011c875459e8"
+        },
+        {
+          "path": "AMBER-POKER-REBUILD-PROMPT.md",
+          "mode": "100644",
+          "blob_sha": "1a0b40dede31b3e9b2de150dd0e2abd614df4668"
+        },
+        {
+          "path": "AMBER-POKER-SPEC.md",
+          "mode": "100644",
+          "blob_sha": "dc84b5812cce8cc2d371c825b556f00c326e3775"
+        },
+        {
+          "path": "CLOUD-HANDOFF.md",
+          "mode": "100644",
+          "blob_sha": "1eb1daafe43543f648bb3d38376fe9e4c96f36f9"
+        },
+        {
+          "path": "PLAY.html",
+          "mode": "100644",
+          "blob_sha": "a69b7e1d896016d7e624e5ad0596c5a63dbfe324"
+        },
+        {
+          "path": "README.md",
+          "mode": "100644",
+          "blob_sha": "5252c056a5f9b3cd8623bc7754ff4ec0097f73aa"
+        },
+        {
+          "path": "index.html",
+          "mode": "100644",
+          "blob_sha": "ed1910f52d66b13ef27e4fe0ebb5000d37bfb6b5"
+        },
+        {
+          "path": "package.json",
+          "mode": "100644",
+          "blob_sha": "65d7d3fe02820fcceab340e46b12818cfdf23fad"
+        },
+        {
+          "path": "scripts/build.mjs",
+          "mode": "100644",
+          "blob_sha": "29dc96ecf0f55d52adfb8743016c13044a9ab8de"
+        },
+        {
+          "path": "scripts/server.mjs",
+          "mode": "100644",
+          "blob_sha": "8a347bb22ad813756e8df0e91dcd4f454f3a4fb4"
+        },
+        {
+          "path": "src/card.js",
+          "mode": "100644",
+          "blob_sha": "b86fefd7dd3073f5f36d164454eafa9cf7e6c551"
+        },
+        {
+          "path": "src/deck.js",
+          "mode": "100644",
+          "blob_sha": "857b0b0662d3ffb53204af1ca077796cd218b1ac"
+        },
+        {
+          "path": "src/double-down.js",
+          "mode": "100644",
+          "blob_sha": "e9e71c1c6873e8c8379d5170d3d6a684a5379f33"
+        },
+        {
+          "path": "src/game-state.js",
+          "mode": "100644",
+          "blob_sha": "4b765e714e2f44dca9f8d55a69ac360dddb47fe4"
+        },
+        {
+          "path": "src/hand-evaluator.js",
+          "mode": "100644",
+          "blob_sha": "553d5456b911e49cb4c4d40bd69e95fcdf0d5676"
+        },
+        {
+          "path": "src/hold-strategy.js",
+          "mode": "100644",
+          "blob_sha": "d11087632dd16c18ebd43173db8e1a3f9f40c60b"
+        },
+        {
+          "path": "src/joker-rule.js",
+          "mode": "100644",
+          "blob_sha": "ba60e2bda2f222f07e08adf664dd5324eb80df85"
+        },
+        {
+          "path": "src/pay-table.js",
+          "mode": "100644",
+          "blob_sha": "ae7e8b93e69dff6cd779a05f249c3a2b3d63b84a"
+        },
+        {
+          "path": "src/session.js",
+          "mode": "100644",
+          "blob_sha": "9e95d42f8df28c8a5b00981b4167d6f36f955b4b"
+        },
+        {
+          "path": "src/sound.js",
+          "mode": "100644",
+          "blob_sha": "9d4a8764a8ae956122266012e66e9d3ab7d8bd65"
+        },
+        {
+          "path": "src/storage.js",
+          "mode": "100644",
+          "blob_sha": "795c57cb202fed417bfad56281b26ce8aec498a9"
+        },
+        {
+          "path": "src/ui.js",
+          "mode": "100644",
+          "blob_sha": "c5ed66834d2abf749b5f0a8dc09691a66d304121"
+        },
+        {
+          "path": "start-game.cmd",
+          "mode": "100644",
+          "blob_sha": "c14105598070e5f5e4297695f3a048d747da7758"
+        },
+        {
+          "path": "style.css",
+          "mode": "100644",
+          "blob_sha": "1ccd39db71225ba7b3666da4521873e36bb4c474"
+        },
+        {
+          "path": "test/game.test.js",
+          "mode": "100644",
+          "blob_sha": "0685e2786abcf4b004dae1eb1f6f7602a908dc43"
+        },
+        {
+          "path": "test/highlight.test.js",
+          "mode": "100644",
+          "blob_sha": "a2caae0d05ffdebc5e63cc10414b4eaaf95aed14"
+        },
+        {
+          "path": "test/hold-strategy.test.js",
+          "mode": "100644",
+          "blob_sha": "fe92c0b0fce0918a9779c1b4d1db1850f3016c81"
+        },
+        {
+          "path": "test/protection.test.js",
+          "mode": "100644",
+          "blob_sha": "51d631b4be87746a47537b5985ab31ef324adeb2"
+        },
+        {
+          "path": "test/standalone.test.js",
+          "mode": "100644",
+          "blob_sha": "d47faa0524b473398dcee08e4914c140b2706826"
+        },
+        {
+          "path": "test/storage.test.js",
+          "mode": "100644",
+          "blob_sha": "f4ceece003aa1f2d93b67c8aed05f7005d779c12"
+        },
+        {
+          "path": "test/ui.test.js",
+          "mode": "100644",
+          "blob_sha": "921dd2c033c903a5cfe8e66f1ad1afca1b4e48ed"
+        }
+      ]
+    },
+    {
+      "app": "amber-derby",
+      "version": 1,
+      "project_id": "appgprj_6ac26b149c7c8191940aa0c79cc59136",
+      "source_commit": "451e4501b00c814e6a00daf2a7ba70ee02e57f65",
+      "source_tree": "6ee48789a371822750ced7e069c69a45c89b8b94",
+      "github_path": "sites/amber-derby",
+      "source_branch": "site-source/amber-derby",
+      "files": [
+        {
+          "path": ".openai/hosting.json",
+          "mode": "100644",
+          "blob_sha": "d93ede65f353972a2f244e5d59a47be2508188b5"
+        },
+        {
+          "path": "dist/app.js",
+          "mode": "100644",
+          "blob_sha": "12719eb9389ae76d98f1adf8f7e23248f90ecf9c"
+        },
+        {
+          "path": "dist/engine.js",
+          "mode": "100644",
+          "blob_sha": "5797423c48de195a344ff849a476a77d54fabce9"
+        },
+        {
+          "path": "dist/index.html",
+          "mode": "100644",
+          "blob_sha": "8a6c2824dcb5ed93b4c3609c52b8fd84daae89fb"
+        },
+        {
+          "path": "dist/style.css",
+          "mode": "100644",
+          "blob_sha": "b0e6ed38dcf84d45b781025f0f79b0300f665e44"
+        },
+        {
+          "path": "package.json",
+          "mode": "100644",
+          "blob_sha": "56c3b909fae892659bfe6ee19e921b6f77f6e5d9"
+        },
+        {
+          "path": "test/engine.test.js",
+          "mode": "100644",
+          "blob_sha": "c6fa6f96fc331456676c3e33a08e34fdd0f02dbd"
+        },
+        {
+          "path": "test/ui.test.js",
+          "mode": "100644",
+          "blob_sha": "47eb001180980144d7fab80e2e040458722cf11c"
+        }
+      ]
+    }
+  ]
+}
