@@ -111,7 +111,7 @@ function render(){
   }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、DEALをタップ';}
   if(editable&&game.bet>Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500))next='表示できる金額の上限に達しました';
   if(editable&&game.credit+game.bet===0)next='NEW CREDITで再開できます';
-    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8 / +',minus:'S / 2 / −',max:'＊',reset:'．'};
+    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8',minus:'S / 2',max:'',reset:'．'};
   for(const [id,keys] of Object.entries(keyHints)){
     const button=$(id);
     button.setAttribute('data-key-hint',guideEnabled?keys:'');

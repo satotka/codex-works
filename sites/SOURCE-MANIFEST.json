@@ -34,10 +34,10 @@
     },
     {
       "app": "amber-poker",
-      "version": 36,
+      "version": 37,
       "project_id": "appgprj_6ac12e6bb87481918a743e5c414a9fe5",
-      "source_commit": "6a262aa1565bd935d1242d50d46f42db54836c0f",
-      "source_tree": "3c5f3cbd148d258c5e3828c60bcf9da50aa7a3f3",
+      "source_commit": "d65325e2fb02b18b435338bf63252ee27b485ecd",
+      "source_tree": "f4b2c3d80529d3c566f0fb9320aa6b8fbe64abd9",
       "github_path": "sites/amber-poker",
       "source_branch": "site-source/amber-poker",
       "files": [
@@ -74,7 +74,7 @@
         {
           "path": "PLAY.html",
           "mode": "100644",
-          "blob_sha": "3e005a6cbec8ea35dcdd61570b6cc293bccf3c57"
+          "blob_sha": "6028cd82eb8d9bd34e208573403ca2c73ebc42b3"
         },
         {
           "path": "README.md",
@@ -159,7 +159,7 @@
         {
           "path": "src/ui.js",
           "mode": "100644",
-          "blob_sha": "6b5568b2c45e19a494a2d3c212e948b2e8fc2062"
+          "blob_sha": "8a6c233f3767e053456b79151ec8935f666864d3"
         },
         {
           "path": "start-game.cmd",
