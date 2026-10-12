@@ -47,7 +47,7 @@ function render(){
   const total=s.credit+s.bet;for(const id of ['min','minus-ten','minus','plus','plus-ten','max'])$(id).disabled=blocked||!ready;
   $('min').disabled||=s.bet===0;$('minus').disabled||=s.bet===0;$('minus-ten').disabled||=s.bet===0;$('plus').disabled||=s.bet>=Math.min(10,total);$('plus-ten').disabled=$('plus').disabled;$('max').disabled=$('plus').disabled;
   const mainType=ready?'deal':s.phase==='dealt'?'draw':s.phase==='won'?'double':null;
-  $('main').hidden=['choose','double'].includes(s.phase);$('main').textContent=mainType==='double'?'DOUBLE D/6':mainType?.toUpperCase()??'DEAL';$('main').disabled=blocked||!mainType||(ready&&s.bet<1)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
+  $('main').hidden=['choose','double'].includes(s.phase);$('main').textContent=mainType?.toUpperCase()??'DEAL';if(mainType==='double'){const shortcut=document.createElement('small');shortcut.textContent='D/6';$('main').append(shortcut)};$('main').disabled=blocked||!mainType||(ready&&s.bet<1)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
   $('collect').hidden=!['won','double'].includes(s.phase);$('collect').disabled=blocked;$('refill').hidden=!(ready&&total<1);$('refill').disabled=blocked;
   $('hint').textContent=s.phase==='choose'?'1〜5でカードを選択':s.phase==='double'?'← LEFT ／ → RIGHT ／ A・4 COLLECT':ready?'D・6 DEAL ／ W・8 ＋1 ／ S・2 −1':s.phase==='dealt'?'D・6 DRAW':'D・6 DOUBLE ／ A・4 COLLECT';
   $('save-status').textContent=blocked?'PLAY PAUSED':storageOK?'AUTO SAVE':'SAVE UNAVAILABLE';
