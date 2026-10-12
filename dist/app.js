@@ -43,14 +43,14 @@ function render(){
   s.choices.forEach((card,i)=>{$('choices').append(slot(s.phase==='choose'?null:card,`${i+1}${s.selected===i?' · SELECTED':''}`,{button:s.phase==='choose',onClick:()=>act({type:'pick',index:i}),selected:s.selected===i}));});
   $('double-panel').hidden=!doubling;$('double-cards').replaceChildren();
   if(doubling){const cards=s.phase==='double'?[null,null]:s.doubleLast;cards.forEach((c,i)=>$('double-cards').append(slot(c,i===0?'LEFT':'RIGHT',{button:s.phase==='double',onClick:()=>act({type:'side',index:i})})));
-    if(s.phase==='double')for(const [i,slot] of [...$('double-cards').children].entries()){const shortcut=document.createElement('small');shortcut.textContent=i===0?'A/4':'D/6';slot.children[1].append(shortcut);}}
+    if(s.phase==='double')for(const [i,slot] of [...$('double-cards').children].entries()){const shortcut=document.createElement('small');shortcut.textContent=i===0?'Q/7':'E/9';slot.children[1].append(shortcut);}}
   $('tie-note').textContent=s.doubleOutcome==='tie'?(s.guide?'同値のためWINを維持し、新しい2枚を配りました。':'TIE · WIN KEPT · NEW CARDS'):'';
   const total=s.credit+s.bet;for(const id of ['min','minus-ten','minus','plus','plus-ten','max'])$(id).disabled=blocked||!ready;
   $('min').disabled||=s.bet===0;$('minus').disabled||=s.bet===0;$('minus-ten').disabled||=s.bet===0;$('plus').disabled||=s.bet>=Math.min(10,total);$('plus-ten').disabled=$('plus').disabled;$('max').disabled=$('plus').disabled;
   const mainType=ready?'deal':s.phase==='won'?'double':null;
-  $('main').hidden=['choose','double'].includes(s.phase);$('main').textContent=mainType?.toUpperCase()??'DEAL';if(['deal','double'].includes(mainType)){const shortcut=document.createElement('small');shortcut.textContent=mainType==='deal'?'D/6キー':'W/8';$('main').append(shortcut)};$('main').disabled=blocked||!mainType||(ready&&s.bet<1)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
+  $('main').hidden=['choose','double'].includes(s.phase);$('main').textContent=mainType?.toUpperCase()??'DEAL';if(['deal','double'].includes(mainType)){const shortcut=document.createElement('small');shortcut.textContent=mainType==='deal'?'D/6キー':'D/6';$('main').append(shortcut)};$('main').disabled=blocked||!mainType||(ready&&s.bet<1)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
   $('collect').hidden=!['won','double'].includes(s.phase);$('collect').disabled=blocked;$('refill').hidden=!(ready&&total<1);$('refill').disabled=blocked;
-  $('hint').textContent=s.phase==='choose'?'1〜5でカードを選択':s.phase==='double'?'A・4 LEFT ／ D・6 RIGHT ／ S・2 COLLECT':ready?'D・6 DEAL ／ W・8 ＋1 ／ S・2 −1':'W・8 DOUBLE ／ S・2 COLLECT';
+  $('hint').textContent=s.phase==='choose'?'1〜5でカードを選択':s.phase==='double'?'Q・7 LEFT ／ E・9 RIGHT ／ A・4 COLLECT':ready?'D・6 DEAL ／ W・8 ＋1 ／ S・2 −1':'D・6 DOUBLE ／ A・4 COLLECT';
   $('save-status').textContent=blocked?'PLAY PAUSED':storageOK?'AUTO SAVE':'SAVE UNAVAILABLE';
   $('payrows').replaceChildren();const possible=new Set(s.base.length?possibleHands(s.base).map(p=>p[0]):[]);
   PAYTABLE.forEach(([key,text,multiplier])=>{const row=document.createElement('div');row.className=`payrow${s.result?.key===key?' active':possible.has(key)&&['dealt','choose'].includes(s.phase)?' possible-row':''}`;const name=document.createElement('span'),value=document.createElement('b');name.textContent=text;value.textContent=`×${multiplier}`;row.append(name,value);$('payrows').append(row);});
@@ -65,9 +65,9 @@ document.addEventListener('keydown',event=>{
   let action=null;
   if(state.phase==='choose'&&/^[1-5]$/.test(key))action={type:'pick',index:Number(key)-1};
   else if(state.phase==='double'&&['arrowleft','arrowright'].includes(key))action={type:'side',index:key==='arrowleft'?0:1};
-  else if(state.phase==='double'&&['a','4','d','6'].includes(key))action={type:'side',index:['a','4'].includes(key)?0:1};
-  else if(['won','double'].includes(state.phase)&&['s','2'].includes(key))action={type:'collect'};
-  else if(state.phase==='won'&&['w','8'].includes(key))action={type:'double'};
+  else if(state.phase==='double'&&['q','7','e','9'].includes(key))action={type:'side',index:['q','7'].includes(key)?0:1};
+  else if(['won','double'].includes(state.phase)&&['a','4'].includes(key))action={type:'collect'};
+  else if(state.phase==='won'&&['d','6'].includes(key))action={type:'double'};
   else if(['d','6'].includes(key)&&['ready','lost'].includes(state.phase))action={type:'deal'};
   else if(['w','8','+'].includes(key))action={type:'bet',amount:state.bet+1};
   else if(['s','2','-'].includes(key))action={type:'bet',amount:state.bet-1};
