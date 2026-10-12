@@ -1,9 +1,10 @@
 import {Deck} from './deck.js';
 export class DoubleDown {
   constructor(deckFactory=()=>new Deck({includeJoker:false})) {this.deckFactory=deckFactory;}
-  start() {
+  start(referenceCard=null) {
     this.deck=this.deckFactory();
-    this.referenceCard=this.deck.draw();
+    if(referenceCard&&this.deck.cards)this.deck.cards=this.deck.cards.filter(c=>c.rank!==referenceCard.rank||c.suit!==referenceCard.suit);
+    this.referenceCard=referenceCard||this.deck.draw();
     this.active=true;
     return this.referenceCard;
   }

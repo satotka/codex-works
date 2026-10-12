@@ -215,7 +215,7 @@ summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
 <div class="controls-list">
 <section><h2>BETを選ぶ</h2><p>−10／−1／＋1／＋10でBETを調整。MINで0、MAXで残りCREDITと現在のBETを合わせた全額をBETに設定。BETを増やすとCREDITから移し、減らすと戻します。DEAL時の追加控除はありません。MAXで全額を設定した後も、−1／−10で減額したり、MINでBETを0に戻せます。BET 0ではDEALできません。ゲーム中のBETは固定です。ゲーム終了後も同じBET額を次のゲームに引き継ぎます。残高が足りない場合は残高までに調整します。<br>DEALをタップしてカードを配ります。</p></section>
 <section><h2>カードを交換する</h2><p>残すカードをタップしてHOLD。もう一度タップすると解除。<br>DRAWでHOLDしていないカードを1回交換します。<br>当たり後はCOLLECTで獲得、DOUBLEでWIN全額を賭けて挑戦します。</p></section>
-<section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後はDOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
+<section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後は開いたNEXTが次のBASEになり、DOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
 </div>
 <section class="pc-controls"><h2>PCでの操作</h2><p>PCではキーボードだけ、またはテンキーだけでも操作できます。マウスでのクリックにも対応しています。</p><p><b>D／6</b> DEAL・DRAW・DOUBLE（状態に応じて切り替え）<br><b>1〜5</b> カードのHOLD／解除<br><b>W／8</b> BET＋1、ダブル中はHIGH<br><b>S／2</b> BET−1、ダブル中はLOW<br><b>A／4</b> COLLECT（手札選択中の4はHOLD）<br><b>＋／−</b> BETを1ずつ調整　<b>＊</b> MAX　<b>／</b> サウンド　<b>．</b> NEW CREDIT（残高0の時）<br>テンキーはNum LockのON／OFFに対応しています。</p></section><section class="restart-section"><h2>最初からやり直す</h2><p>CREDITを1,000、BETを0に戻し、手札・WIN・進行状態をリセットします。</p><button id="restart-game">最初からやり直す</button></section></details></div></main>
 <script>
@@ -302,9 +302,10 @@ function roleCardIndices(hand,result=evaluateHand(hand)){
 
 class DoubleDown {
   constructor(deckFactory=()=>new Deck({includeJoker:false})) {this.deckFactory=deckFactory;}
-  start() {
+  start(referenceCard=null) {
     this.deck=this.deckFactory();
-    this.referenceCard=this.deck.draw();
+    if(referenceCard&&this.deck.cards)this.deck.cards=this.deck.cards.filter(c=>c.rank!==referenceCard.rank||c.suit!==referenceCard.suit);
+    this.referenceCard=referenceCard||this.deck.draw();
     this.active=true;
     return this.referenceCard;
   }
@@ -388,7 +389,7 @@ class GameState {
   toggleHold(i) {if(this.phase==='hold'&&Number.isInteger(i)&&i>=0&&i<5) this.held[i]=!this.held[i];}
   draw() {if(this.phase!=='hold') return false; this.hand=this.hand.map((c,i)=>this.held[i]?c:this.deck.draw()); this.result=evaluateHand(this.hand); this.win=payout(this.bet,this.result); this.phase=this.win?'won':'lost'; if(!this.win)this.reserveNextBet(); return true;}
   get canDouble() {return this.phase==='won'&&this.win<=Math.floor((Number.MAX_SAFE_INTEGER-this.credit)/2);}
-  startDouble() {if(!this.canDouble)return false; this.doubleResult={referenceCard:this.doubleDown.start(),card:null}; this.phase='double'; return true;}
+  startDouble() {if(!this.canDouble)return false; this.doubleResult={referenceCard:this.doubleDown.start(this.doubleResult?.outcome==='win'?this.doubleResult.card:null),card:null}; this.phase='double'; return true;}
   guess(choice) {if(this.phase!=='double')return false; this.doubleResult=this.doubleDown.play(this.win,choice); this.win=this.doubleResult.win; this.phase=this.win?'won':'lost'; if(!this.win)this.reserveNextBet(); if(this.doubleResult.outcome==='draw')this.collect({preserveResult:true}); return this.doubleResult;}
   collect({preserveResult=false}={}) {if(this.phase!=='won')return false; this.collectedWin=this.win; this.credit+=this.win; this.win=0; this.phase='ready'; this.reserveNextBet(); if(!preserveResult){this.hand=[];this.held.fill(false);this.result=null;this.doubleResult=null;this.deck=null;} return true;}
   reset() {if(this.credit===0&&this.bet===0&&['ready','lost'].includes(this.phase)){this.credit=1000;this.phase='ready';this.hand=[];this.result=null;this.doubleResult=null;return true;}return false;}

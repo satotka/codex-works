@@ -59,7 +59,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   vm.runInContext('game.setBet(1);render();',context);
   // Exercise the real evaluator through each HIGH input path, not a stubbed result.
   for(const input of ['w','W','h','Numpad8','mouse']){
-    vm.runInContext("game.phase='won';game.win=25;game.doubleDown=new DoubleDown(()=>{const cards=[{rank:8,suit:'H',joker:false},{rank:14,suit:'S',joker:false}];return {draw:()=>cards.shift()};});render();",context);
+    vm.runInContext("game.phase='won';game.win=25;game.doubleResult=null;game.doubleDown=new DoubleDown(()=>{const cards=[{rank:8,suit:'H',joker:false},{rank:14,suit:'S',joker:false}];return {draw:()=>cards.shift()};});render();",context);
     node('deal').onclick();
     assert.match(node('cards').innerHTML,/BASE/);
     if(input==='mouse')node('high').onclick();else if(input==='Numpad8')keypad(input);else press(input);
@@ -124,7 +124,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   reopenedNode('deal').onclick();vm.runInContext('storage=undefined;session.storage=undefined;',context);node('deal').onclick();
   assert.equal(reopenedNode('cards').innerHTML,node('cards').innerHTML);
   assert.equal(reopenedNode('win').textContent,node('win').textContent);
-  vm.runInContext("game.phase='won';game.win=25;game.doubleDown=new DoubleDown(()=>{const deck=new Deck({includeJoker:false,random:()=>0.5});deck.cards=deck.cards.filter(c=>!(c.rank===8&&['S','H'].includes(c.suit)));deck.cards.push(card(8,'H'),card(8,'S'));return deck;});render();",reopened);
+  vm.runInContext("game.phase='won';game.win=25;game.doubleResult=null;game.doubleDown=new DoubleDown(()=>{const deck=new Deck({includeJoker:false,random:()=>0.5});deck.cards=deck.cards.filter(c=>!(c.rank===8&&['S','H'].includes(c.suit)));deck.cards.push(card(8,'H'),card(8,'S'));return deck;});render();",reopened);
   const beforeTie=Number(reopenedNode('credit').textContent.replaceAll(',',''));
   reopenedNode('deal').onclick();reopenedNode('high').onclick();
   assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25-vm.runInContext('game.bet',reopened));
