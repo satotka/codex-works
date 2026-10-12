@@ -200,22 +200,42 @@ summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.disclosure-arrow{transition:none}}
 
 .screen-top{justify-content:flex-end}
+
+/* Keep the transferring BASE above the intervening face-down card. */
+.cards [data-index="1"]{z-index:1}
+
+/* Fixed status rows keep card placement independent of guide copy. */
+.screen{align-items:start;grid-template-rows:auto 80px auto auto auto auto auto}
+.message{height:72px;min-height:72px;margin:4px 0;display:grid;grid-template-rows:32px 32px;gap:0;align-content:center;overflow:visible}
+.message strong,.message .result-status{display:flex!important;align-items:center;justify-content:center;min-width:0;white-space:nowrap;line-height:1.2;font-size:clamp(12px,2.1vw,20px)}
+.message .result-status{color:#b8e0b1;font-variant-numeric:tabular-nums;font-size:clamp(10px,1.8vw,18px);letter-spacing:0}
+.guide-message{grid-column:2;text-align:center;color:#cfc0a9;font-size:13px;line-height:1.6;margin-top:12px;overflow-wrap:anywhere}
+.guide-message span,.guide-message small{display:block;font-size:inherit}
+.guide-message small{color:#e4d8c4;margin-top:4px}
+.guide-message[hidden]{display:none}
+@media(max-width:760px){.message strong{font-size:17px}.message .result-status{font-size:clamp(10px,3.4vw,16px)}.guide-message{font-size:12px}}
+
+/* Reserve the same space for every slot; HOLD moves only its visual contents. */
+.card-slot{padding-bottom:8px}
+.card,.hold-label{transition:transform 160ms ease-out}
+.card.held,.card.held + .hold-label{transform:translateY(8px)}
+@media(prefers-reduced-motion:reduce){.card,.hold-label{transition:none}}
 </style></head><body>
 <main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">RELOAD</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><div class="utility-bar"><button id="guide" class="small icon-toggle" aria-label="Guide ON" title="Guide ON" aria-pressed="true"></button><button id="sound" class="small icon-toggle" aria-label="Sound ON" title="Sound ON" aria-pressed="true"></button></div></header>
 <section class="screen"><div class="screen-top"><span class="edition">ARCADE EDITION / 01</span></div>
 <details id="paytable-details" class="paytable-details" open><summary><span>PAYTABLE</span><svg class="disclosure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><section class="paytable" aria-label="配当表"><div class="table-head"><span>WINNING HAND</span><span>NATURAL</span><span>JOKER ×2</span></div><div id="payrows"></div></section></details>
-<div class="message" id="message" role="status" aria-live="polite">BET</div>
+<div class="message" id="message" role="status" aria-live="polite"><strong>PLEASE BET</strong><span class="result-status"></span></div>
 <section id="cards" class="cards" aria-label="手札"></section>
 
 <div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div class="win-meter"><span id="win-label">WIN</span><output id="win">0</output></div></div>
-<div class="bet-row"><button id="min">MIN</button><button id="minus-ten">−10</button><button id="minus">−1</button><div class="bet-amount"><span>BET <span id="bet-lock" hidden>LOCKED</span></span><output id="bet">0</output></div><button id="plus">＋1</button><button id="plus-ten">＋10</button><button id="max">MAX</button></div><section class="console"><div id="normal-controls" class="normal-controls"><button id="deal" class="primary">DEAL</button><button id="collect" class="green">COLLECT</button></div><div class="double-panel" id="double-panel" hidden><strong>HIGH OR LOW?</strong><span>基準より低い = LOW　｜　高い = HIGH　｜　同じ数字 = 引き分け・自動COLLECT</span><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section></section>
+<div class="bet-row"><button id="min">MIN</button><button id="minus-ten">−10</button><button id="minus">−1</button><div class="bet-amount"><span>BET <span id="bet-lock" hidden>LOCKED</span></span><output id="bet">0</output></div><button id="plus">＋1</button><button id="plus-ten">＋10</button><button id="max">MAX</button></div><section class="console"><div id="normal-controls" class="normal-controls"><button id="collect" class="green">COLLECT</button><button id="deal" class="primary">DEAL</button></div><div class="double-panel" id="double-panel" hidden><div><button id="low">LOW</button><button id="high">HIGH</button></div></div></section><div id="guide-message" class="guide-message"></div></section>
 <footer><span id="hint">カード・ボタンはクリック／タップでも操作できます</span><button id="reset" hidden>NEW CREDIT</button><span id="save-status" role="status">自動保存</span><span>FOR AMUSEMENT ONLY</span></footer>
 <details id="controls-help" class="controls-help"><summary><span>遊び方</span><svg class="disclosure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
 <p>カードとボタンをタップして操作できます。ジョーカー1枚を含む53枚でプレイします。ジョーカーは好きな数字・マークの代わりになるワイルドカードです。</p>
 <div class="controls-list">
-<section><h2>BETを選ぶ</h2><p>−10／−1／＋1／＋10でBETを調整。MINで1、MAXで全額を選択。BETを増やすとCREDITから移し、減らすと戻します。DEAL時の追加控除はありません。全額選択中は増減できず、DEALまたは解除を選びます。解除するとBETを0に戻します。BET 0ではDEALできません。ゲーム中のBETは固定です。ゲーム終了後も同じBET額を次のゲームに引き継ぎます。残高が足りない場合は残高までに調整します。<br>DEALをタップしてカードを配ります。</p></section>
+<section><h2>BETを選ぶ</h2><p>−10／−1／＋1／＋10でBETを調整。MINで0、MAXで残りCREDITと現在のBETを合わせた全額をBETに設定。BETを増やすとCREDITから移し、減らすと戻します。DEAL時の追加控除はありません。MAXで全額を設定した後も、−1／−10で減額したり、MINでBETを0に戻せます。BET 0ではDEALできません。ゲーム中のBETは固定です。ゲーム終了後も同じBET額を次のゲームに引き継ぎます。残高が足りない場合は残高までに調整します。<br>DEALをタップしてカードを配ります。</p></section>
 <section><h2>カードを交換する</h2><p>残すカードをタップしてHOLD。もう一度タップすると解除。<br>DRAWでHOLDしていないカードを1回交換します。<br>当たり後はCOLLECTで獲得、DOUBLEでWIN全額を賭けて挑戦します。</p></section>
-<section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後はDOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
+<section><h2>ダブルに挑戦する</h2><p>次のカードが基準より高いと思ったらHIGH、低いと思ったらLOW。<br>同じ数字は引き分けとなり、WINを自動回収します。勝った後は開いたNEXTが次のBASEになり、DOUBLEで再挑戦、COLLECTで獲得できます。</p></section>
 </div>
 <section class="pc-controls"><h2>PCでの操作</h2><p>PCではキーボードだけ、またはテンキーだけでも操作できます。マウスでのクリックにも対応しています。</p><p><b>D／6</b> DEAL・DRAW・DOUBLE（状態に応じて切り替え）<br><b>1〜5</b> カードのHOLD／解除<br><b>W／8</b> BET＋1、ダブル中はHIGH<br><b>S／2</b> BET−1、ダブル中はLOW<br><b>A／4</b> COLLECT（手札選択中の4はHOLD）<br><b>＋／−</b> BETを1ずつ調整　<b>＊</b> MAX　<b>／</b> サウンド　<b>．</b> NEW CREDIT（残高0の時）<br>テンキーはNum LockのON／OFFに対応しています。</p></section><section class="restart-section"><h2>最初からやり直す</h2><p>CREDITを1,000、BETを0に戻し、手札・WIN・進行状態をリセットします。</p><button id="restart-game">最初からやり直す</button></section></details></div></main>
 <script>
@@ -302,9 +322,10 @@ function roleCardIndices(hand,result=evaluateHand(hand)){
 
 class DoubleDown {
   constructor(deckFactory=()=>new Deck({includeJoker:false})) {this.deckFactory=deckFactory;}
-  start() {
+  start(referenceCard=null) {
     this.deck=this.deckFactory();
-    this.referenceCard=this.deck.draw();
+    if(referenceCard&&this.deck.cards)this.deck.cards=this.deck.cards.filter(c=>c.rank!==referenceCard.rank||c.suit!==referenceCard.suit);
+    this.referenceCard=referenceCard||this.deck.draw();
     this.active=true;
     return this.referenceCard;
   }
@@ -374,9 +395,8 @@ class GameState {
   constructor({deckFactory=()=>new Deck(),doubleDown=new DoubleDown()}={}) {
     this.deckFactory=deckFactory; this.doubleDown=doubleDown; this.credit=1000; this.bet=0; this.win=0; this.phase='ready'; this.hand=[]; this.held=Array(5).fill(false); this.result=null; this.doubleResult=null;
   }
-  get allIn() {return ['ready','lost'].includes(this.phase)&&this.bet>0&&this.credit===0;}
   setBet(value) {
-    if(!['ready','lost'].includes(this.phase)||!Number.isSafeInteger(value)||(this.allIn&&value!==0))return;
+    if(!['ready','lost'].includes(this.phase)||!Number.isSafeInteger(value))return;
     const total=this.credit+this.bet;
     const next=Math.max(0,Math.min(total,value));
     this.credit=total-next;this.bet=next;
@@ -389,7 +409,7 @@ class GameState {
   toggleHold(i) {if(this.phase==='hold'&&Number.isInteger(i)&&i>=0&&i<5) this.held[i]=!this.held[i];}
   draw() {if(this.phase!=='hold') return false; this.hand=this.hand.map((c,i)=>this.held[i]?c:this.deck.draw()); this.result=evaluateHand(this.hand); this.win=payout(this.bet,this.result); this.phase=this.win?'won':'lost'; if(!this.win)this.reserveNextBet(); return true;}
   get canDouble() {return this.phase==='won'&&this.win<=Math.floor((Number.MAX_SAFE_INTEGER-this.credit)/2);}
-  startDouble() {if(!this.canDouble)return false; this.doubleResult={referenceCard:this.doubleDown.start(),card:null}; this.phase='double'; return true;}
+  startDouble() {if(!this.canDouble)return false; this.doubleResult={referenceCard:this.doubleDown.start(this.doubleResult?.outcome==='win'?this.doubleResult.card:null),card:null}; this.phase='double'; return true;}
   guess(choice) {if(this.phase!=='double')return false; this.doubleResult=this.doubleDown.play(this.win,choice); this.win=this.doubleResult.win; this.phase=this.win?'won':'lost'; if(!this.win)this.reserveNextBet(); if(this.doubleResult.outcome==='draw')this.collect({preserveResult:true}); return this.doubleResult;}
   collect({preserveResult=false}={}) {if(this.phase!=='won')return false; this.collectedWin=this.win; this.credit+=this.win; this.win=0; this.phase='ready'; this.reserveNextBet(); if(!preserveResult){this.hand=[];this.held.fill(false);this.result=null;this.doubleResult=null;this.deck=null;} return true;}
   reset() {if(this.credit===0&&this.bet===0&&['ready','lost'].includes(this.phase)){this.credit=1000;this.phase='ready';this.hand=[];this.result=null;this.doubleResult=null;return true;}return false;}
@@ -551,7 +571,10 @@ function cardHtml(c,i,interactive) {
   const label=!c?'Face-down card':c.joker?'JOKER':`${ranks[c.rank]||c.rank} ${suitNames[c.suit]}`;
   return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''} ${inRole?'in-role':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${inRole?' · '+currentRole+'のカード':''}${interactive?' Toggle HOLD':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
+let transferAnimations=[];
 function render(){
+  for(const animation of transferAnimations)animation.cancel();
+  transferAnimations=[];
   updateUtilityButtons();persist();refreshAccess();
   const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
   ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
@@ -568,13 +591,11 @@ function render(){
   }).join('');
   $('deal').innerHTML=game.phase==='won'?'DOUBLE':holding?'DRAW':'DEAL';
   $('deal').disabled=!(holding||game.canDouble||(editable&&game.bet>0&&game.bet<=Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500)));
-  const allIn=game.allIn;
-  $('max').textContent=allIn?'RELEASE':'MAX';
   for(const id of ['min','minus','minus-ten','plus','plus-ten','max']){
     $(id).hidden=!editable;
-    $(id).disabled=!editable||(allIn&&id!=='max')||(id==='max'?game.credit+game.bet===0:id==='min'?game.credit+game.bet===0||game.bet===1:id.startsWith('minus')?game.bet<=0:game.credit===0);
+    $(id).disabled=!editable||(id==='min'||id.startsWith('minus')?game.bet===0:game.credit===0);
   }
-  $('bet-lock').hidden=editable;$('max').setAttribute('aria-pressed',String(allIn));
+  $('bet-lock').hidden=editable;
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';
   $('reset').hidden=!(game.credit===0&&game.bet===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
@@ -592,28 +613,30 @@ function render(){
   }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、DEALをタップ';}
   if(editable&&game.bet>Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500))next='表示できる金額の上限に達しました';
   if(editable&&game.credit+game.bet===0)next='NEW CREDITで再開できます';
-    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8 / +',minus:'S / 2 / −',max:'＊',reset:'．'};
+    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8',minus:'S / 2',max:'',reset:'．'};
   for(const [id,keys] of Object.entries(keyHints)){
     const button=$(id);
     button.setAttribute('data-key-hint',guideEnabled?keys:'');
   }
 
   if(editable&&game.bet===0&&game.credit>0)next='BETを増やすか、MAXをタップしてください';
-  let status=holding?'HOLD':game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':game.phase==='double'?'HIGH / LOW':allIn?'ALL IN':'BET';
+  let status=holding?'SELECT CARDS':game.phase==='won'?'DOUBLE UP?':game.phase==='double'?'HIGH/LOW':'PLEASE BET';
+  let resultStatus=game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':'';
   if(r?.card&&['ready','won','lost'].includes(game.phase)){
-    if(r.outcome==='win')status=`DOUBLE WIN ${game.win.toLocaleString()}`;
-    if(r.outcome==='lose')status='NO WIN';
-    if(r.outcome==='draw')status=`TIE · PAID ${r.win.toLocaleString()}`;
-  }else if(collected)status=`PAID ${collected.toLocaleString()}`;
+    if(r.outcome==='win')resultStatus=`DOUBLE WIN ${game.win.toLocaleString()}`;
+    if(r.outcome==='lose')resultStatus='NO WIN';
+    if(r.outcome==='draw')resultStatus=`PAID ${r.win.toLocaleString()}`;
+  }else if(collected)resultStatus=`PAID ${collected.toLocaleString()}`;
   if(editable&&game.credit+game.bet===0)status='NO CREDIT';
   if(editable&&game.bet>Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500))status='BET LIMIT';
   if(guideEnabled){detail=[title,detail].filter(Boolean).join(' · ');}
   else {detail='';next='';}
-  title=status;
   $('controls-help').hidden=!guideEnabled;
   $('hint').hidden=!guideEnabled;
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
+  $('message').innerHTML=`<strong>${escape(status)}</strong><span class="result-status">${escape(resultStatus)}</span>`;
+  $('guide-message').hidden=!guideEnabled;
+  $('guide-message').innerHTML=guideEnabled?`<span>${escape(detail)}</span><small>${escape(next)}</small>`:'';
 }
 function celebrate(doubled=false){
   const stage=$('cards');
@@ -621,10 +644,33 @@ function celebrate(doubled=false){
   void stage.offsetWidth;
   stage.classList?.add(doubled?'double-burst':'win-burst');
 }
+function startDoubleWithTransfer(){
+  const continuing=game.doubleResult?.outcome==='win';
+  const reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const stage=$('cards');
+  const origin=continuing&&!reduced?stage.querySelector?.('[data-index="3"]')?.getBoundingClientRect?.():null;
+  act(()=>game.startDouble(),'deal');
+  if(!origin||game.phase!=='double')return;
+  const base=stage.querySelector?.('[data-index="1"]');
+  const next=stage.querySelector?.('[data-index="3"]');
+  if(!base?.animate||!next?.animate)return;
+  const destination=base.getBoundingClientRect();
+  const dx=origin.left-destination.left,dy=origin.top-destination.top;
+  // Move the new BASE from the exact previous NEXT position, on every viewport.
+  transferAnimations=[
+    base.animate([
+      {transform:`translate(${dx}px, ${dy}px)`,boxShadow:'0 0 24px #f3bd5d88'},
+      {transform:`translate(${dx*.45}px, ${dy-10}px)`,offset:.55,boxShadow:'0 0 28px #f3bd5daa'},
+      {transform:'translate(0, 0)',boxShadow:'0 4px 0 #0009'}
+    ],{duration:420,easing:'cubic-bezier(.22,.68,.2,1)'}),
+    next.animate([{opacity:0,transform:'scale(.94)'},{opacity:1,transform:'scale(1)'}],
+      {duration:180,delay:260,fill:'backwards',easing:'ease-out'})
+  ];
+}
 function act(fn,tone){if(!allowed()){refreshAccess();return;}const result=fn();if(result!==false&&tone)sound.play(tone);render();}
-$('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(game.allIn?0:game.credit+game.bet),'bet');
-$('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){primaryUntil=Date.now()+100;act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
-$('min').onclick=()=>act(()=>game.setBet(1),'bet');
+$('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(game.credit+game.bet),'bet');
+$('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){startDoubleWithTransfer();}else if(game.phase==='hold'){primaryUntil=Date.now()+100;act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
+$('min').onclick=()=>act(()=>game.setBet(0),'bet');
 $('minus-ten').onclick=()=>act(()=>game.setBet(game.bet-10),'bet');$('plus-ten').onclick=()=>act(()=>game.setBet(game.bet+10),'bet');
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};
 $('collect').onclick=()=>act(()=>game.collect(),'win');

@@ -84,6 +84,6 @@ test('guide off uses concise English in every game state',()=>{
     assert.equal(node('hint').hidden,true);
     assert.doesNotMatch(node('save-status').textContent,/[ぁ-んァ-ヶ一-龯]/);
   }
-  assert.match(node('message').innerHTML,/HIGH \/ LOW/);
-  node('guide').onclick();assert.match(node('message').innerHTML,/高いと思ったら/);assert.equal(node('controls-help').hidden,false);
+  assert.match(node('message').innerHTML,/HIGH\/LOW/);
+  node('guide').onclick();assert.match(node('guide-message').innerHTML,/高いと思ったら/);assert.equal(node('controls-help').hidden,false);
 });

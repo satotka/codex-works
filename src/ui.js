@@ -72,7 +72,10 @@ function cardHtml(c,i,interactive) {
   const label=!c?'Face-down card':c.joker?'JOKER':`${ranks[c.rank]||c.rank} ${suitNames[c.suit]}`;
   return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''} ${inRole?'in-role':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${inRole?' · '+currentRole+'のカード':''}${interactive?' Toggle HOLD':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
+let transferAnimations=[];
 function render(){
+  for(const animation of transferAnimations)animation.cancel();
+  transferAnimations=[];
   updateUtilityButtons();persist();refreshAccess();
   const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
   ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
@@ -89,13 +92,11 @@ function render(){
   }).join('');
   $('deal').innerHTML=game.phase==='won'?'DOUBLE':holding?'DRAW':'DEAL';
   $('deal').disabled=!(holding||game.canDouble||(editable&&game.bet>0&&game.bet<=Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500)));
-  const allIn=game.allIn;
-  $('max').textContent=allIn?'RELEASE':'MAX';
   for(const id of ['min','minus','minus-ten','plus','plus-ten','max']){
     $(id).hidden=!editable;
-    $(id).disabled=!editable||(allIn&&id!=='max')||(id==='max'?game.credit+game.bet===0:id==='min'?game.credit+game.bet===0||game.bet===1:id.startsWith('minus')?game.bet<=0:game.credit===0);
+    $(id).disabled=!editable||(id==='min'||id.startsWith('minus')?game.bet===0:game.credit===0);
   }
-  $('bet-lock').hidden=editable;$('max').setAttribute('aria-pressed',String(allIn));
+  $('bet-lock').hidden=editable;
   $('collect').disabled=game.phase!=='won';$('double-panel').hidden=game.phase!=='double';$('normal-controls').hidden=game.phase==='double';
   $('reset').hidden=!(game.credit===0&&game.bet===0&&editable);
   document.querySelectorAll('.payrow').forEach(el=>el.classList.toggle('active',game.result?.id===el.dataset.hand && game.result.multiplier>0));
@@ -113,28 +114,30 @@ function render(){
   }else if(game.phase==='ready'&&game.collectedWin){title=`${game.collectedWin.toLocaleString()}を獲得しました`;next='BETを選び、DEALをタップ';}
   if(editable&&game.bet>Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500))next='表示できる金額の上限に達しました';
   if(editable&&game.credit+game.bet===0)next='NEW CREDITで再開できます';
-    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8 / +',minus:'S / 2 / −',max:'＊',reset:'．'};
+    const keyHints={deal:'D / 6',collect:'A / 4',high:'W / 8',low:'S / 2',plus:'W / 8',minus:'S / 2',max:'',reset:'．'};
   for(const [id,keys] of Object.entries(keyHints)){
     const button=$(id);
     button.setAttribute('data-key-hint',guideEnabled?keys:'');
   }
 
   if(editable&&game.bet===0&&game.credit>0)next='BETを増やすか、MAXをタップしてください';
-  let status=holding?'HOLD':game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':game.phase==='double'?'HIGH / LOW':allIn?'ALL IN':'BET';
+  let status=holding?'SELECT CARDS':game.phase==='won'?'DOUBLE UP?':game.phase==='double'?'HIGH/LOW':'PLEASE BET';
+  let resultStatus=game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':'';
   if(r?.card&&['ready','won','lost'].includes(game.phase)){
-    if(r.outcome==='win')status=`DOUBLE WIN ${game.win.toLocaleString()}`;
-    if(r.outcome==='lose')status='NO WIN';
-    if(r.outcome==='draw')status=`TIE · PAID ${r.win.toLocaleString()}`;
-  }else if(collected)status=`PAID ${collected.toLocaleString()}`;
+    if(r.outcome==='win')resultStatus=`DOUBLE WIN ${game.win.toLocaleString()}`;
+    if(r.outcome==='lose')resultStatus='NO WIN';
+    if(r.outcome==='draw')resultStatus=`PAID ${r.win.toLocaleString()}`;
+  }else if(collected)resultStatus=`PAID ${collected.toLocaleString()}`;
   if(editable&&game.credit+game.bet===0)status='NO CREDIT';
   if(editable&&game.bet>Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500))status='BET LIMIT';
   if(guideEnabled){detail=[title,detail].filter(Boolean).join(' · ');}
   else {detail='';next='';}
-  title=status;
   $('controls-help').hidden=!guideEnabled;
   $('hint').hidden=!guideEnabled;
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
+  $('message').innerHTML=`<strong>${escape(status)}</strong><span class="result-status">${escape(resultStatus)}</span>`;
+  $('guide-message').hidden=!guideEnabled;
+  $('guide-message').innerHTML=guideEnabled?`<span>${escape(detail)}</span><small>${escape(next)}</small>`:'';
 }
 function celebrate(doubled=false){
   const stage=$('cards');
@@ -142,10 +145,33 @@ function celebrate(doubled=false){
   void stage.offsetWidth;
   stage.classList?.add(doubled?'double-burst':'win-burst');
 }
+function startDoubleWithTransfer(){
+  const continuing=game.doubleResult?.outcome==='win';
+  const reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const stage=$('cards');
+  const origin=continuing&&!reduced?stage.querySelector?.('[data-index="3"]')?.getBoundingClientRect?.():null;
+  act(()=>game.startDouble(),'deal');
+  if(!origin||game.phase!=='double')return;
+  const base=stage.querySelector?.('[data-index="1"]');
+  const next=stage.querySelector?.('[data-index="3"]');
+  if(!base?.animate||!next?.animate)return;
+  const destination=base.getBoundingClientRect();
+  const dx=origin.left-destination.left,dy=origin.top-destination.top;
+  // Move the new BASE from the exact previous NEXT position, on every viewport.
+  transferAnimations=[
+    base.animate([
+      {transform:`translate(${dx}px, ${dy}px)`,boxShadow:'0 0 24px #f3bd5d88'},
+      {transform:`translate(${dx*.45}px, ${dy-10}px)`,offset:.55,boxShadow:'0 0 28px #f3bd5daa'},
+      {transform:'translate(0, 0)',boxShadow:'0 4px 0 #0009'}
+    ],{duration:420,easing:'cubic-bezier(.22,.68,.2,1)'}),
+    next.animate([{opacity:0,transform:'scale(.94)'},{opacity:1,transform:'scale(1)'}],
+      {duration:180,delay:260,fill:'backwards',easing:'ease-out'})
+  ];
+}
 function act(fn,tone){if(!allowed()){refreshAccess();return;}const result=fn();if(result!==false&&tone)sound.play(tone);render();}
-$('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(game.allIn?0:game.credit+game.bet),'bet');
-$('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){primaryUntil=Date.now()+100;act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
-$('min').onclick=()=>act(()=>game.setBet(1),'bet');
+$('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(game.credit+game.bet),'bet');
+$('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){startDoubleWithTransfer();}else if(game.phase==='hold'){primaryUntil=Date.now()+100;act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
+$('min').onclick=()=>act(()=>game.setBet(0),'bet');
 $('minus-ten').onclick=()=>act(()=>game.setBet(game.bet-10),'bet');$('plus-ten').onclick=()=>act(()=>game.setBet(game.bet+10),'bet');
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};
 $('collect').onclick=()=>act(()=>game.collect(),'win');

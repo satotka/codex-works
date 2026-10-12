@@ -42,3 +42,17 @@ test('bad data or unavailable storage leaves a fresh game usable',()=>{
 });
 
 test('legacy editable saves migrate credit without double charging',()=>{const storage=memory();const game=new GameState();game.setBet(17);saveGame(game,true,storage);const old=JSON.parse(storage.value);old.version=1;old.credit=1000;storage.value=JSON.stringify(old);const next=new GameState();assert.equal(restoreGame(next,storage).status,'restored');assert.equal(next.credit,983);assert.equal(next.bet,17);assert.equal(next.deal(),true);assert.equal(next.credit,983);saveGame(next,true,storage);const active=JSON.parse(storage.value);active.version=1;storage.value=JSON.stringify(active);const resumed=new GameState();assert.equal(restoreGame(resumed,storage).status,'restored');assert.equal(resumed.credit,983);assert.equal(resumed.phase,'hold');assert.equal(resumed.deal(),false);});
+
+test('winning NEXT becomes BASE across reloads and is excluded from the next deck',()=>{
+  const storage=memory(),game=new GameState({deckFactory:()=>new Deck({random:()=>0.5}),doubleDown:new DoubleDown(()=>new Deck({includeJoker:false,random:()=>0.5}))});
+  game.setBet(1);game.deal();game.draw();game.phase='won';game.win=25;game.startDouble();
+  const choice=game.doubleDown.deck.cards.at(-1).rank>game.doubleResult.referenceCard.rank?'high':'low';
+  const result=game.guess(choice);assert.equal(result.outcome,'win');
+  const next=reload(game,storage);assert.equal(next.startDouble(),true);
+  assert.deepEqual(next.doubleResult.referenceCard,result.card);assert.equal(next.doubleResult.card,null);
+  assert.equal(next.doubleDown.deck.cards.length,51);
+  assert.equal(next.doubleDown.deck.cards.some(c=>c.rank===result.card.rank&&c.suit===result.card.suit),false);
+  const resumed=reload(next,storage);assert.deepEqual(resumed.doubleResult.referenceCard,result.card);
+  const nextChoice=next.doubleDown.deck.cards.at(-1).rank>result.card.rank?'high':'low';
+  assert.deepEqual(resumed.guess(nextChoice),next.guess(nextChoice));
+});
