@@ -214,3 +214,9 @@ summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
 .guide-message small{color:#e4d8c4;margin-top:4px}
 .guide-message[hidden]{display:none}
 @media(max-width:760px){.message strong{font-size:17px}.message .result-status{font-size:clamp(10px,3.4vw,16px)}.guide-message{font-size:12px}}
+
+/* Reserve the same space for every slot; HOLD moves only its visual contents. */
+.card-slot{padding-bottom:8px}
+.card,.hold-label{transition:transform 160ms ease-out}
+.card.held,.card.held + .hold-label{transform:translateY(8px)}
+@media(prefers-reduced-motion:reduce){.card,.hold-label{transition:none}}

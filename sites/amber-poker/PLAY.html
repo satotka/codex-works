@@ -214,6 +214,12 @@ summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
 .guide-message small{color:#e4d8c4;margin-top:4px}
 .guide-message[hidden]{display:none}
 @media(max-width:760px){.message strong{font-size:17px}.message .result-status{font-size:clamp(10px,3.4vw,16px)}.guide-message{font-size:12px}}
+
+/* Reserve the same space for every slot; HOLD moves only its visual contents. */
+.card-slot{padding-bottom:8px}
+.card,.hold-label{transition:transform 160ms ease-out}
+.card.held,.card.held + .hold-label{transform:translateY(8px)}
+@media(prefers-reduced-motion:reduce){.card,.hold-label{transition:none}}
 </style></head><body>
 <main class="cabinet"><aside id="session-warning" hidden role="alert"><p id="session-text"></p><button id="reload-state">RELOAD</button></aside><div id="play-area"><header><div class="brand"><span class="brand-icon">♠</span><div><h1>AMBER <em>POKER</em></h1><p>JOKER DOUBLE · 53 CARD VIDEO POKER</p></div></div><div class="utility-bar"><button id="guide" class="small icon-toggle" aria-label="Guide ON" title="Guide ON" aria-pressed="true"></button><button id="sound" class="small icon-toggle" aria-label="Sound ON" title="Sound ON" aria-pressed="true"></button></div></header>
 <section class="screen"><div class="screen-top"><span class="edition">ARCADE EDITION / 01</span></div>
