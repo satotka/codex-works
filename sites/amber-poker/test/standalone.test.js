@@ -64,8 +64,8 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
     assert.match(node('cards').innerHTML,/BASE/);
     if(input==='mouse')node('high').onclick();else if(input==='Numpad8')keypad(input);else press(input);
     assert.equal(node('win').textContent,'50');
-    assert.match(node('message').innerHTML,/ダブル成功.*HIGHを選択：基準8 → 次A/);
-    assert.doesNotMatch(node('message').innerHTML,/ダブル失敗/);
+    assert.match(node('guide-message').innerHTML,/ダブル成功.*HIGHを選択：基準8 → 次A/);
+    assert.doesNotMatch(node('guide-message').innerHTML,/ダブル失敗/);
   }
   vm.runInContext("game.phase='won';game.win=25;game.doubleDown={start:()=>({rank:8,suit:'H',joker:false}),play:(win,choice)=>({choice,referenceCard:{rank:8,suit:'H',joker:false},card:{rank:14,suit:'S',joker:false},outcome:choice==='high'?'win':'lose',win:choice==='high'?win*2:0})};render();",context);
   keypad('Numpad6');assert.equal(node('double-panel').hidden,false);
@@ -75,7 +75,7 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   assert.equal((node('cards').innerHTML.match(/class="card back/g)||[]).length,5);
   assert.equal(vm.runInContext('game.result',context),null);
   assert.equal(vm.runInContext('game.held.some(Boolean)',context),false);
-  assert.match(node('message').innerHTML,/50を獲得しました/);
+  assert.match(node('guide-message').innerHTML,/50を獲得しました/);
   assert.match(node('deal').innerHTML,/DEAL/);
   press('c');assert.equal(node('credit').textContent,'1,049');
   vm.runInContext("game.phase='won';game.win=25;render();",context);
@@ -130,11 +130,11 @@ test('standalone HTML runs without server: deal, hold, draw, collect and next ga
   assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25-vm.runInContext('game.bet',reopened));
   assert.equal(reopenedNode('win').textContent,'25');
   assert.equal(reopenedNode('win-label').textContent,'PAID');
-  assert.match(reopenedNode('message').innerHTML,/TIE.*引き分け.*獲得しました/);
+  assert.match(reopenedNode('guide-message').innerHTML,/引き分け.*獲得しました/);
   assert.match(reopenedNode('cards').innerHTML,/BASE/);
   vm.runInNewContext(script,{Date:testDate,crypto:webcrypto,localStorage:storage,document:{getElementById:reopenedNode,querySelectorAll:()=>[],addEventListener(){}}});
   assert.equal(Number(reopenedNode('credit').textContent.replaceAll(',','')),beforeTie+25-vm.runInContext('game.bet',reopened));
-  assert.match(reopenedNode('message').innerHTML,/TIE.*引き分け.*獲得しました/);
+  assert.match(reopenedNode('guide-message').innerHTML,/引き分け.*獲得しました/);
   assert.match(reopenedNode('cards').innerHTML,/BASE/);
   assert.equal(reopenedNode('collect').disabled,true);
 });

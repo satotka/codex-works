@@ -121,21 +121,23 @@ function render(){
   }
 
   if(editable&&game.bet===0&&game.credit>0)next='BETを増やすか、MAXをタップしてください';
-  let status=holding?'HOLD':game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':game.phase==='double'?'HIGH / LOW':'BET';
+  let status=holding?'SELECT CARDS':game.phase==='won'?'DOUBLE UP?':game.phase==='double'?'HIGH/LOW':'PLEASE BET';
+  let resultStatus=game.phase==='won'?`WIN ${game.win.toLocaleString()}`:game.phase==='lost'?'NO WIN':'';
   if(r?.card&&['ready','won','lost'].includes(game.phase)){
-    if(r.outcome==='win')status=`DOUBLE WIN ${game.win.toLocaleString()}`;
-    if(r.outcome==='lose')status='NO WIN';
-    if(r.outcome==='draw')status=`TIE · PAID ${r.win.toLocaleString()}`;
-  }else if(collected)status=`PAID ${collected.toLocaleString()}`;
+    if(r.outcome==='win')resultStatus=`DOUBLE WIN ${game.win.toLocaleString()}`;
+    if(r.outcome==='lose')resultStatus='NO WIN';
+    if(r.outcome==='draw')resultStatus=`PAID ${r.win.toLocaleString()}`;
+  }else if(collected)resultStatus=`PAID ${collected.toLocaleString()}`;
   if(editable&&game.credit+game.bet===0)status='NO CREDIT';
   if(editable&&game.bet>Math.floor((Number.MAX_SAFE_INTEGER-game.credit)/500))status='BET LIMIT';
   if(guideEnabled){detail=[title,detail].filter(Boolean).join(' · ');}
   else {detail='';next='';}
-  title=status;
   $('controls-help').hidden=!guideEnabled;
   $('hint').hidden=!guideEnabled;
   const escape=text=>String(text).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  $('message').innerHTML=`<strong>${escape(title)}</strong><span>${escape(detail)}</span><small>${escape(next)}</small>`;
+  $('message').innerHTML=`<strong>${escape(status)}</strong><span class="result-status">${escape(resultStatus)}</span>`;
+  $('guide-message').hidden=!guideEnabled;
+  $('guide-message').innerHTML=guideEnabled?`<span>${escape(detail)}</span><small>${escape(next)}</small>`:'';
 }
 function celebrate(doubled=false){
   const stage=$('cards');

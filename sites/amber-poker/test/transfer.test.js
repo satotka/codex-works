@@ -17,3 +17,13 @@ for(const reduced of [false,true])test(`NEXT to BASE transfer, reduced motion=${
   assert.equal(animations.length,reduced?0:2);
   if(!reduced){assert.equal(animations[0].frames[0].transform,'translate(200px, 0px)');assert.equal(animations[0].frames.at(-1).transform,'translate(0, 0)');vm.runInContext('render()',context);assert.ok(animations.every(a=>a.cancelled));}
 });
+
+test('status and result stay separate from optional guide text',()=>{
+  const nodes=new Map();const node=id=>{if(!nodes.has(id))nodes.set(id,{innerHTML:'',textContent:'',setAttribute(){}});return nodes.get(id);};
+  const context=vm.createContext({crypto:webcrypto,document:{getElementById:node,querySelectorAll:()=>[],addEventListener(){}}});vm.runInContext(script,context);
+  for(const [phase,status,result] of [['ready','PLEASE BET',''],['hold','SELECT CARDS',''],['won','DOUBLE UP?','WIN 123'],['double','HIGH/LOW',''],['lost','PLEASE BET','NO WIN']]){
+    vm.runInContext(`game.phase='${phase}';game.win=123;game.doubleResult=null;render();`,context);
+    assert.equal(node('message').innerHTML,`<strong>${status}</strong><span class="result-status">${result}</span>`);
+    const before=node('message').innerHTML;vm.runInContext('guideEnabled=false;render()',context);assert.equal(node('message').innerHTML,before);assert.equal(node('guide-message').hidden,true);assert.equal(node('guide-message').innerHTML,'');vm.runInContext('guideEnabled=true;render()',context);assert.equal(node('guide-message').hidden,false);
+  }
+});

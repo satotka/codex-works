@@ -203,3 +203,14 @@ summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
 
 /* Keep the transferring BASE above the intervening face-down card. */
 .cards [data-index="1"]{z-index:1}
+
+/* Fixed status rows keep card placement independent of guide copy. */
+.screen{align-items:start;grid-template-rows:auto 80px auto auto auto auto auto}
+.message{height:72px;min-height:72px;margin:4px 0;display:grid;grid-template-rows:32px 32px;gap:0;align-content:center;overflow:visible}
+.message strong,.message .result-status{display:flex!important;align-items:center;justify-content:center;min-width:0;white-space:nowrap;line-height:1.2;font-size:clamp(12px,2.1vw,20px)}
+.message .result-status{color:#b8e0b1;font-variant-numeric:tabular-nums;font-size:clamp(10px,1.8vw,18px);letter-spacing:0}
+.guide-message{grid-column:2;text-align:center;color:#cfc0a9;font-size:13px;line-height:1.6;margin-top:12px;overflow-wrap:anywhere}
+.guide-message span,.guide-message small{display:block;font-size:inherit}
+.guide-message small{color:#e4d8c4;margin-top:4px}
+.guide-message[hidden]{display:none}
+@media(max-width:760px){.message strong{font-size:17px}.message .result-status{font-size:clamp(10px,3.4vw,16px)}.guide-message{font-size:12px}}
