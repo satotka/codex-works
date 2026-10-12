@@ -269,14 +269,14 @@
     },
     {
       "app": "amber-between",
-      "version": 10,
+      "version": 11,
       "project_id": "appgprj_6acce09868248191841876044288c39e",
-      "source_commit": "965de1a0626b11197c3ba125f72aa460fe8b2ef4",
-      "source_tree": "c713e9c69d7aa0eb939d738f42eccce7dad56343",
+      "source_commit": "f8964bdfa829c9bc582fdd1b3f6d9438a2a7c69b",
+      "source_tree": "190ee6e69cc9c4c49a5dace8b8352d8ee9debb21",
       "github_path": "sites/amber-between",
       "source_branch": "site-source/amber-between",
       "verified_on": "2026-10-12",
-      "deployment_id": "appgdep_6accf22ccb58819184778d05f529b5c9",
+      "deployment_id": "appgdep_6accf2ea0c3c81919ebcf2833a78f352",
       "deployment_status": "succeeded",
       "url": "https://amber-between.satotka.chatgpt.site",
       "files": [
@@ -288,7 +288,7 @@
         {
           "path": "PLAY.html",
           "mode": "100644",
-          "blob_sha": "00efb0cdc358fc7b0bbfd724664d1b1ab74b156a"
+          "blob_sha": "7152ccbf17c774426205519c133672a679ac5253"
         },
         {
           "path": "README.md",
@@ -298,12 +298,12 @@
         {
           "path": "SPEC.md",
           "mode": "100644",
-          "blob_sha": "6e1ba7492ee1ac3aaa4f4e95c51eb813d2de9743"
+          "blob_sha": "e77357795c53246e04920ac4192946a86536ac89"
         },
         {
           "path": "dist/app.js",
           "mode": "100644",
-          "blob_sha": "cb547e1220557b778f78df13406fc30ca6811645"
+          "blob_sha": "60d4e270dfbfb97e6666572bf14c8048e7054c25"
         },
         {
           "path": "dist/engine.js",
@@ -313,7 +313,7 @@
         {
           "path": "dist/index.html",
           "mode": "100644",
-          "blob_sha": "f259467d1dba586c7d9acd69ff75fd6e40916c28"
+          "blob_sha": "d56f78f0e4660ee49062e15392f6eebd6442f36a"
         },
         {
           "path": "dist/style.css",
@@ -338,10 +338,10 @@
         {
           "path": "test/ui.test.js",
           "mode": "100644",
-          "blob_sha": "f7e3c8da158faf2bf3b3b7228e6901554ec54c05"
+          "blob_sha": "12c4514ef80e23e4bb1108c19bb65fa1f36949b4"
         }
       ],
-      "github_source_commit": "ffc5975f43fe6c7b9d22033ab2a5d3f5deea7db7",
+      "github_source_commit": "003deb417f737f531da545b3846526b98e786a04",
       "source_history_note": "GitHub export has the identical tree; author email anonymized to satisfy GH007. Original deployed commit remains in the dedicated Sites repository."
     }
   ]

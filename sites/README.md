@@ -7,7 +7,7 @@
 | PLAY LAB | `play-lab/` | v1 | `6261b5c4cab8a6febc10dfa2b54d69c344ccf535` | https://play-lab-takaa-1004.satotka.chatgpt.site |
 | AMBER POKER | `amber-poker/` | v42 | `61863a733012bc7257dd666543a26675ede6605f` | https://amber-poker.satotka.chatgpt.site |
 | AMBER DERBY | `amber-derby/` | v1 | `451e4501b00c814e6a00daf2a7ba70ee02e57f65` | https://amber-derby.satotka.chatgpt.site |
-| AMBER BETWEEN | `amber-between/` | v10 | `965de1a0626b11197c3ba125f72aa460fe8b2ef4` | https://amber-between.satotka.chatgpt.site |
+| AMBER BETWEEN | `amber-between/` | v11 | `f8964bdfa829c9bc582fdd1b3f6d9438a2a7c69b` | https://amber-between.satotka.chatgpt.site |
 
 `SOURCE-MANIFEST.json` にSite ID、元ツリーSHA、全45ファイルのGit blob SHAを記録しています。各アプリの `.openai/hosting.json` は元のSite IDを保持しています。GitHubへの保存はSitesへの自動公開を設定するものではありません。この保存作業ではSitesのソース変更・再公開・アクセス権変更を行っていません。
 
@@ -51,3 +51,5 @@ AMBER BETWEENのGitHub保存ではGH007（非公開メール保護）への対�
 2026-10-12同期: AMBER POKERのSites v38〜v42がGitHub未反映だったため、5版を個別コミットで保存。High/Low勝利カードのBASE引継ぎ、COLLECTの左配置、カード移動アニメーション、状態/結果/ガイドの配置、HOLDカード位置を反映。最新v42の全追跡ファイル・モードは専用Sites Gitと一致。ビルド・8テストファイル成功。Sitesの再公開は行っていません。
 
 2026-10-12更新: AMBER BETWEEN v10でDEALボタン内に改行し、操作名の下にD/6キーを表示。構文確認・オフライン版生成・既存2テストファイル成功、Sitesデプロイ成功。
+
+2026-10-12更新: AMBER BETWEEN v11でDOUBLE=D/6、COLLECT=A/4へ戻し、ダブル中LEFT=Q/7・RIGHT=E/9へ変更。ボタン内表示・遊び方・仕様書を更新。通常/テンキーを含む既存2テストファイルと構文確認成功、オフライン版生成、Sitesデプロイ成功。

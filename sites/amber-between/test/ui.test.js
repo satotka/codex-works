@@ -43,10 +43,10 @@ test('state-specific COLLECT, DOUBLE, LEFT and RIGHT keys include numpad control
   let winner=engine.transition(engine.transition(engine.initial(),{type:'bet',amount:5}),{type:'deal'},()=>.5);
   winner.base=[2,4];winner.choices=[3,0,1,6,7];winner.deck=Array.from({length:52},(_,i)=>i).filter(c=>![...winner.base,...winner.choices].includes(c));winner=engine.transition(winner,{type:'pick',index:0});
   const key=(h,value,code='Key'+value.toUpperCase())=>h.events.keydown({key:value,code,target:{tagName:'BODY'},preventDefault(){}});
-  for(const value of ['s','2']){const h=setup(JSON.stringify(winner));key(h,value,value==='2'?'Numpad2':'KeyS');assert.equal(h.state().phase,'ready');assert.equal(h.state().paid,25);}
-  for(const value of ['w','8']){const h=setup(JSON.stringify(winner));key(h,value,value==='8'?'Numpad8':'KeyW');assert.equal(h.state().phase,'double');assert.equal(h.nodes.get('double-cards').children[0].children[1].children.at(-1).textContent,'A/4');assert.equal(h.nodes.get('double-cards').children[1].children[1].children.at(-1).textContent,'D/6');}
+  for(const value of ['a','4']){const h=setup(JSON.stringify(winner));key(h,value,value==='4'?'Numpad4':'KeyA');assert.equal(h.state().phase,'ready');assert.equal(h.state().paid,25);}
+  for(const value of ['d','6']){const h=setup(JSON.stringify(winner));key(h,value,value==='6'?'Numpad6':'KeyD');assert.equal(h.state().phase,'double');assert.equal(h.nodes.get('double-cards').children[0].children[1].children.at(-1).textContent,'Q/7');assert.equal(h.nodes.get('double-cards').children[1].children[1].children.at(-1).textContent,'E/9');}
   const double=engine.transition(winner,{type:'double'},()=>.5);double.double=[0,12];
-  for(const value of ['a','4','d','6']){const h=setup(JSON.stringify(double));key(h,value,/\d/.test(value)?'Numpad'+value:'Key'+value.toUpperCase());assert.equal(h.state().phase,['a','4'].includes(value)?'lost':'won');}
+  for(const value of ['q','7','e','9']){const h=setup(JSON.stringify(double));key(h,value,/\d/.test(value)?'Numpad'+value:'Key'+value.toUpperCase());assert.equal(h.state().phase,['q','7'].includes(value)?'lost':'won');}
   const choosing=engine.transition(engine.transition(engine.initial(),{type:'bet',amount:5}),{type:'deal'},()=>.5);const h=setup(JSON.stringify(choosing));key(h,'2','Numpad2');assert.equal(h.state().selected,1);
 });
 test('corrupt save is backed up; unavailable storage still supports play',()=>{
