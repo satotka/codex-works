@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111115"><meta name="description" content="AMBER BETWEEN — 5枚から選ぶ1枚で、琥珀色の逆転を。3枚カードとダブルダウンのメダルゲーム。"><title>AMBER BETWEEN</title><style>:root{color-scheme:dark;--amber:#edb457;--text:#f4efe2;--muted:#b7a99d}
+*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;padding:16px;background:#111115 radial-gradient(ellipse at top,#343036,transparent 65%);color:var(--text);font-family:Arial,'Yu Gothic',sans-serif}
+button{font:inherit;cursor:pointer;touch-action:manipulation;min-height:44px;min-width:44px}
+button:disabled{opacity:.35;cursor:default}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #fff;outline-offset:4px}
+[hidden]{display:none!important}
+.cabinet{max-width:1160px;margin:auto;border:1px solid #5b5050;border-radius:18px;background:linear-gradient(115deg,#302b2c,#1f1c20);box-shadow:0 25px 80px #0009;padding:20px 24px}
+header,.brand,.utility-bar{display:flex;align-items:center;justify-content:space-between;gap:16px}
+header{margin-bottom:16px}.brand-icon{font-size:48px;color:var(--amber)}
+h1{font-size:32px;letter-spacing:4px;margin:0;font-weight:900}h1 em{color:var(--amber);font-style:normal}
+.brand p{font-size:11px;letter-spacing:2px;color:var(--muted);margin:8px 0 0}
+.small{background:transparent;color:#cbbca5;border:1px solid #675b4c;border-radius:5px;padding:8px 12px;font-size:12px}
+.screen{background:#080f14;border:3px solid #131013;border-radius:12px;box-shadow:inset 0 0 38px #000,0 0 0 1px #514541;padding:20px}
+.screen-top{display:flex;justify-content:space-between;gap:12px;font-size:11px;letter-spacing:2px;color:#a68652}
+.message{text-align:center;min-height:90px;display:flex;flex-direction:column;justify-content:center;gap:8px;color:var(--amber)}
+.message strong{font-size:24px}.message span{font-size:13px;line-height:1.6;color:#cfc0a9}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:680px;margin:auto}
+.card-slot{min-width:0;text-align:center}.card-label{display:block;margin-bottom:10px;color:var(--muted);font:11px monospace;letter-spacing:2px}
+.card{width:100%;aspect-ratio:18/25;background:#f8f5ec;border:3px solid #d5d1c6;border-radius:8px;position:relative;box-shadow:0 4px 0 #0009;color:#182537;display:flex;align-items:center;justify-content:center}
+.card.red{color:#b92f39}.corner{position:absolute;top:8px;left:10px;font:bold clamp(16px,3vw,28px)/1 Georgia,serif;text-align:center}.corner.bottom{top:auto;left:auto;bottom:8px;right:10px;transform:rotate(180deg)}
+.suit{font-size:clamp(36px,7vw,68px)}.card.back{border:5px solid #af8853;background:repeating-linear-gradient(45deg,#182f3f 0 3px,#203d4e 3px 6px);color:#d0a76a}.back span{font-size:40px;border:1px solid #ac8b54;padding:12px;border-radius:50%;background:#182d3e}
+.meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0 16px}.meters>div{border-top:1px solid #3e3c30;display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:12px}.meters span{font-size:11px;color:#9ea9a2;letter-spacing:2px}.meters output{font:30px monospace;color:#efc375;overflow-wrap:anywhere}
+.bet-row{display:grid;grid-template-columns:repeat(3,minmax(44px,1fr)) 1.5fr repeat(3,minmax(44px,1fr));gap:8px;align-items:center}.bet-row button{border:1px solid #675b4c;border-radius:5px;background:#302c2c;color:#f2d7a8}.bet-amount{text-align:center}.bet-amount span{display:block;font-size:10px;letter-spacing:2px;color:var(--muted)}.bet-amount output{font:26px monospace;color:var(--amber)}
+.console{display:flex;gap:12px;padding-top:18px}.console button{flex:1;border-radius:6px;border:1px solid #c19243;border-bottom:5px solid #886127;background:linear-gradient(#f2c772,#d9a34b);color:#271d14;font-size:18px;font-weight:bold;letter-spacing:1px;min-height:60px}.console .secondary{background:linear-gradient(#514a47,#3b3534);color:#f2d7a8;border-color:#675b4c}
+details{color:#cfc0a9;font-size:13px;line-height:1.8;margin-top:16px}summary{cursor:pointer;min-height:44px;display:flex;align-items:center}footer{margin-top:16px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--muted)}footer a{color:var(--amber)}
+@media(max-width:760px){body{padding:8px}.cabinet{padding:16px 10px}header{flex-wrap:wrap}.brand{gap:10px}.brand-icon{font-size:32px}h1{font-size:23px;letter-spacing:2px}.brand p{font-size:9px;letter-spacing:1px}.utility-bar{margin-left:auto}.screen{padding:12px 8px}.cards{gap:8px}.card-label{font-size:9px;letter-spacing:1px}.corner{left:5px;top:5px}.corner.bottom{right:5px;bottom:5px}.back span{font-size:24px;padding:8px}.meters{gap:8px}.meters>div{flex-direction:column}.meters output{font-size:24px}.meters span{font-size:10px;letter-spacing:1px}.bet-row{gap:3px;grid-template-columns:repeat(3,minmax(0,1fr)) 1.4fr repeat(3,minmax(0,1fr))}.bet-row button{min-width:0;font-size:11px;padding:2px}.bet-amount output{font-size:20px}.screen-top{font-size:9px;letter-spacing:1px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+.game-layout{display:grid;grid-template-columns:290px minmax(0,1fr);gap:24px}.pay-panel details{margin:0}.pay-panel summary,#help summary{justify-content:space-between;border-bottom:1px solid #3e3c30;font-size:12px;letter-spacing:1px}.payrow{display:flex;justify-content:space-between;gap:10px;font:11px/1.6 monospace;color:#c5b693;padding:8px 6px;border-bottom:1px solid #18252b}.payrow.possible-row{color:#f3c679;background:#24312b}.payrow.active{color:#171713;background:#edb457;font-weight:bold}.play-panel{min-width:0}.cards{max-width:540px;gap:12px}.choices{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.choices .card .suit{font-size:36px}.choices .corner{font-size:15px;top:5px;left:5px}.choices .corner.bottom{top:auto;left:auto;right:5px;bottom:5px}.choices .back span{font-size:25px;padding:6px}.choices .card{border-width:2px}.choices .card-label{font-size:8px;letter-spacing:0}.card.selected{border-color:#edb457;box-shadow:0 0 18px #edb45766}.section-title{font:11px monospace;letter-spacing:2px;color:#a68652;text-align:center;margin:18px 0 12px}.spread{text-align:center;font:16px monospace;color:#f3c679;margin:14px 0 8px}.possible{text-align:center;color:#cfc0a9;font-size:11px;line-height:1.6;min-height:36px}.double-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:380px;margin:auto}.guide-text{color:#cfc0a9;text-align:center;font-size:12px;line-height:1.7}.choices-panel{margin-top:12px}#warning{border:1px solid #edb457;padding:12px;margin-bottom:16px;color:#f3c679;font-size:13px;line-height:1.7}#warning button{margin-left:10px}#help{border-top:1px solid #5b5050}.meters output{font-size:clamp(18px,2.7vw,28px)}.meters>div{flex-direction:column}button.card:disabled{opacity:1}
+@media(max-width:960px){.game-layout{grid-template-columns:230px minmax(0,1fr);gap:16px}.payrow{font-size:10px}}
+@media(max-width:760px){.game-layout{grid-template-columns:1fr;gap:0}.payrow{font-size:11px}.message{min-height:86px}.cards{max-width:460px}.choices{gap:5px}.choices .corner{font-size:12px;left:3px;top:3px}.choices .corner.bottom{right:3px;bottom:3px}.choices .card .suit{font-size:25px}.choices .back span{font-size:18px;padding:4px}.choices .card-label{min-height:22px;line-height:1.5}.screen-top{margin-bottom:10px}.double-cards{max-width:300px}.meters output{font-size:24px}}
+</style></head><body>
+<main class="cabinet"><header><div class="brand"><span class="brand-icon" aria-hidden="true">♠</span><div><h1>AMBER <em>BETWEEN</em></h1><p>5 CHOICES · 3 CARDS · ONE CHANCE</p></div></div><div class="utility-bar"><button id="guide" class="small" aria-pressed="true">GUIDE ON</button><button id="sound" class="small" aria-pressed="false">SOUND OFF</button></div></header>
+<aside id="warning" role="alert" hidden><span id="warning-text"></span><button id="reload" class="small" hidden>RELOAD</button></aside>
+<section class="screen"><div class="screen-top"><span>AMBER ARCADE / 03</span><span id="round">ROUND 001</span></div><div class="game-layout"><aside class="pay-panel"><details id="paytable" open><summary>PAYTABLE <span>⌄</span></summary><div id="payrows"></div></details></aside><div class="play-panel">
+<div id="message" class="message" role="status" aria-live="polite"></div>
+<section id="base" class="cards" aria-label="基準カードと選択したカード"></section>
+<div id="spread" class="spread"></div><div id="possible" class="possible"></div>
+<section id="choices-panel" class="choices-panel" hidden><div class="section-title">CHOOSE ONE CARD</div><div id="choices" class="choices" aria-label="5枚から1枚を選ぶ"></div></section>
+<section id="double-panel" hidden><div class="section-title">WHICH CARD IS HIGHER?</div><div id="double-cards" class="double-cards"></div><div id="tie-note" class="guide-text"></div></section>
+<div class="meters"><div><span>CREDIT</span><output id="credit">1,000</output></div><div><span>WIN</span><output id="win">0</output></div><div><span>PAID</span><output id="paid">0</output></div></div>
+<div class="bet-row"><button id="min">MIN</button><button id="minus-ten">−10</button><button id="minus">−1</button><div class="bet-amount"><span>BET</span><output id="bet">0</output></div><button id="plus">＋1</button><button id="plus-ten">＋10</button><button id="max">MAX</button></div>
+<div class="console"><button id="main">DEAL</button><button id="collect" class="secondary" hidden>COLLECT</button><button id="refill" hidden>NEW CREDIT</button></div>
+<p id="hint" class="guide-text"></p></div></div></section>
+<footer><span id="save-status" role="status">自動保存</span><span id="stats">0 PLAYS · 0 WINS</span><a href="https://amber-poker.satotka.chatgpt.site" target="_blank" rel="noopener">AMBER POKER ↗</a><a href="https://amber-derby.satotka.chatgpt.site" target="_blank" rel="noopener">AMBER DERBY ↗</a></footer>
+<details id="help"><summary>遊び方・操作キー <span>⌄</span></summary><p>①BETを3〜10枚に設定 → ②DEALで2枚を開く → ③SPREADとPOSSIBLE HANDを確認してDRAW → ④裏向きの5枚から1枚を選択。5枚すべてが開き、選んだ1枚と最初の2枚で判定します。BETはDEAL前に予約するため、DEAL時に追加控除はありません。</p><p>52枚・ジョーカーなし。数字の順序は2〜10・J・Q・K・A（Aが最大）。SPREADは基準2枚の間にある数字の数です（4と6なら1）。選んだカードが厳密に間に入ればSPREAD配当。同じ数字で端に重なった場合は当たりません。J-Q-Kの同一スートやスリーカードは配当表の上位役を優先し、配当は合算しません。最初の2枚がペアなら、スリーカードにならなくても×1の返却です。連続した2枚はSPREAD 0で、特別役以外はNO WINです。払戻はBET×表示倍率で、BET分を含みます。</p><p>当たり後はCOLLECTで回収、DOUBLEでダブルダウン。2枚の裏向きカードから大きいと思う方をLEFT／RIGHTで選びます。勝利でWINが2倍、敗北で0。同値はWINを維持して自動で2枚を配り直します。選ぶ前ならCOLLECTできます。ダブルごとに新しい52枚から2枚を配ります。</p><p>PC：D／6＝DEAL・DRAW・DOUBLE。1〜5＝カード選択。A／4＝COLLECT（5枚選択中は4番カードを優先）。←／→＝LEFT／RIGHT。W／8／＋＝BET＋1、S／2／−＝BET−1（5枚選択中は2番カードを優先）。＊＝MAX。音声はSOUNDで切替。タップ・クリックでも全操作ができます。</p><p>残高・BET・途中のカード・WIN・設定をこのブラウザーに保存します。端末間同期はありません。別タブが保存を更新した時は操作を止め、RELOADで読み直します。仮想メダルで遊ぶゲームです。総残高が3枚未満になったらNEW CREDITで1,000枚から再開できます。</p></details>
+</main><script type="module">const PAYTABLE = [
+  ['spade','J-Q-K OF SPADE',500],['flush','J-Q-K WITH FLUSH',100],
+  ['aces-sevens','THREE A’s OR 7’s',50],['faces','THREE J’s, Q’s, K’s',20],
+  ['triple','THREE OF A KIND',10],['spread1','1 CARD SPREAD',5],
+  ['spread2','2 CARDS SPREAD',4],['spread3','3 CARDS SPREAD',3],
+  ['spread4','4–11 CARDS SPREAD',2],['pair','PAIR W/O SPREAD',1]
+];
+const rank = c => c % 13 + 2;
+const suit = c => Math.floor(c / 13);
+const spread = base => Math.max(0, Math.abs(rank(base[0])-rank(base[1]))-1);
+function evaluate(base, card) {
+  const cards=[...base,card], ranks=cards.map(rank).sort((a,b)=>a-b);
+  let key=null;
+  if(ranks.join(',')==='11,12,13' && cards.every(c=>suit(c)===suit(cards[0]))) key=suit(cards[0])===0?'spade':'flush';
+  else if(ranks[0]===ranks[2]) key=[14,7].includes(ranks[0])?'aces-sevens':ranks[0]>=11?'faces':'triple';
+  else if(rank(base[0])===rank(base[1])) key='pair';
+  else if(rank(card)>Math.min(...base.map(rank)) && rank(card)<Math.max(...base.map(rank))) {
+    const n=spread(base);key=n<=3?`spread${n}`:'spread4';
+  }
+  const row=PAYTABLE.find(p=>p[0]===key);
+  return {key:row?.[0]??'none',label:row?.[1]??'NO WIN',multiplier:row?.[2]??0};
+}
+function possibleHands(base) {
+  const keys=new Set(Array.from({length:52},(_,i)=>i).filter(c=>!base.includes(c)).map(c=>evaluate(base,c).key));
+  return PAYTABLE.filter(p=>keys.has(p[0]));
+}
+function shuffled(random=Math.random) {
+  const cards=Array.from({length:52},(_,i)=>i);
+  for(let i=51;i>0;i--){const j=Math.floor(random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]];}
+  return cards;
+}
+function initial() {return {version:1,phase:'ready',credit:1000,bet:0,win:0,paid:0,base:[],choices:[],selected:null,deck:[],double:[],doubleLast:[],result:null,doubleOutcome:null,rounds:0,wins:0,guide:true,sound:false};}
+const reservable=s=>['ready','lost'].includes(s.phase);
+function reserve(s, amount){const total=s.credit+s.bet;s.bet=Math.max(0,Math.min(10,total,amount));s.credit=total-s.bet;}
+function nextBet(s){const amount=s.bet;s.bet=0;reserve(s,s.credit>=3?amount:0);}
+function transition(previous,action,random=Math.random){
+  const s=structuredClone(previous);
+  if(action.type==='bet' && reservable(s)){reserve(s,action.amount);return s;}
+  if(action.type==='guide'||action.type==='sound'){s[action.type]=!s[action.type];return s;}
+  if(action.type==='refill' && reservable(s) && s.credit+s.bet<3){return {...initial(),guide:s.guide,sound:s.sound};}
+  if(action.type==='deal' && reservable(s) && s.bet>=3 && s.bet<=10){
+    s.deck=shuffled(random);s.base=s.deck.splice(0,2).sort((a,b)=>rank(a)-rank(b));s.choices=[];s.selected=null;s.double=[];s.doubleLast=[];s.doubleOutcome=null;s.result=null;s.paid=0;s.phase='dealt';return s;
+  }
+  if(action.type==='draw' && s.phase==='dealt'){s.choices=s.deck.splice(0,5);s.phase='choose';return s;}
+  if(action.type==='pick' && s.phase==='choose' && Number.isInteger(action.index) && action.index>=0 && action.index<5){
+    s.selected=action.index;s.result=evaluate(s.base,s.choices[s.selected]);s.win=s.bet*s.result.multiplier;s.rounds++;if(s.win)s.wins++;
+    s.phase=s.win?'won':'lost';if(!s.win)nextBet(s);return s;
+  }
+  if(action.type==='double' && s.phase==='won' && s.win<=Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2)){
+    s.double=shuffled(random).slice(0,2);s.doubleLast=[];s.doubleOutcome=null;s.phase='double';return s;
+  }
+  if(action.type==='side' && s.phase==='double' && [0,1].includes(action.index)){
+    const chosen=rank(s.double[action.index]),other=rank(s.double[1-action.index]);s.doubleLast=s.double;s.doubleOutcome=chosen===other?'tie':chosen>other?'win':'loss';
+    if(chosen===other){s.double=shuffled(random).slice(0,2);return s;}
+    s.double=[];if(chosen>other){s.win*=2;s.phase='won';}else{s.win=0;s.phase='lost';nextBet(s);}return s;
+  }
+  if(action.type==='collect' && ['won','double'].includes(s.phase)){
+    if(!Number.isSafeInteger(s.credit+s.win))return previous;
+    s.paid=s.win;s.credit+=s.win;s.win=0;s.phase='ready';s.base=[];s.choices=[];s.deck=[];s.double=[];s.doubleLast=[];s.selected=null;s.result=null;s.doubleOutcome=null;nextBet(s);return s;
+  }
+  return previous;
+}
+function validState(s){
+  if(!s||s.version!==1||!['ready','dealt','choose','won','double','lost'].includes(s.phase))return false;
+  if(!['credit','bet','win','paid','rounds','wins'].every(k=>Number.isSafeInteger(s[k])&&s[k]>=0)||s.bet>10||s.wins>s.rounds||!Number.isSafeInteger(s.credit+s.bet+s.win))return false;
+  if(typeof s.guide!=='boolean'||typeof s.sound!=='boolean'||![null,'win','loss','tie'].includes(s.doubleOutcome))return false;
+  if(!['base','choices','deck','double','doubleLast'].every(k=>Array.isArray(s[k])&&s[k].every(c=>Number.isInteger(c)&&c>=0&&c<52)))return false;
+  const all=[...s.base,...s.choices,...s.deck];if(new Set(all).size!==all.length)return false;
+  if(s.double.length>0&&(s.double.length!==2||new Set(s.double).size!==2))return false;
+  if(s.doubleLast.length>0&&(s.doubleLast.length!==2||new Set(s.doubleLast).size!==2))return false;
+  if(s.selected!==null&&(!Number.isInteger(s.selected)||s.selected<0||s.selected>4))return false;
+  if(s.phase==='ready')return s.win===0&&s.base.length===0&&s.choices.length===0&&s.deck.length===0&&s.double.length===0&&s.selected===null&&s.result===null;
+  if(s.base.length!==2||all.length!==52)return false;
+  if(['dealt','choose','won','double'].includes(s.phase)&&s.bet<3)return false;
+  if(s.phase==='dealt')return s.choices.length===0&&s.deck.length===50&&s.selected===null&&s.win===0&&s.result===null&&s.double.length===0;
+  if(s.choices.length!==5||s.deck.length!==45)return false;
+  if(s.phase==='choose')return s.selected===null&&s.win===0&&s.result===null&&s.double.length===0;
+  if(s.selected===null||!s.result)return false;
+  const r=evaluate(s.base,s.choices[s.selected]);if(s.result.key!==r.key||s.result.label!==r.label||s.result.multiplier!==r.multiplier)return false;
+  if(s.phase==='lost')return s.win===0&&s.double.length===0;
+  return s.win>0&&r.multiplier>0&&(s.phase==='double'?s.double.length===2:s.double.length===0);
+}
+
+const $=id=>document.getElementById(id),KEY='amber-between.state.v1',SUITS=['♠','♥','♦','♣'];
+let state=initial(),snapshot=null,storageOK=true,blocked=false,audio=null;
+function warn(text,reload=false){$('warning').hidden=false;$('warning-text').textContent=text;$('reload').hidden=!reload;}
+function load(){
+  try{snapshot=localStorage.getItem(KEY);if(snapshot!==null){const parsed=JSON.parse(snapshot);if(!validState(parsed))throw new Error('Invalid saved state');state=parsed;}}
+  catch{try{if(snapshot!==null){localStorage.setItem(`${KEY}.backup.${Date.now()}`,snapshot);localStorage.removeItem(KEY);snapshot=null;warn('保存データを退避しました。新しいゲームを開始します。');}else{storageOK=false;warn('保存を利用できません。この画面を閉じると進行状態が失われます。');}}catch{blocked=true;warn('保存データを保護するため操作を停止しました。ブラウザーの保存設定を確認してください。');}}
+}
+function save(next){
+  if(blocked)return false;
+  if(storageOK){try{if(localStorage.getItem(KEY)!==snapshot){blocked=true;warn('別タブでゲームが更新されました。RELOADで最新状態を読み込んでください。',true);return false;}
+    const value=JSON.stringify(next);localStorage.setItem(KEY,value);snapshot=value;
+  }catch{storageOK=false;warn('保存できません。現在のゲームは続けられますが、再読み込みで失われる可能性があります。');}}
+  state=next;return true;
+}
+function beep(win=false){if(!state.sound)return;try{audio??=new (window.AudioContext||window.webkitAudioContext)();audio.resume().catch(()=>{});const o=audio.createOscillator(),g=audio.createGain();o.type='triangle';o.frequency.value=win?660:330;g.gain.setValueAtTime(.045,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.13);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.14);}catch{}}
+function random(){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296;}
+function act(action){if(blocked)return;const next=transition(state,action,random);if(next===state)return;const gained=next.win>state.win;if(save(next)){beep(gained);render();}}
+function label(card){const r=rank(card);return r===14?'A':r===13?'K':r===12?'Q':r===11?'J':String(r);}
+function cardElement(card,{button=false,onClick=null,name='',selected=false}={}){
+  const el=document.createElement(button?'button':'div');el.className=`card${card===null?' back':suit(card)===1||suit(card)===2?' red':''}${selected?' selected':''}`;
+  if(button){el.type='button';el.disabled=blocked;el.addEventListener('click',onClick);}
+  el.setAttribute('aria-label',card===null?name||'裏向きカード':`${name} ${SUITS[suit(card)]}${label(card)}`);
+  if(card===null)el.innerHTML='<span aria-hidden="true">♠</span>';
+  else{const corner=`${label(card)}<br>${SUITS[suit(card)]}`;el.innerHTML=`<span class="corner" aria-hidden="true">${corner}</span><span class="suit" aria-hidden="true">${SUITS[suit(card)]}</span><span class="corner bottom" aria-hidden="true">${corner}</span>`;}
+  return el;
+}
+function slot(card,name,options={}){const el=document.createElement('div');el.className='card-slot';const title=document.createElement('span');title.className='card-label';title.textContent=name;el.append(title,cardElement(card,{name,...options}));return el;}
+function render(){
+  const s=state,ready=['ready','lost'].includes(s.phase),doubling=s.phase==='double'||s.doubleLast.length>0;
+  $('credit').textContent=s.credit.toLocaleString();$('bet').textContent=s.bet.toLocaleString();$('win').textContent=s.win.toLocaleString();$('paid').textContent=s.paid.toLocaleString();$('round').textContent=`ROUND ${String(s.rounds+(['dealt','choose'].includes(s.phase)?1:0)||1).padStart(3,'0')}`;
+  $('stats').textContent=`${s.rounds} PLAYS · ${s.wins} WINS`;
+  for(const key of ['guide','sound']){$(key).textContent=`${key.toUpperCase()} ${s[key]?'ON':'OFF'}`;$(key).setAttribute('aria-pressed',String(s[key]));}
+  $('help').hidden=!s.guide;$('hint').hidden=!s.guide;
+  const messages={ready:[s.paid?`PAID ${s.paid.toLocaleString()}`:'BET','BETを3〜10枚に設定して、DEAL。'],dealt:['DRAW','基準カードの間を狙うか、特別役を狙うか。DRAWで5枚を配ります。'],choose:['CHOOSE ONE','5枚の裏向きカードから1枚を選んでください。'],won:[s.doubleOutcome==='win'?`DOUBLE WIN ${s.win.toLocaleString()}`:`WIN ${s.win.toLocaleString()}`,'COLLECTで回収、DOUBLEで倍増に挑戦。'],lost:[s.doubleOutcome==='loss'?'DOUBLE LOST':'NO WIN','次のBETを選んで、もう一度DEAL。'],double:[s.doubleOutcome==='tie'?'TIE · TRY AGAIN':'LEFT OR RIGHT','数字が大きい方を選んでください。同値は配り直し。']};
+  const [title,guide]=messages[s.phase];$('message').replaceChildren();const strong=document.createElement('strong');strong.textContent=title;$('message').append(strong);
+  if(s.result&&!doubling){const result=document.createElement('span');result.textContent=s.result.multiplier?`${s.result.label} ×${s.result.multiplier}`:s.result.label;$('message').append(result);}
+  if(s.guide){const text=document.createElement('span');text.textContent=guide;$('message').append(text);}
+  $('base').hidden=doubling;$('base').replaceChildren(slot(s.base[0]??null,'LEFT BASE'),slot(s.selected===null?null:s.choices[s.selected],'YOUR CARD',{selected:s.selected!==null}),slot(s.base[1]??null,'RIGHT BASE'));
+  $('spread').hidden=doubling||s.base.length===0;$('spread').textContent=s.base.length?`SPREAD ${spread(s.base)}${rank(s.base[0])===rank(s.base[1])?' · PAIR':''}`:'';
+  $('possible').hidden=doubling||!['dealt','choose'].includes(s.phase);$('possible').textContent=s.base.length?`POSSIBLE HAND · ${possibleHands(s.base).map(p=>`${p[1]} ×${p[2]}`).join(' / ')||'NO WIN'}`:'';
+  $('choices-panel').hidden=doubling||!['choose','won','lost'].includes(s.phase)||s.choices.length===0;$('choices').replaceChildren();
+  s.choices.forEach((card,i)=>{$('choices').append(slot(s.phase==='choose'?null:card,`${i+1}${s.selected===i?' · SELECTED':''}`,{button:s.phase==='choose',onClick:()=>act({type:'pick',index:i}),selected:s.selected===i}));});
+  $('double-panel').hidden=!doubling;$('double-cards').replaceChildren();
+  if(doubling){const cards=s.phase==='double'?[null,null]:s.doubleLast;cards.forEach((c,i)=>$('double-cards').append(slot(c,i===0?'LEFT':'RIGHT',{button:s.phase==='double',onClick:()=>act({type:'side',index:i})})));}
+  $('tie-note').textContent=s.doubleOutcome==='tie'?(s.guide?'同値のためWINを維持し、新しい2枚を配りました。':'TIE · WIN KEPT · NEW CARDS'):'';
+  const total=s.credit+s.bet;for(const id of ['min','minus-ten','minus','plus','plus-ten','max'])$(id).disabled=blocked||!ready;
+  $('min').disabled||=s.bet===0;$('minus').disabled||=s.bet===0;$('minus-ten').disabled||=s.bet===0;$('plus').disabled||=s.bet>=Math.min(10,total);$('plus-ten').disabled=$('plus').disabled;$('max').disabled=$('plus').disabled;
+  const mainType=ready?'deal':s.phase==='dealt'?'draw':s.phase==='won'?'double':null;
+  $('main').hidden=['choose','double'].includes(s.phase);$('main').textContent=mainType?.toUpperCase()??'DEAL';$('main').disabled=blocked||!mainType||(ready&&s.bet<3)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
+  $('collect').hidden=!['won','double'].includes(s.phase);$('collect').disabled=blocked;$('refill').hidden=!(ready&&total<3);$('refill').disabled=blocked;
+  $('hint').textContent=s.phase==='choose'?'1〜5でカードを選択':s.phase==='double'?'← LEFT ／ → RIGHT ／ A・4 COLLECT':ready?'D・6 DEAL ／ W・8 ＋1 ／ S・2 −1':s.phase==='dealt'?'D・6 DRAW':'D・6 DOUBLE ／ A・4 COLLECT';
+  $('save-status').textContent=blocked?'PLAY PAUSED':storageOK?'AUTO SAVE':'SAVE UNAVAILABLE';
+  $('payrows').replaceChildren();const possible=new Set(s.base.length?possibleHands(s.base).map(p=>p[0]):[]);
+  PAYTABLE.forEach(([key,text,multiplier])=>{const row=document.createElement('div');row.className=`payrow${s.result?.key===key?' active':possible.has(key)&&['dealt','choose'].includes(s.phase)?' possible-row':''}`;const name=document.createElement('span'),value=document.createElement('b');name.textContent=text;value.textContent=`×${multiplier}`;row.append(name,value);$('payrows').append(row);});
+}
+$('min').onclick=()=>act({type:'bet',amount:0});$('max').onclick=()=>act({type:'bet',amount:10});
+for(const [id,delta] of [['minus-ten',-10],['minus',-1],['plus',1],['plus-ten',10]])$(id).onclick=()=>act({type:'bet',amount:state.bet+delta});
+$('main').onclick=()=>act({type:['ready','lost'].includes(state.phase)?'deal':state.phase==='dealt'?'draw':'double'});
+$('collect').onclick=()=>act({type:'collect'});$('refill').onclick=()=>act({type:'refill'});$('guide').onclick=()=>act({type:'guide'});$('sound').onclick=()=>act({type:'sound'});$('reload').onclick=()=>location.reload();
+document.addEventListener('keydown',event=>{
+  if(event.repeat||event.ctrlKey||event.metaKey||event.altKey||['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName))return;
+  let key=event.key.toLowerCase();if(event.code.startsWith('Numpad')){const number=event.code.slice(6);if(/^\d$/.test(number))key=number;}
+  let action=null;
+  if(state.phase==='choose'&&/^[1-5]$/.test(key))action={type:'pick',index:Number(key)-1};
+  else if(state.phase==='double'&&['arrowleft','arrowright'].includes(key))action={type:'side',index:key==='arrowleft'?0:1};
+  else if(['a','4'].includes(key))action={type:'collect'};
+  else if(['d','6'].includes(key))action={type:['ready','lost'].includes(state.phase)?'deal':state.phase==='dealt'?'draw':'double'};
+  else if(['w','8','+'].includes(key))action={type:'bet',amount:state.bet+1};
+  else if(['s','2','-'].includes(key))action={type:'bet',amount:state.bet-1};
+  else if(key==='*')action={type:'bet',amount:10};
+  if(action){event.preventDefault();act(action);}
+});
+window.addEventListener('storage',e=>{if(storageOK&&e.storageArea===localStorage&&(e.key===KEY||e.key===null)&&localStorage.getItem(KEY)!==snapshot){blocked=true;warn('別タブでゲームが更新されました。RELOADしてください。',true);render();}});
+load();if(storageOK&&!blocked&&snapshot===null)save(state);if(matchMedia('(max-width:760px)').matches)$('paytable').open=false;render();
+</script></body></html>
