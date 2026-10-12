@@ -7,7 +7,7 @@
 | PLAY LAB | `play-lab/` | v1 | `6261b5c4cab8a6febc10dfa2b54d69c344ccf535` | https://play-lab-takaa-1004.satotka.chatgpt.site |
 | AMBER POKER | `amber-poker/` | v37 | `d65325e2fb02b18b435338bf63252ee27b485ecd` | https://amber-poker.satotka.chatgpt.site |
 | AMBER DERBY | `amber-derby/` | v1 | `451e4501b00c814e6a00daf2a7ba70ee02e57f65` | https://amber-derby.satotka.chatgpt.site |
-| AMBER BETWEEN | `amber-between/` | v1 | `59d20d3ddc69a224ac1b2eda35ae14d8238d1dd0` | https://amber-between.satotka.chatgpt.site |
+| AMBER BETWEEN | `amber-between/` | v2 | `1c266b5007e4896eb0a68cf586ce065df1e889ea` | https://amber-between.satotka.chatgpt.site |
 
 `SOURCE-MANIFEST.json` にSite ID、元ツリーSHA、全45ファイルのGit blob SHAを記録しています。各アプリの `.openai/hosting.json` は元のSite IDを保持しています。GitHubへの保存はSitesへの自動公開を設定するものではありません。この保存作業ではSitesのソース変更・再公開・アクセス権変更を行っていません。
 
@@ -31,3 +31,5 @@
 2026-10-12更新: AMBER BETWEEN v1を新規作成し、独立したSitesへ所有者限定でデプロイ成功。Notion「Amber Betweenの作成」の10種類の配当とDEAL→DRAW→5枚から1枚選択、LEFT/RIGHTのダブルダウン（同値は自動配り直し）を実装。未記載部分の解釈・調査記録は `amber-between/SPEC.md`。構文確認、オフライン版生成、エンジン/UIの2テストファイルが成功。実ブラウザーでの表示・音声確認は未実施。専用Sites Gitと同じ12ファイルを `sites/amber-between/` に保存し、元履歴を `site-source/amber-between` に保持。従来の3アプリのSitesは変更していません。
 
 AMBER BETWEENのGitHub保存ではGH007（非公開メール保護）への対応として、`site-source/amber-between` を元ソースと同一ツリー・匿名メールのコミットで保存しています。元の公開コミットはSites専用Gitに保持し、GitHub側のコミットはマニフェストの `github_source_commit` に記録しています。
+
+2026-10-12更新: AMBER BETWEEN v2でBET下限を1枚に変更。1〜10枚でDEAL可能、残り1〜2枚でも続行でき、無料補充は総残高0枚の時のみ。保存検証・遊び方・オフライン版も更新。構文確認・ビルド・エンジン/UIの2テストファイル成功、独立Sitesへのデプロイ成功。

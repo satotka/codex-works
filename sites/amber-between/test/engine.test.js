@@ -30,6 +30,18 @@ test('BET reserved once, locked through DEAL and DRAW, restored state is valid',
   s=transition(s,{type:'draw'});assert.equal(s.choices.length,5);assert.equal(validState(JSON.parse(JSON.stringify(s))),true);
   assert.equal(transition(s,{type:'pick',index:9}),s);
 });
+test('one and two coin bets can play and restore every phase, last coin is usable',()=>{
+  for(const bet of [1,2]){
+    let s=transition(initial(),{type:'bet',amount:bet});
+    s=transition(s,{type:'deal'},()=>.5);assert.equal(s.phase,'dealt');assert.equal(validState(s),true);
+    s=transition(s,{type:'draw'});assert.equal(validState(s),true);
+    s=transition(s,{type:'pick',index:0});assert.equal(validState(s),true);
+  }
+  let s=initial();s.credit=1;s=transition(s,{type:'bet',amount:1});assert.equal(s.credit,0);
+  assert.equal(transition(s,{type:'refill'}),s);s=transition(s,{type:'deal'},()=>.5);assert.equal(s.phase,'dealt');
+  let win=chosenRound([card(4),card(6)],[card(5),card(2),card(3),card(8),card(9)],1);
+  win=transition(win,{type:'pick',index:0});assert.equal(win.win,5);win=transition(win,{type:'collect'});assert.equal(win.bet,1);assert.equal(validState(win),true);
+});
 test('win, reload, collect once, next bet reservation conserves balance',()=>{
   let s=chosenRound([card(4),card(6)],[card(5),card(2),card(3),card(8),card(9)]);
   s=transition(s,{type:'pick',index:0});assert.equal(s.win,25);assert.equal(validState(s),true);
@@ -49,7 +61,7 @@ test('loss and double loss do not refund consumed BET or WIN',()=>{
 });
 test('limits, insufficient credit, overflow, corrupted state rejection',()=>{
   assert.equal(transition(initial(),{type:'deal'}).phase,'ready');
-  let s=initial();s.credit=2;s=transition(s,{type:'bet',amount:10});assert.equal(s.bet,2);assert.equal(transition(s,{type:'deal'}),s);assert.equal(transition(s,{type:'refill'}).credit,1000);
+  let s=initial();s.credit=0;s=transition(s,{type:'bet',amount:10});assert.equal(s.bet,0);assert.equal(transition(s,{type:'deal'}),s);assert.equal(transition(s,{type:'refill'}).credit,1000);
   assert.equal(validState({...initial(),credit:-1}),false);assert.equal(validState({...initial(),bet:11}),false);
   s=transition(transition(initial(),{type:'bet',amount:3}),{type:'deal'},()=>.5);assert.equal(validState({...s,deck:[...s.deck,s.base[0]]}),false);
   s=transition(chosenRound([card(4),card(6)],[card(5),card(2),card(3),card(8),card(9)]),{type:'pick',index:0});s.win=Number.MAX_SAFE_INTEGER-1000;assert.equal(transition(s,{type:'double'}),s);
