@@ -200,3 +200,6 @@ summary:focus-visible{outline:2px solid #efc375;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.disclosure-arrow{transition:none}}
 
 .screen-top{justify-content:flex-end}
+
+/* Keep the transferring BASE above the intervening face-down card. */
+.cards [data-index="1"]{z-index:1}

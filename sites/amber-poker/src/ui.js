@@ -72,7 +72,10 @@ function cardHtml(c,i,interactive) {
   const label=!c?'Face-down card':c.joker?'JOKER':`${ranks[c.rank]||c.rank} ${suitNames[c.suit]}`;
   return `<div class="card-slot"><button class="card ${!c?'back':''} ${c&&['H','D'].includes(c.suit)?'red':''} ${held?'held':''} ${inRole?'in-role':''}" data-index="${i}" ${interactive?'':'disabled'} aria-label="${label}${inRole?' · '+currentRole+'のカード':''}${interactive?' Toggle HOLD':''}" aria-pressed="${held}">${face}</button><span class="hold-label">${held?'HOLD':interactive?'HOLD / RELEASE':' '}</span></div>`;
 }
+let transferAnimations=[];
 function render(){
+  for(const animation of transferAnimations)animation.cancel();
+  transferAnimations=[];
   updateUtilityButtons();persist();refreshAccess();
   const editable=['ready','lost'].includes(game.phase),holding=game.phase==='hold';
   ['credit','bet','win'].forEach(id=>$(id).textContent=game[id].toLocaleString());
@@ -140,9 +143,32 @@ function celebrate(doubled=false){
   void stage.offsetWidth;
   stage.classList?.add(doubled?'double-burst':'win-burst');
 }
+function startDoubleWithTransfer(){
+  const continuing=game.doubleResult?.outcome==='win';
+  const reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const stage=$('cards');
+  const origin=continuing&&!reduced?stage.querySelector?.('[data-index="3"]')?.getBoundingClientRect?.():null;
+  act(()=>game.startDouble(),'deal');
+  if(!origin||game.phase!=='double')return;
+  const base=stage.querySelector?.('[data-index="1"]');
+  const next=stage.querySelector?.('[data-index="3"]');
+  if(!base?.animate||!next?.animate)return;
+  const destination=base.getBoundingClientRect();
+  const dx=origin.left-destination.left,dy=origin.top-destination.top;
+  // Move the new BASE from the exact previous NEXT position, on every viewport.
+  transferAnimations=[
+    base.animate([
+      {transform:`translate(${dx}px, ${dy}px)`,boxShadow:'0 0 24px #f3bd5d88'},
+      {transform:`translate(${dx*.45}px, ${dy-10}px)`,offset:.55,boxShadow:'0 0 28px #f3bd5daa'},
+      {transform:'translate(0, 0)',boxShadow:'0 4px 0 #0009'}
+    ],{duration:420,easing:'cubic-bezier(.22,.68,.2,1)'}),
+    next.animate([{opacity:0,transform:'scale(.94)'},{opacity:1,transform:'scale(1)'}],
+      {duration:180,delay:260,fill:'backwards',easing:'ease-out'})
+  ];
+}
 function act(fn,tone){if(!allowed()){refreshAccess();return;}const result=fn();if(result!==false&&tone)sound.play(tone);render();}
 $('minus').onclick=()=>act(()=>game.setBet(game.bet-1),'bet');$('plus').onclick=()=>act(()=>game.setBet(game.bet+1),'bet');$('max').onclick=()=>act(()=>game.setBet(game.credit+game.bet),'bet');
-$('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){act(()=>game.startDouble(),'deal');}else if(game.phase==='hold'){primaryUntil=Date.now()+100;act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
+$('deal').onclick=()=>{if(!allowed()){refreshAccess();return;}if(Date.now()<primaryUntil)return;if(game.phase==='won'){startDoubleWithTransfer();}else if(game.phase==='hold'){primaryUntil=Date.now()+100;act(()=>game.draw(),'draw');if(game.win){sound.play('win');celebrate();}}else act(()=>game.deal(),'deal');};
 $('min').onclick=()=>act(()=>game.setBet(0),'bet');
 $('minus-ten').onclick=()=>act(()=>game.setBet(game.bet-10),'bet');$('plus-ten').onclick=()=>act(()=>game.setBet(game.bet+10),'bet');
 $('cards').onclick=e=>{const b=e.target.closest('[data-index]');if(b&&game.phase==='hold')holdCard(Number(b.dataset.index));};
