@@ -2,7 +2,7 @@
 
 AMBERシリーズの独立したカードゲーム。作業場所は `sites/amber-between/`、ChatGPT Sitesも専用Siteとして管理する。
 
-Notionの指定配当とDEAL→5枚から選択、LEFT/RIGHTのダブルダウンを実装。ルールと未記載部分の解釈は [SPEC.md](SPEC.md) を参照。
+Notionの指定配当とDEAL→3枚で即判定、LEFT/RIGHTのダブルダウンを実装。ルールと未記載部分の解釈は [SPEC.md](SPEC.md) を参照。
 
 依存パッケージ不要。Node.js 20以上で `npm run check && npm run build && npm test`。`dist/` がSites向け静的ソース、`PLAY.html` はCSS/JSを埋め込んだオフライン版（直接開けます）。ブラウザーの保存設定によってfile://の保存は使えないことがあります。
 

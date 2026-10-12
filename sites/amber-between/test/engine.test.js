@@ -22,7 +22,7 @@ test('possible hands exactly match remaining physical cards',()=>{
     assert.deepEqual(new Set(possibleHands([a,b]).map(p=>p[0])),expected);
   }
 });
-function chosenRound(base,choices,bet=5){let s=transition(initial(),{type:'bet',amount:bet});s=transition(s,{type:'deal'},()=>.5);s.base=base;s.choices=choices;s.deck=Array.from({length:52},(_,i)=>i).filter(c=>!base.includes(c)&&!choices.includes(c));s.phase='choose';return s;}
+function chosenRound(base,choices,bet=5){let s=transition(initial(),{type:'bet',amount:bet});s.base=base;s.choices=choices;s.deck=Array.from({length:52},(_,i)=>i).filter(c=>!base.includes(c)&&!choices.includes(c));s.phase='choose';return s;}
 test('PAIR W/O SPREAD requires selected endpoint pair at spread zero',()=>{
   const base=[card(6),card(7)];
   for(const r of [6,7])assert.equal(evaluate(base,card(r,1)).key,'pair');
@@ -37,20 +37,20 @@ test('PAIR W/O SPREAD requires selected endpoint pair at spread zero',()=>{
 });
 test('BET reserved once, locked after DEAL, restored state is valid',()=>{
   let s=transition(initial(),{type:'bet',amount:10});assert.equal(s.credit,990);
-  s=transition(s,{type:'deal'},()=>.5);assert.equal(s.credit,990);assert.equal(validState(s),true);
-  assert.equal(transition(s,{type:'bet',amount:0}),s);
-  s=transition(s,{type:'draw'});assert.equal(s.choices.length,5);assert.equal(validState(JSON.parse(JSON.stringify(s))),true);
+  s=transition(s,{type:'deal'},()=>.5);assert.equal(s.credit+s.bet+(s.win?0:10),1000);assert.equal(validState(s),true);
+  assert.equal(s.rounds,1);
+  s=transition(s,{type:'draw'});assert.equal(s.choices.length,1);assert.equal(validState(JSON.parse(JSON.stringify(s))),true);
   assert.equal(transition(s,{type:'pick',index:9}),s);
 });
 test('one and two coin bets can play and restore every phase, last coin is usable',()=>{
   for(const bet of [1,2]){
     let s=transition(initial(),{type:'bet',amount:bet});
-    s=transition(s,{type:'deal'},()=>.5);assert.equal(s.phase,'choose');assert.equal(validState(s),true);
+    s=transition(s,{type:'deal'},()=>.5);assert.ok(['won','lost'].includes(s.phase));assert.equal(validState(s),true);
     s=transition(s,{type:'draw'});assert.equal(validState(s),true);
     s=transition(s,{type:'pick',index:0});assert.equal(validState(s),true);
   }
   let s=initial();s.credit=1;s=transition(s,{type:'bet',amount:1});assert.equal(s.credit,0);
-  assert.equal(transition(s,{type:'refill'}),s);s=transition(s,{type:'deal'},()=>.5);assert.equal(s.phase,'choose');
+  assert.equal(transition(s,{type:'refill'}),s);s=transition(s,{type:'deal'},()=>.5);assert.ok(['won','lost'].includes(s.phase));
   let win=chosenRound([card(4),card(6)],[card(5),card(2),card(3),card(8),card(9)],1);
   win=transition(win,{type:'pick',index:0});assert.equal(win.win,5);win=transition(win,{type:'collect'});assert.equal(win.bet,1);assert.equal(validState(win),true);
 });

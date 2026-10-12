@@ -5,6 +5,6 @@
 - `sites/play-lab/`: PLAY LAB v1
 - `sites/amber-poker/`: AMBER POKER v37
 - `sites/amber-derby/`: AMBER DERBY v1
-- `sites/amber-between/`: AMBER BETWEEN v11（Notionの指定ルール、5枚から選択、LEFT/RIGHTダブル）
+- `sites/amber-between/`: AMBER BETWEEN v12（Notionの指定ルール、3枚で即判定、LEFT/RIGHTダブル）
 
 既存のルート `dist/` と `.openai/hosting.json` はPLAY LABの従来配置です。既存の `amber-poker/` は旧移行版として保持しています。今後の公開版に対するメンテナンスは `sites/` の各アプリで行ってください。

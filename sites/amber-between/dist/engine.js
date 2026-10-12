@@ -39,10 +39,10 @@ export function transition(previous,action,random=Math.random){
   if(action.type==='guide'||action.type==='sound'){s[action.type]=!s[action.type];return s;}
   if(action.type==='refill' && reservable(s) && s.credit+s.bet<1){return {...initial(),guide:s.guide,sound:s.sound};}
   if(action.type==='deal' && reservable(s) && s.bet>=1 && s.bet<=10){
-    s.deck=shuffled(random);s.base=s.deck.splice(0,2).sort((a,b)=>rank(a)-rank(b));s.choices=s.deck.splice(0,5);s.selected=null;s.double=[];s.doubleLast=[];s.doubleOutcome=null;s.result=null;s.paid=0;s.phase='choose';return s;
+    s.deck=shuffled(random);s.base=s.deck.splice(0,2).sort((a,b)=>rank(a)-rank(b));s.choices=s.deck.splice(0,1);s.selected=null;s.double=[];s.doubleLast=[];s.doubleOutcome=null;s.result=null;s.paid=0;s.phase='choose';return transition(s,{type:'pick',index:0},random);
   }
   if(action.type==='draw' && s.phase==='dealt'){s.choices=s.deck.splice(0,5);s.phase='choose';return s;}
-  if(action.type==='pick' && s.phase==='choose' && Number.isInteger(action.index) && action.index>=0 && action.index<5){
+  if(action.type==='pick' && s.phase==='choose' && Number.isInteger(action.index) && action.index>=0 && action.index<s.choices.length){
     s.selected=action.index;s.result=evaluate(s.base,s.choices[s.selected]);s.win=s.bet*s.result.multiplier;s.rounds++;if(s.win)s.wins++;
     s.phase=s.win?'won':'lost';if(!s.win)nextBet(s);return s;
   }
@@ -73,7 +73,7 @@ export function validState(s){
   if(s.base.length!==2||all.length!==52)return false;
   if(['dealt','choose','won','double'].includes(s.phase)&&s.bet<1)return false;
   if(s.phase==='dealt')return s.choices.length===0&&s.deck.length===50&&s.selected===null&&s.win===0&&s.result===null&&s.double.length===0;
-  if(s.choices.length!==5||s.deck.length!==45)return false;
+  if(![1,5].includes(s.choices.length)||s.deck.length!==50-s.choices.length)return false;
   if(s.phase==='choose')return s.selected===null&&s.win===0&&s.result===null&&s.double.length===0;
   if(s.selected===null||!s.result)return false;
   const r=evaluate(s.base,s.choices[s.selected]);if(s.result.key!==r.key||s.result.label!==r.label||s.result.multiplier!==r.multiplier)return false;
