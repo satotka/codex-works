@@ -261,14 +261,14 @@
     },
     {
       "app": "amber-between",
-      "version": 3,
+      "version": 4,
       "project_id": "appgprj_6acce09868248191841876044288c39e",
-      "source_commit": "c9598227f7955f1742d32f0b2e01b8b62d2af735",
-      "source_tree": "269ba50041d1ad62c26f029cb138b3fb7f7f189c",
+      "source_commit": "f774c87efef643de76bcba6d118fea685b79b81e",
+      "source_tree": "026e5b8ea604aea7831aeeed7d4bc0502c03eecd",
       "github_path": "sites/amber-between",
       "source_branch": "site-source/amber-between",
       "verified_on": "2026-10-12",
-      "deployment_id": "appgdep_6acce61bba708191ac3a01866a44916c",
+      "deployment_id": "appgdep_6acce826b6488191a4c011c167e3bba7",
       "deployment_status": "succeeded",
       "url": "https://amber-between.satotka.chatgpt.site",
       "files": [
@@ -280,7 +280,7 @@
         {
           "path": "PLAY.html",
           "mode": "100644",
-          "blob_sha": "32187eb8268253b63b48ba1fedc3cfeb4ca81646"
+          "blob_sha": "957d2f3f5f335f063baf55fffdb24c97c3465d21"
         },
         {
           "path": "README.md",
@@ -295,7 +295,7 @@
         {
           "path": "dist/app.js",
           "mode": "100644",
-          "blob_sha": "d812202c5cc251a0a7c452cf8141a77b34282ed4"
+          "blob_sha": "d9eb850c928d4460f45bdea6a74b4f841e9aee8e"
         },
         {
           "path": "dist/engine.js",
@@ -305,7 +305,7 @@
         {
           "path": "dist/index.html",
           "mode": "100644",
-          "blob_sha": "94cda2a5966f3f80d311bd1af0e585a5c7bafe73"
+          "blob_sha": "b800d9aa8cf664bfeb01192dfdec04c640574391"
         },
         {
           "path": "dist/style.css",
@@ -333,7 +333,7 @@
           "blob_sha": "9da15b4ba06d0997a48b6a5d1f366cf2bca5dc94"
         }
       ],
-      "github_source_commit": "aee4931bca8826c3d5759235fff8b6ba5c005d5e",
+      "github_source_commit": "00367bc829025abd24c8309e93f004bb484cc251",
       "source_history_note": "GitHub export has the identical tree; author email anonymized to satisfy GH007. Original deployed commit remains in the dedicated Sites repository."
     }
   ]
