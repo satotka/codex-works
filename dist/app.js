@@ -39,8 +39,6 @@ function render(){
   $('base').hidden=doubling;$('base').replaceChildren(slot(s.base[0]??null,'LEFT BASE'),slot(s.selected===null?null:s.choices[s.selected],'YOUR CARD',{selected:s.selected!==null}),slot(s.base[1]??null,'RIGHT BASE'));
   $('spread').hidden=doubling||s.base.length===0;$('spread').textContent=s.base.length?`SPREAD ${spread(s.base)}${rank(s.base[0])===rank(s.base[1])?' · PAIR':''}`:'';
   $('possible').hidden=doubling||!['dealt','choose'].includes(s.phase);$('possible').textContent=s.base.length?`POSSIBLE HAND · ${possibleHands(s.base).map(p=>`${p[1]} ×${p[2]}`).join(' / ')||'NO WIN'}`:'';
-  $('choices-panel').hidden=doubling||!['choose','won','lost'].includes(s.phase)||s.choices.length===0;$('choices').replaceChildren();
-  s.choices.forEach((card,i)=>{$('choices').append(slot(s.phase==='choose'?null:card,`${i+1}${s.selected===i?' · SELECTED':''}`,{button:s.phase==='choose',onClick:()=>act({type:'pick',index:i}),selected:s.selected===i}));});
   $('double-panel').hidden=!doubling;$('double-cards').replaceChildren();
   if(doubling){const cards=s.phase==='double'?[null,null]:s.doubleLast;cards.forEach((c,i)=>$('double-cards').append(slot(c,i===0?'LEFT':'RIGHT',{button:s.phase==='double',onClick:()=>act({type:'side',index:i})})));
     if(s.phase==='double')for(const [i,slot] of [...$('double-cards').children].entries()){const shortcut=document.createElement('small');shortcut.textContent=i===0?'Q/7':'E/9';slot.children[1].append(shortcut);}}
@@ -63,8 +61,7 @@ document.addEventListener('keydown',event=>{
   if(event.repeat||event.ctrlKey||event.metaKey||event.altKey||['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName))return;
   let key=event.key.toLowerCase();if(event.code.startsWith('Numpad')){const number=event.code.slice(6);if(/^\d$/.test(number))key=number;}
   let action=null;
-  if(state.phase==='choose'&&/^[1-5]$/.test(key))action={type:'pick',index:Number(key)-1};
-  else if(state.phase==='double'&&['arrowleft','arrowright'].includes(key))action={type:'side',index:key==='arrowleft'?0:1};
+  if(state.phase==='double'&&['arrowleft','arrowright'].includes(key))action={type:'side',index:key==='arrowleft'?0:1};
   else if(state.phase==='double'&&['q','7','e','9'].includes(key))action={type:'side',index:['q','7'].includes(key)?0:1};
   else if(['won','double'].includes(state.phase)&&['a','4'].includes(key))action={type:'collect'};
   else if(state.phase==='won'&&['d','6'].includes(key))action={type:'double'};
@@ -75,4 +72,4 @@ document.addEventListener('keydown',event=>{
   if(action){event.preventDefault();act(action);}
 });
 window.addEventListener('storage',e=>{if(storageOK&&e.storageArea===localStorage&&(e.key===KEY||e.key===null)&&localStorage.getItem(KEY)!==snapshot){blocked=true;warn('別タブでゲームが更新されました。RELOADしてください。',true);render();}});
-load();if(!blocked&&state.phase==='dealt')save(transition(state,{type:'draw'}));if(storageOK&&!blocked&&snapshot===null)save(state);if(matchMedia('(max-width:760px)').matches)$('paytable').open=false;render();
+load();if(!blocked&&['dealt','choose'].includes(state.phase)){let resumed=state.phase==='dealt'?transition(state,{type:'draw'}):state;save(transition(resumed,{type:'pick',index:0}));}if(storageOK&&!blocked&&snapshot===null)save(state);if(matchMedia('(max-width:760px)').matches)$('paytable').open=false;render();
