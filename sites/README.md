@@ -7,7 +7,7 @@
 | PLAY LAB | `play-lab/` | v1 | `6261b5c4cab8a6febc10dfa2b54d69c344ccf535` | https://play-lab-takaa-1004.satotka.chatgpt.site |
 | AMBER POKER | `amber-poker/` | v37 | `d65325e2fb02b18b435338bf63252ee27b485ecd` | https://amber-poker.satotka.chatgpt.site |
 | AMBER DERBY | `amber-derby/` | v1 | `451e4501b00c814e6a00daf2a7ba70ee02e57f65` | https://amber-derby.satotka.chatgpt.site |
-| AMBER BETWEEN | `amber-between/` | v8 | `87e12e1e18b387dcc163a19666af1e06a22e6c35` | https://amber-between.satotka.chatgpt.site |
+| AMBER BETWEEN | `amber-between/` | v9 | `76eb2b0a8817670356a5db2ef88ada8284fa63ec` | https://amber-between.satotka.chatgpt.site |
 
 `SOURCE-MANIFEST.json` にSite ID、元ツリーSHA、全45ファイルのGit blob SHAを記録しています。各アプリの `.openai/hosting.json` は元のSite IDを保持しています。GitHubへの保存はSitesへの自動公開を設定するものではありません。この保存作業ではSitesのソース変更・再公開・アクセス権変更を行っていません。
 
@@ -45,3 +45,5 @@ AMBER BETWEENのGitHub保存ではGH007（非公開メール保護）への対�
 2026-10-12更新: AMBER BETWEEN v7でDRAWボタン内も改行し、操作名の下にD/6を表示。構文確認・オフライン版生成・既存2テストファイル成功、Sitesデプロイ成功。
 
 2026-10-12更新: AMBER BETWEEN v8で中間DRAW操作を省略。DEALで基準2枚と裏向き5枚を配り、そのまま1枚選択へ進む。旧DEAL直後の保存状態も山札・残高を維持して選択へ移行。遊び方・仕様書・オフライン版も更新。構文確認・既存2テストファイル成功、Sitesデプロイ成功。
+
+2026-10-12更新: AMBER BETWEEN v9でCOLLECT=S/2、DOUBLE=W/8、ダブル中LEFT=A/4・RIGHT=D/6へ変更。ボタン内キー表示と遊び方を更新。通常/テンキー・選択中の数字キー優先を自動検証。構文確認・オフライン版生成・既存2テストファイル成功、Sitesデプロイ成功。
