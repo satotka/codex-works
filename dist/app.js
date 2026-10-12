@@ -32,7 +32,7 @@ function render(){
   $('stats').textContent=`${s.rounds} PLAYS · ${s.wins} WINS`;
   for(const key of ['guide','sound']){$(key).textContent=`${key.toUpperCase()} ${s[key]?'ON':'OFF'}`;$(key).setAttribute('aria-pressed',String(s[key]));}
   $('help').hidden=!s.guide;$('hint').hidden=!s.guide;
-  const messages={ready:[s.paid?`PAID ${s.paid.toLocaleString()}`:'BET','BETを3〜10枚に設定して、DEAL。'],dealt:['DRAW','基準カードの間を狙うか、特別役を狙うか。DRAWで5枚を配ります。'],choose:['CHOOSE ONE','5枚の裏向きカードから1枚を選んでください。'],won:[s.doubleOutcome==='win'?`DOUBLE WIN ${s.win.toLocaleString()}`:`WIN ${s.win.toLocaleString()}`,'COLLECTで回収、DOUBLEで倍増に挑戦。'],lost:[s.doubleOutcome==='loss'?'DOUBLE LOST':'NO WIN','次のBETを選んで、もう一度DEAL。'],double:[s.doubleOutcome==='tie'?'TIE · TRY AGAIN':'LEFT OR RIGHT','数字が大きい方を選んでください。同値は配り直し。']};
+  const messages={ready:[s.paid?`PAID ${s.paid.toLocaleString()}`:'BET','BETを1〜10枚に設定して、DEAL。'],dealt:['DRAW','基準カードの間を狙うか、特別役を狙うか。DRAWで5枚を配ります。'],choose:['CHOOSE ONE','5枚の裏向きカードから1枚を選んでください。'],won:[s.doubleOutcome==='win'?`DOUBLE WIN ${s.win.toLocaleString()}`:`WIN ${s.win.toLocaleString()}`,'COLLECTで回収、DOUBLEで倍増に挑戦。'],lost:[s.doubleOutcome==='loss'?'DOUBLE LOST':'NO WIN','次のBETを選んで、もう一度DEAL。'],double:[s.doubleOutcome==='tie'?'TIE · TRY AGAIN':'LEFT OR RIGHT','数字が大きい方を選んでください。同値は配り直し。']};
   const [title,guide]=messages[s.phase];$('message').replaceChildren();const strong=document.createElement('strong');strong.textContent=title;$('message').append(strong);
   if(s.result&&!doubling){const result=document.createElement('span');result.textContent=s.result.multiplier?`${s.result.label} ×${s.result.multiplier}`:s.result.label;$('message').append(result);}
   if(s.guide){const text=document.createElement('span');text.textContent=guide;$('message').append(text);}
@@ -47,8 +47,8 @@ function render(){
   const total=s.credit+s.bet;for(const id of ['min','minus-ten','minus','plus','plus-ten','max'])$(id).disabled=blocked||!ready;
   $('min').disabled||=s.bet===0;$('minus').disabled||=s.bet===0;$('minus-ten').disabled||=s.bet===0;$('plus').disabled||=s.bet>=Math.min(10,total);$('plus-ten').disabled=$('plus').disabled;$('max').disabled=$('plus').disabled;
   const mainType=ready?'deal':s.phase==='dealt'?'draw':s.phase==='won'?'double':null;
-  $('main').hidden=['choose','double'].includes(s.phase);$('main').textContent=mainType?.toUpperCase()??'DEAL';$('main').disabled=blocked||!mainType||(ready&&s.bet<3)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
-  $('collect').hidden=!['won','double'].includes(s.phase);$('collect').disabled=blocked;$('refill').hidden=!(ready&&total<3);$('refill').disabled=blocked;
+  $('main').hidden=['choose','double'].includes(s.phase);$('main').textContent=mainType?.toUpperCase()??'DEAL';$('main').disabled=blocked||!mainType||(ready&&s.bet<1)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
+  $('collect').hidden=!['won','double'].includes(s.phase);$('collect').disabled=blocked;$('refill').hidden=!(ready&&total<1);$('refill').disabled=blocked;
   $('hint').textContent=s.phase==='choose'?'1〜5でカードを選択':s.phase==='double'?'← LEFT ／ → RIGHT ／ A・4 COLLECT':ready?'D・6 DEAL ／ W・8 ＋1 ／ S・2 −1':s.phase==='dealt'?'D・6 DRAW':'D・6 DOUBLE ／ A・4 COLLECT';
   $('save-status').textContent=blocked?'PLAY PAUSED':storageOK?'AUTO SAVE':'SAVE UNAVAILABLE';
   $('payrows').replaceChildren();const possible=new Set(s.base.length?possibleHands(s.base).map(p=>p[0]):[]);

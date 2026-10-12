@@ -32,13 +32,13 @@ export function shuffled(random=Math.random) {
 export function initial() {return {version:1,phase:'ready',credit:1000,bet:0,win:0,paid:0,base:[],choices:[],selected:null,deck:[],double:[],doubleLast:[],result:null,doubleOutcome:null,rounds:0,wins:0,guide:true,sound:false};}
 const reservable=s=>['ready','lost'].includes(s.phase);
 function reserve(s, amount){const total=s.credit+s.bet;s.bet=Math.max(0,Math.min(10,total,amount));s.credit=total-s.bet;}
-function nextBet(s){const amount=s.bet;s.bet=0;reserve(s,s.credit>=3?amount:0);}
+function nextBet(s){const amount=s.bet;s.bet=0;reserve(s,s.credit>=1?amount:0);}
 export function transition(previous,action,random=Math.random){
   const s=structuredClone(previous);
   if(action.type==='bet' && reservable(s)){reserve(s,action.amount);return s;}
   if(action.type==='guide'||action.type==='sound'){s[action.type]=!s[action.type];return s;}
-  if(action.type==='refill' && reservable(s) && s.credit+s.bet<3){return {...initial(),guide:s.guide,sound:s.sound};}
-  if(action.type==='deal' && reservable(s) && s.bet>=3 && s.bet<=10){
+  if(action.type==='refill' && reservable(s) && s.credit+s.bet<1){return {...initial(),guide:s.guide,sound:s.sound};}
+  if(action.type==='deal' && reservable(s) && s.bet>=1 && s.bet<=10){
     s.deck=shuffled(random);s.base=s.deck.splice(0,2).sort((a,b)=>rank(a)-rank(b));s.choices=[];s.selected=null;s.double=[];s.doubleLast=[];s.doubleOutcome=null;s.result=null;s.paid=0;s.phase='dealt';return s;
   }
   if(action.type==='draw' && s.phase==='dealt'){s.choices=s.deck.splice(0,5);s.phase='choose';return s;}
@@ -71,7 +71,7 @@ export function validState(s){
   if(s.selected!==null&&(!Number.isInteger(s.selected)||s.selected<0||s.selected>4))return false;
   if(s.phase==='ready')return s.win===0&&s.base.length===0&&s.choices.length===0&&s.deck.length===0&&s.double.length===0&&s.selected===null&&s.result===null;
   if(s.base.length!==2||all.length!==52)return false;
-  if(['dealt','choose','won','double'].includes(s.phase)&&s.bet<3)return false;
+  if(['dealt','choose','won','double'].includes(s.phase)&&s.bet<1)return false;
   if(s.phase==='dealt')return s.choices.length===0&&s.deck.length===50&&s.selected===null&&s.win===0&&s.result===null&&s.double.length===0;
   if(s.choices.length!==5||s.deck.length!==45)return false;
   if(s.phase==='choose')return s.selected===null&&s.win===0&&s.result===null&&s.double.length===0;

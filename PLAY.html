@@ -44,7 +44,7 @@ details{color:#cfc0a9;font-size:13px;line-height:1.8;margin-top:16px}summary{cur
 <div class="console"><button id="main">DEAL</button><button id="collect" class="secondary" hidden>COLLECT</button><button id="refill" hidden>NEW CREDIT</button></div>
 <p id="hint" class="guide-text"></p></div></div></section>
 <footer><span id="save-status" role="status">自動保存</span><span id="stats">0 PLAYS · 0 WINS</span><a href="https://amber-poker.satotka.chatgpt.site" target="_blank" rel="noopener">AMBER POKER ↗</a><a href="https://amber-derby.satotka.chatgpt.site" target="_blank" rel="noopener">AMBER DERBY ↗</a></footer>
-<details id="help"><summary>遊び方・操作キー <span>⌄</span></summary><p>①BETを3〜10枚に設定 → ②DEALで2枚を開く → ③SPREADとPOSSIBLE HANDを確認してDRAW → ④裏向きの5枚から1枚を選択。5枚すべてが開き、選んだ1枚と最初の2枚で判定します。BETはDEAL前に予約するため、DEAL時に追加控除はありません。</p><p>52枚・ジョーカーなし。数字の順序は2〜10・J・Q・K・A（Aが最大）。SPREADは基準2枚の間にある数字の数です（4と6なら1）。選んだカードが厳密に間に入ればSPREAD配当。同じ数字で端に重なった場合は当たりません。J-Q-Kの同一スートやスリーカードは配当表の上位役を優先し、配当は合算しません。最初の2枚がペアなら、スリーカードにならなくても×1の返却です。連続した2枚はSPREAD 0で、特別役以外はNO WINです。払戻はBET×表示倍率で、BET分を含みます。</p><p>当たり後はCOLLECTで回収、DOUBLEでダブルダウン。2枚の裏向きカードから大きいと思う方をLEFT／RIGHTで選びます。勝利でWINが2倍、敗北で0。同値はWINを維持して自動で2枚を配り直します。選ぶ前ならCOLLECTできます。ダブルごとに新しい52枚から2枚を配ります。</p><p>PC：D／6＝DEAL・DRAW・DOUBLE。1〜5＝カード選択。A／4＝COLLECT（5枚選択中は4番カードを優先）。←／→＝LEFT／RIGHT。W／8／＋＝BET＋1、S／2／−＝BET−1（5枚選択中は2番カードを優先）。＊＝MAX。音声はSOUNDで切替。タップ・クリックでも全操作ができます。</p><p>残高・BET・途中のカード・WIN・設定をこのブラウザーに保存します。端末間同期はありません。別タブが保存を更新した時は操作を止め、RELOADで読み直します。仮想メダルで遊ぶゲームです。総残高が3枚未満になったらNEW CREDITで1,000枚から再開できます。</p></details>
+<details id="help"><summary>遊び方・操作キー <span>⌄</span></summary><p>①BETを1〜10枚に設定 → ②DEALで2枚を開く → ③SPREADとPOSSIBLE HANDを確認してDRAW → ④裏向きの5枚から1枚を選択。5枚すべてが開き、選んだ1枚と最初の2枚で判定します。BETはDEAL前に予約するため、DEAL時に追加控除はありません。</p><p>52枚・ジョーカーなし。数字の順序は2〜10・J・Q・K・A（Aが最大）。SPREADは基準2枚の間にある数字の数です（4と6なら1）。選んだカードが厳密に間に入ればSPREAD配当。同じ数字で端に重なった場合は当たりません。J-Q-Kの同一スートやスリーカードは配当表の上位役を優先し、配当は合算しません。最初の2枚がペアなら、スリーカードにならなくても×1の返却です。連続した2枚はSPREAD 0で、特別役以外はNO WINです。払戻はBET×表示倍率で、BET分を含みます。</p><p>当たり後はCOLLECTで回収、DOUBLEでダブルダウン。2枚の裏向きカードから大きいと思う方をLEFT／RIGHTで選びます。勝利でWINが2倍、敗北で0。同値はWINを維持して自動で2枚を配り直します。選ぶ前ならCOLLECTできます。ダブルごとに新しい52枚から2枚を配ります。</p><p>PC：D／6＝DEAL・DRAW・DOUBLE。1〜5＝カード選択。A／4＝COLLECT（5枚選択中は4番カードを優先）。←／→＝LEFT／RIGHT。W／8／＋＝BET＋1、S／2／−＝BET−1（5枚選択中は2番カードを優先）。＊＝MAX。音声はSOUNDで切替。タップ・クリックでも全操作ができます。</p><p>残高・BET・途中のカード・WIN・設定をこのブラウザーに保存します。端末間同期はありません。別タブが保存を更新した時は操作を止め、RELOADで読み直します。仮想メダルで遊ぶゲームです。総残高が0枚になったらNEW CREDITで1,000枚から再開できます。</p></details>
 </main><script type="module">const PAYTABLE = [
   ['spade','J-Q-K OF SPADE',500],['flush','J-Q-K WITH FLUSH',100],
   ['aces-sevens','THREE A’s OR 7’s',50],['faces','THREE J’s, Q’s, K’s',20],
@@ -79,13 +79,13 @@ function shuffled(random=Math.random) {
 function initial() {return {version:1,phase:'ready',credit:1000,bet:0,win:0,paid:0,base:[],choices:[],selected:null,deck:[],double:[],doubleLast:[],result:null,doubleOutcome:null,rounds:0,wins:0,guide:true,sound:false};}
 const reservable=s=>['ready','lost'].includes(s.phase);
 function reserve(s, amount){const total=s.credit+s.bet;s.bet=Math.max(0,Math.min(10,total,amount));s.credit=total-s.bet;}
-function nextBet(s){const amount=s.bet;s.bet=0;reserve(s,s.credit>=3?amount:0);}
+function nextBet(s){const amount=s.bet;s.bet=0;reserve(s,s.credit>=1?amount:0);}
 function transition(previous,action,random=Math.random){
   const s=structuredClone(previous);
   if(action.type==='bet' && reservable(s)){reserve(s,action.amount);return s;}
   if(action.type==='guide'||action.type==='sound'){s[action.type]=!s[action.type];return s;}
-  if(action.type==='refill' && reservable(s) && s.credit+s.bet<3){return {...initial(),guide:s.guide,sound:s.sound};}
-  if(action.type==='deal' && reservable(s) && s.bet>=3 && s.bet<=10){
+  if(action.type==='refill' && reservable(s) && s.credit+s.bet<1){return {...initial(),guide:s.guide,sound:s.sound};}
+  if(action.type==='deal' && reservable(s) && s.bet>=1 && s.bet<=10){
     s.deck=shuffled(random);s.base=s.deck.splice(0,2).sort((a,b)=>rank(a)-rank(b));s.choices=[];s.selected=null;s.double=[];s.doubleLast=[];s.doubleOutcome=null;s.result=null;s.paid=0;s.phase='dealt';return s;
   }
   if(action.type==='draw' && s.phase==='dealt'){s.choices=s.deck.splice(0,5);s.phase='choose';return s;}
@@ -118,7 +118,7 @@ function validState(s){
   if(s.selected!==null&&(!Number.isInteger(s.selected)||s.selected<0||s.selected>4))return false;
   if(s.phase==='ready')return s.win===0&&s.base.length===0&&s.choices.length===0&&s.deck.length===0&&s.double.length===0&&s.selected===null&&s.result===null;
   if(s.base.length!==2||all.length!==52)return false;
-  if(['dealt','choose','won','double'].includes(s.phase)&&s.bet<3)return false;
+  if(['dealt','choose','won','double'].includes(s.phase)&&s.bet<1)return false;
   if(s.phase==='dealt')return s.choices.length===0&&s.deck.length===50&&s.selected===null&&s.win===0&&s.result===null&&s.double.length===0;
   if(s.choices.length!==5||s.deck.length!==45)return false;
   if(s.phase==='choose')return s.selected===null&&s.win===0&&s.result===null&&s.double.length===0;
@@ -161,7 +161,7 @@ function render(){
   $('stats').textContent=`${s.rounds} PLAYS · ${s.wins} WINS`;
   for(const key of ['guide','sound']){$(key).textContent=`${key.toUpperCase()} ${s[key]?'ON':'OFF'}`;$(key).setAttribute('aria-pressed',String(s[key]));}
   $('help').hidden=!s.guide;$('hint').hidden=!s.guide;
-  const messages={ready:[s.paid?`PAID ${s.paid.toLocaleString()}`:'BET','BETを3〜10枚に設定して、DEAL。'],dealt:['DRAW','基準カードの間を狙うか、特別役を狙うか。DRAWで5枚を配ります。'],choose:['CHOOSE ONE','5枚の裏向きカードから1枚を選んでください。'],won:[s.doubleOutcome==='win'?`DOUBLE WIN ${s.win.toLocaleString()}`:`WIN ${s.win.toLocaleString()}`,'COLLECTで回収、DOUBLEで倍増に挑戦。'],lost:[s.doubleOutcome==='loss'?'DOUBLE LOST':'NO WIN','次のBETを選んで、もう一度DEAL。'],double:[s.doubleOutcome==='tie'?'TIE · TRY AGAIN':'LEFT OR RIGHT','数字が大きい方を選んでください。同値は配り直し。']};
+  const messages={ready:[s.paid?`PAID ${s.paid.toLocaleString()}`:'BET','BETを1〜10枚に設定して、DEAL。'],dealt:['DRAW','基準カードの間を狙うか、特別役を狙うか。DRAWで5枚を配ります。'],choose:['CHOOSE ONE','5枚の裏向きカードから1枚を選んでください。'],won:[s.doubleOutcome==='win'?`DOUBLE WIN ${s.win.toLocaleString()}`:`WIN ${s.win.toLocaleString()}`,'COLLECTで回収、DOUBLEで倍増に挑戦。'],lost:[s.doubleOutcome==='loss'?'DOUBLE LOST':'NO WIN','次のBETを選んで、もう一度DEAL。'],double:[s.doubleOutcome==='tie'?'TIE · TRY AGAIN':'LEFT OR RIGHT','数字が大きい方を選んでください。同値は配り直し。']};
   const [title,guide]=messages[s.phase];$('message').replaceChildren();const strong=document.createElement('strong');strong.textContent=title;$('message').append(strong);
   if(s.result&&!doubling){const result=document.createElement('span');result.textContent=s.result.multiplier?`${s.result.label} ×${s.result.multiplier}`:s.result.label;$('message').append(result);}
   if(s.guide){const text=document.createElement('span');text.textContent=guide;$('message').append(text);}
@@ -176,8 +176,8 @@ function render(){
   const total=s.credit+s.bet;for(const id of ['min','minus-ten','minus','plus','plus-ten','max'])$(id).disabled=blocked||!ready;
   $('min').disabled||=s.bet===0;$('minus').disabled||=s.bet===0;$('minus-ten').disabled||=s.bet===0;$('plus').disabled||=s.bet>=Math.min(10,total);$('plus-ten').disabled=$('plus').disabled;$('max').disabled=$('plus').disabled;
   const mainType=ready?'deal':s.phase==='dealt'?'draw':s.phase==='won'?'double':null;
-  $('main').hidden=['choose','double'].includes(s.phase);$('main').textContent=mainType?.toUpperCase()??'DEAL';$('main').disabled=blocked||!mainType||(ready&&s.bet<3)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
-  $('collect').hidden=!['won','double'].includes(s.phase);$('collect').disabled=blocked;$('refill').hidden=!(ready&&total<3);$('refill').disabled=blocked;
+  $('main').hidden=['choose','double'].includes(s.phase);$('main').textContent=mainType?.toUpperCase()??'DEAL';$('main').disabled=blocked||!mainType||(ready&&s.bet<1)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
+  $('collect').hidden=!['won','double'].includes(s.phase);$('collect').disabled=blocked;$('refill').hidden=!(ready&&total<1);$('refill').disabled=blocked;
   $('hint').textContent=s.phase==='choose'?'1〜5でカードを選択':s.phase==='double'?'← LEFT ／ → RIGHT ／ A・4 COLLECT':ready?'D・6 DEAL ／ W・8 ＋1 ／ S・2 −1':s.phase==='dealt'?'D・6 DRAW':'D・6 DOUBLE ／ A・4 COLLECT';
   $('save-status').textContent=blocked?'PLAY PAUSED':storageOK?'AUTO SAVE':'SAVE UNAVAILABLE';
   $('payrows').replaceChildren();const possible=new Set(s.base.length?possibleHands(s.base).map(p=>p[0]):[]);

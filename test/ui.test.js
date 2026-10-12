@@ -18,6 +18,12 @@ test('UI progresses through DEAL / DRAW / card selection and prevents duplicate 
   const chosen=h.nodes.get('choices').children[2].children[1];chosen.click();assert.equal(h.state().selected,2);assert.ok(['won','lost'].includes(h.state().phase));const once=h.data.get(KEY);chosen.click();assert.equal(h.data.get(KEY),once);
   assert.equal(h.nodes.get('choices').children.length,5);
 });
+test('one coin enables DEAL and remaining one or two coins do not show refill',()=>{
+  const h=setup();assert.equal(h.nodes.get('main').disabled,true);h.nodes.get('plus').onclick();
+  assert.equal(h.nodes.get('main').disabled,false);h.nodes.get('main').onclick();assert.equal(h.state().phase,'dealt');
+  for(const credit of [1,2]){const low=setup(JSON.stringify({...engine.initial(),credit}));assert.equal(low.nodes.get('refill').hidden,true);low.nodes.get('plus').onclick();assert.equal(low.nodes.get('main').disabled,false);}
+  assert.equal(setup(JSON.stringify({...engine.initial(),credit:0})).nodes.get('refill').hidden,false);
+});
 test('restored choices remain hidden until pick; restored WIN is collected once',()=>{
   const h=setup();h.nodes.get('plus-ten').onclick();h.nodes.get('main').onclick();h.nodes.get('main').onclick();const loaded=setup(h.data.get(KEY));assert.equal(loaded.state().phase,'choose');assert.ok(loaded.nodes.get('choices').children.every(slot=>slot.children[1].className.includes('back')));
   let s=engine.initial();s=engine.transition(s,{type:'bet',amount:5});s=engine.transition(s,{type:'deal'},()=>.5);s.base=[2,4];s.choices=[3,0,1,6,7];s.deck=Array.from({length:52},(_,i)=>i).filter(c=>![...s.base,...s.choices].includes(c));s.phase='choose';s=engine.transition(s,{type:'pick',index:0});
