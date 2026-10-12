@@ -261,14 +261,14 @@
     },
     {
       "app": "amber-between",
-      "version": 2,
+      "version": 3,
       "project_id": "appgprj_6acce09868248191841876044288c39e",
-      "source_commit": "1c266b5007e4896eb0a68cf586ce065df1e889ea",
-      "source_tree": "9d613b10681208d724b93dd4b8bcc7b204033e96",
+      "source_commit": "c9598227f7955f1742d32f0b2e01b8b62d2af735",
+      "source_tree": "269ba50041d1ad62c26f029cb138b3fb7f7f189c",
       "github_path": "sites/amber-between",
       "source_branch": "site-source/amber-between",
       "verified_on": "2026-10-12",
-      "deployment_id": "appgdep_6acce581f0248191a8921f6d22317c69",
+      "deployment_id": "appgdep_6acce61bba708191ac3a01866a44916c",
       "deployment_status": "succeeded",
       "url": "https://amber-between.satotka.chatgpt.site",
       "files": [
@@ -280,7 +280,7 @@
         {
           "path": "PLAY.html",
           "mode": "100644",
-          "blob_sha": "cd038dc1308b38d29c20569452bc6140d126beee"
+          "blob_sha": "32187eb8268253b63b48ba1fedc3cfeb4ca81646"
         },
         {
           "path": "README.md",
@@ -305,7 +305,7 @@
         {
           "path": "dist/index.html",
           "mode": "100644",
-          "blob_sha": "09fdb89e8e81cdf6369bac159b11cede7c490472"
+          "blob_sha": "94cda2a5966f3f80d311bd1af0e585a5c7bafe73"
         },
         {
           "path": "dist/style.css",
@@ -333,7 +333,7 @@
           "blob_sha": "9da15b4ba06d0997a48b6a5d1f366cf2bca5dc94"
         }
       ],
-      "github_source_commit": "6ef31b9a0f824e32e51a0924b3faf7a0ec2bfea2",
+      "github_source_commit": "aee4931bca8826c3d5759235fff8b6ba5c005d5e",
       "source_history_note": "GitHub export has the identical tree; author email anonymized to satisfy GH007. Original deployed commit remains in the dedicated Sites repository."
     }
   ]
