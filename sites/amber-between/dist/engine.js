@@ -39,7 +39,7 @@ export function transition(previous,action,random=Math.random){
   if(action.type==='guide'||action.type==='sound'){s[action.type]=!s[action.type];return s;}
   if(action.type==='refill' && reservable(s) && s.credit+s.bet<1){return {...initial(),guide:s.guide,sound:s.sound};}
   if(action.type==='deal' && reservable(s) && s.bet>=1 && s.bet<=10){
-    s.deck=shuffled(random);s.base=s.deck.splice(0,2).sort((a,b)=>rank(a)-rank(b));s.choices=[];s.selected=null;s.double=[];s.doubleLast=[];s.doubleOutcome=null;s.result=null;s.paid=0;s.phase='dealt';return s;
+    s.deck=shuffled(random);s.base=s.deck.splice(0,2).sort((a,b)=>rank(a)-rank(b));s.choices=s.deck.splice(0,5);s.selected=null;s.double=[];s.doubleLast=[];s.doubleOutcome=null;s.result=null;s.paid=0;s.phase='choose';return s;
   }
   if(action.type==='draw' && s.phase==='dealt'){s.choices=s.deck.splice(0,5);s.phase='choose';return s;}
   if(action.type==='pick' && s.phase==='choose' && Number.isInteger(action.index) && action.index>=0 && action.index<5){
