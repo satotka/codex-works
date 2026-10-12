@@ -34,10 +34,10 @@
     },
     {
       "app": "amber-poker",
-      "version": 37,
+      "version": 42,
       "project_id": "appgprj_6ac12e6bb87481918a743e5c414a9fe5",
-      "source_commit": "d65325e2fb02b18b435338bf63252ee27b485ecd",
-      "source_tree": "f4b2c3d80529d3c566f0fb9320aa6b8fbe64abd9",
+      "source_commit": "61863a733012bc7257dd666543a26675ede6605f",
+      "source_tree": "0221c071c1075cbe2abf748674581c09bdeb5551",
       "github_path": "sites/amber-poker",
       "source_branch": "site-source/amber-poker",
       "files": [
@@ -54,7 +54,7 @@
         {
           "path": "AGENTS.md",
           "mode": "100644",
-          "blob_sha": "02a3afc3b2d45a1acd54a2de03df584a0c32e1c8"
+          "blob_sha": "5ca26d5fc2ca54795ca89c97a79863ecdd22adbb"
         },
         {
           "path": "AMBER-POKER-REBUILD-PROMPT.md",
@@ -64,7 +64,7 @@
         {
           "path": "AMBER-POKER-SPEC.md",
           "mode": "100644",
-          "blob_sha": "ab821ddd930eae79afb3a5f8e5ceaeea97b6b4a7"
+          "blob_sha": "524a6a9dda3487d12859bc17755a597063a9e5f1"
         },
         {
           "path": "CLOUD-HANDOFF.md",
@@ -74,17 +74,17 @@
         {
           "path": "PLAY.html",
           "mode": "100644",
-          "blob_sha": "6028cd82eb8d9bd34e208573403ca2c73ebc42b3"
+          "blob_sha": "9e1c2f683135eb1674b76c2f85d3183d594aa9a9"
         },
         {
           "path": "README.md",
           "mode": "100644",
-          "blob_sha": "24a33f4dc5c60d65724568cfa88a962b0773b4ea"
+          "blob_sha": "f540813fbc1757e23bf11e6b611c73225e59cf34"
         },
         {
           "path": "index.html",
           "mode": "100644",
-          "blob_sha": "92cc2063ed797b245762585931e27ed5089c8352"
+          "blob_sha": "5e8c34f85fd19796f9539c7f59197ec747809680"
         },
         {
           "path": "package.json",
@@ -114,12 +114,12 @@
         {
           "path": "src/double-down.js",
           "mode": "100644",
-          "blob_sha": "e9e71c1c6873e8c8379d5170d3d6a684a5379f33"
+          "blob_sha": "028937b426ac7cb2469babb807dec76754f4d150"
         },
         {
           "path": "src/game-state.js",
           "mode": "100644",
-          "blob_sha": "5e0a5edc1e02ec4e13542bf6ee073a1a58fac931"
+          "blob_sha": "5f1ee348ddde36f421ae6864a6ae1c5fa9a39fd3"
         },
         {
           "path": "src/hand-evaluator.js",
@@ -159,7 +159,7 @@
         {
           "path": "src/ui.js",
           "mode": "100644",
-          "blob_sha": "8a6c233f3767e053456b79151ec8935f666864d3"
+          "blob_sha": "40fd54d72067462724da1ec299bf502b69038096"
         },
         {
           "path": "start-game.cmd",
@@ -169,12 +169,12 @@
         {
           "path": "style.css",
           "mode": "100644",
-          "blob_sha": "1ccd39db71225ba7b3666da4521873e36bb4c474"
+          "blob_sha": "9f927ff17e1f3170ede12d1f1acb78e616198c74"
         },
         {
           "path": "test/game.test.js",
           "mode": "100644",
-          "blob_sha": "46c9e51714ae8cbf5d83144bc4c1f208c5014a45"
+          "blob_sha": "09068608d9955eadcc224fa9d82ef1e0dcaa4870"
         },
         {
           "path": "test/highlight.test.js",
@@ -189,24 +189,32 @@
         {
           "path": "test/protection.test.js",
           "mode": "100644",
-          "blob_sha": "51d631b4be87746a47537b5985ab31ef324adeb2"
+          "blob_sha": "ac4a3cc28e8eeddc9c1395463d9c340a228dd0cc"
         },
         {
           "path": "test/standalone.test.js",
           "mode": "100644",
-          "blob_sha": "c27ca7a994d6312b9a72b2fa69767d2ef82dc6a8"
+          "blob_sha": "06dbbf8b21f0150190eb5690ddf16a6c9b94835b"
         },
         {
           "path": "test/storage.test.js",
           "mode": "100644",
-          "blob_sha": "f4ceece003aa1f2d93b67c8aed05f7005d779c12"
+          "blob_sha": "c482bab2940fec867ae818e0e607859c9ac9a514"
+        },
+        {
+          "path": "test/transfer.test.js",
+          "mode": "100644",
+          "blob_sha": "361d3522ee60cb4def7bcf1ad8a6781e7848a9bd"
         },
         {
           "path": "test/ui.test.js",
           "mode": "100644",
           "blob_sha": "66bcc227f0066a12390f519af26177a8b70013de"
         }
-      ]
+      ],
+      "verified_on": "2026-10-12",
+      "github_source_commit": "390cffef7e76cef502d1b4022adf3d9870c21edf",
+      "source_history_note": "GitHub source branch has the identical v42 tree with anonymized author email; main preserves v38–v42 as separate commits. Original history remains in the dedicated Sites repository."
     },
     {
       "app": "amber-derby",
