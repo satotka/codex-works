@@ -13,7 +13,7 @@ export function evaluate(base, card) {
   let key=null;
   if(ranks.join(',')==='11,12,13' && cards.every(c=>suit(c)===suit(cards[0]))) key=suit(cards[0])===0?'spade':'flush';
   else if(ranks[0]===ranks[2]) key=[14,7].includes(ranks[0])?'aces-sevens':ranks[0]>=11?'faces':'triple';
-  else if(rank(base[0])===rank(base[1])) key='pair';
+  else if(spread(base)===0 && base.some(c=>rank(c)===rank(card))) key='pair';
   else if(rank(card)>Math.min(...base.map(rank)) && rank(card)<Math.max(...base.map(rank))) {
     const n=spread(base);key=n<=3?`spread${n}`:'spread4';
   }
