@@ -38,6 +38,9 @@ test('state-specific COLLECT, DOUBLE, LEFT and RIGHT keys include numpad control
   let winner=engine.transition(engine.transition(engine.initial(),{type:'bet',amount:5}),{type:'deal'},()=>.5);
   winner.base=[2,4];winner.choices=[3,0,1,6,7];winner.deck=Array.from({length:52},(_,i)=>i).filter(c=>![...winner.base,...winner.choices].includes(c));winner.phase='choose';winner.win=0;winner.result=null;winner.selected=null;winner.rounds=0;winner.wins=0;winner=engine.transition(winner,{type:'pick',index:0});
   const key=(h,value,code='Key'+value.toUpperCase())=>h.events.keydown({key:value,code,target:{tagName:'BODY'},preventDefault(){}});
+  const ready=setup();assert.equal(ready.nodes.get('collect').hidden,false);assert.equal(ready.nodes.get('collect').disabled,true);assert.equal(ready.nodes.get('main').hidden,false);assert.equal(ready.nodes.get('main').disabled,true);
+  const paid=setup(JSON.stringify(winner));assert.equal(paid.nodes.get('collect').disabled,false);assert.equal(paid.nodes.get('main').disabled,false);
+  paid.nodes.get('main').onclick();assert.equal(paid.nodes.get('collect').hidden,false);assert.equal(paid.nodes.get('collect').disabled,false);assert.equal(paid.nodes.get('main').hidden,false);assert.equal(paid.nodes.get('main').disabled,true);
   for(const value of ['a','4']){const h=setup(JSON.stringify(winner));key(h,value,value==='4'?'Numpad4':'KeyA');assert.equal(h.state().phase,'ready');assert.equal(h.state().paid,25);}
   for(const value of ['d','6']){const h=setup(JSON.stringify(winner));key(h,value,value==='6'?'Numpad6':'KeyD');assert.equal(h.state().phase,'double');assert.equal(h.nodes.get('double-cards').children[0].children[1].children.at(-1).textContent,'Q/7');assert.equal(h.nodes.get('double-cards').children[1].children[1].children.at(-1).textContent,'E/9');}
   const double=engine.transition(winner,{type:'double'},()=>.5);double.double=[0,12];
