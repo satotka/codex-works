@@ -33,3 +33,5 @@ details{color:#cfc0a9;font-size:13px;line-height:1.8;margin-top:16px}summary{cur
 .console button small{display:block;margin-top:4px;font-size:12px;font-weight:normal;letter-spacing:1px}
 
 .double-cards button.card{flex-direction:column;gap:8px}.double-cards button.card small{font-size:12px;font-weight:normal;letter-spacing:1px;color:#f2d7a8}
+
+.console button:disabled{opacity:1;background:#282a2d;color:#84878b;border-color:#45484b;box-shadow:none;cursor:not-allowed}

@@ -45,9 +45,9 @@ function render(){
   $('tie-note').textContent=s.doubleOutcome==='tie'?(s.guide?'同値のためWINを維持し、新しい2枚を配りました。':'TIE · WIN KEPT · NEW CARDS'):'';
   const total=s.credit+s.bet;for(const id of ['min','minus-ten','minus','plus','plus-ten','max'])$(id).disabled=blocked||!ready;
   $('min').disabled||=s.bet===0;$('minus').disabled||=s.bet===0;$('minus-ten').disabled||=s.bet===0;$('plus').disabled||=s.bet>=Math.min(10,total);$('plus-ten').disabled=$('plus').disabled;$('max').disabled=$('plus').disabled;
-  const mainType=ready?'deal':s.phase==='won'?'double':null;
-  $('main').hidden=['choose','double'].includes(s.phase);$('main').textContent=mainType?.toUpperCase()??'DEAL';if(['deal','double'].includes(mainType)){const shortcut=document.createElement('small');shortcut.textContent=mainType==='deal'?'D/6キー':'D/6';$('main').append(shortcut)};$('main').disabled=blocked||!mainType||(ready&&s.bet<1)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
-  $('collect').hidden=!['won','double'].includes(s.phase);$('collect').disabled=blocked;$('refill').hidden=!(ready&&total<1);$('refill').disabled=blocked;
+  const mainType=ready?'deal':'double';
+  $('main').hidden=false;$('main').textContent=mainType?.toUpperCase()??'DEAL';if(['deal','double'].includes(mainType)){const shortcut=document.createElement('small');shortcut.textContent=mainType==='deal'?'D/6キー':'D/6';$('main').append(shortcut)};$('main').disabled=blocked||(!ready&&s.phase!=='won')||(ready&&s.bet<1)||(mainType==='double'&&s.win>Math.floor((Number.MAX_SAFE_INTEGER-s.credit)/2));
+  $('collect').hidden=false;$('collect').disabled=blocked||!['won','double'].includes(s.phase);$('refill').hidden=!(ready&&total<1);$('refill').disabled=blocked;
   $('hint').textContent=s.phase==='choose'?'1〜5でカードを選択':s.phase==='double'?'Q・7 LEFT ／ E・9 RIGHT ／ A・4 COLLECT':ready?'D・6 DEAL ／ W・8 ＋1 ／ S・2 −1':'D・6 DOUBLE ／ A・4 COLLECT';
   $('save-status').textContent=blocked?'PLAY PAUSED':storageOK?'AUTO SAVE':'SAVE UNAVAILABLE';
   $('payrows').replaceChildren();const possible=new Set(s.base.length?possibleHands(s.base).map(p=>p[0]):[]);
